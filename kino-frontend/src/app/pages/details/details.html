@@ -1,0 +1,52 @@
+@if (loading) {
+  <div class="loading">Loading…</div>
+}
+
+@if (error) {
+  <div class="error">{{ error }}</div>
+}
+
+@if (data) {
+  <section class="hero"
+           [style.backgroundImage]="'url(' + data.backdropUrl + ')'">
+
+    <div class="overlay">
+      <img class="poster" [src]="data.posterUrl" />
+
+      <div class="info">
+        <h1>{{ data.title }}</h1>
+        <p class="tagline" *ngIf="data.tagline">{{ data.tagline }}</p>
+
+        <div class="meta">
+          ⭐ {{ data.rating }}
+          • {{ data.date }}
+          • {{ data.runtimeMinutes }} min
+        </div>
+
+        <p class="overview">{{ data.overview }}</p>
+
+        <div class="genres">
+          <span *ngFor="let g of data.genres">{{ g }}</span>
+        </div>
+
+        <p *ngIf="data.creator"><b>Creator:</b> {{ data.creator }}</p>
+
+        <p *ngIf="data.directors?.length">
+          <b>Director:</b> {{ data.directors.join(', ') }}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cast" *ngIf="data.cast?.length">
+    <h2>Cast</h2>
+
+    <div class="cast-row">
+      <div class="cast-card" *ngFor="let c of data.cast">
+        <img *ngIf="c.profileUrl" [src]="c.profileUrl" />
+        <div>{{ c.name }}</div>
+        <small>{{ c.character }}</small>
+      </div>
+    </div>
+  </section>
+}

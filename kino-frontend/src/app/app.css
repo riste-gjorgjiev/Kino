@@ -1,0 +1,21 @@
+.nav { display:flex; gap:16px; padding:12px; border-bottom:1px solid #ddd; align-items:center; }
+
+.dropdown { position: relative; }
+.dropbtn { background: none; border: none; cursor: pointer; font: inherit; padding: 6px 10px; }
+
+.menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 140px;
+  border: 1px solid #ddd;
+  background: white;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.dropdown:hover .menu { display: flex; }
+
+.menu a { padding: 8px 10px; text-decoration: none; color: inherit; }
+.menu a:hover { background: #f2f2f2; }

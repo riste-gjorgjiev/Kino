@@ -1,0 +1,88 @@
+<h1>Search</h1>
+
+<form class="searchbar" (ngSubmit)="submit()">
+  <input
+    type="text"
+    name="q"
+    [(ngModel)]="q"
+    placeholder="Search movies or TV..."
+    autocomplete="off"
+  />
+  <button type="submit" [disabled]="loading">Search</button>
+</form>
+
+<div class="tabs">
+  <button (click)="setTab('all')" [class.active]="tab==='all'">All</button>
+  <button (click)="setTab('movie')" [class.active]="tab==='movie'">Movies</button>
+  <button (click)="setTab('tv')" [class.active]="tab==='tv'">TV</button>
+</div>
+
+@if (loading) {
+  <p>Loading...</p>
+} @else if (error) {
+  <p>{{ error }}</p>
+} @else {
+
+  @if (q.trim().length === 0) {
+    <p>Type something and press Search.</p>
+  } @else {
+
+    @if (tab === 'all') {
+      <div class="grid">
+        @for (it of allItems; track it.id) {
+          <div class="card"
+               [routerLink]="it.mediaType === 'MOVIE' ? ['/movies/details', it.id] : ['/tv/details', it.id]">
+            <img [src]="it.posterUrl || 'assets/no-poster.png'" [alt]="it.title" />
+            <div class="meta">
+              <div class="title">{{ it.title }}</div>
+              <div class="sub">{{ it.title }} · ⭐ {{ it.rating ?? 'N/A' }}</div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (tab === 'movie') {
+      <div class="pager">
+        <button (click)="prevMovies()" [disabled]="moviePage===1 || loading">Prev</button>
+        <span>Page {{ moviePage }} / {{ movieTotalPages }}</span>
+        <button (click)="nextMovie()" [disabled]="moviePage===movieTotalPages || loading">Next</button>
+      </div>
+
+      <div class="grid">
+        @for (it of movieItems; track it.id) {
+          <div class="card"
+               [routerLink]="it.mediaType === 'MOVIE' ? ['/movies/details', it.id] : ['/tv/details', it.id]">
+            <img [src]="it.posterUrl || 'assets/no-poster.png'" [alt]="it.title" />
+            <div class="meta">
+              <div class="title">{{ it.title }}</div>
+              <div class="sub">⭐ {{ it.rating ?? 'N/A' }} · {{ it.date ?? '—' }}</div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (tab === 'tv') {
+      <div class="pager">
+        <button (click)="prevTv()" [disabled]="tvPage===1 || loading">Prev</button>
+        <span>Page {{ tvPage }} / {{ tvTotalPages }}</span>
+        <button (click)="nextTv()" [disabled]="tvPage===tvTotalPages || loading">Next</button>
+      </div>
+
+      <div class="grid">
+        @for (it of tvItems; track it.id) {
+          <div class="card"
+               [routerLink]="it.mediaType === 'MOVIE' ? ['/movies/details', it.id] : ['/tv/details', it.id]">
+            <img [src]="it.posterUrl || 'assets/no-poster.png'" [alt]="it.title" />
+            <div class="meta">
+              <div class="title">{{ it.title }}</div>
+              <div class="sub">⭐ {{ it.rating ?? 'N/A' }} · {{ it.date ?? '—' }}</div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  }
+}

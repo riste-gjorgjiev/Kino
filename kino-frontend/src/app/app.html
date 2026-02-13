@@ -1,0 +1,50 @@
+<nav class="nav">
+  <a
+    routerLink="/"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+  >
+    Home
+  </a>
+
+  <div class="dropdown">
+    <button type="button" class="dropbtn">
+      Movies ▾
+    </button>
+
+    <div class="menu">
+      <a routerLink="/movies/popular" routerLinkActive="active">
+        Popular
+      </a>
+      <a routerLink="/movies/upcoming" routerLinkActive="active">
+        Upcoming
+      </a>
+      <a routerLink="/movies/top-rated" routerLinkActive="active">
+        Top Rated
+      </a>
+    </div>
+  </div>
+
+  <div class="dropdown">
+    <button type="button" class="dropbtn">
+      TV Shows ▾
+    </button>
+
+    <div class="menu">
+      <a routerLink="/tv/popular" routerLinkActive="active">
+        Popular
+      </a>
+      <a routerLink="/tv/on-the-air" routerLinkActive="active">
+        On TV
+      </a>
+      <a routerLink="/tv/top-rated" routerLinkActive="active">
+        Top Rated
+      </a>
+    </div>
+  </div>
+  <a routerLink="/search" routerLinkActive="active">
+    Search
+  </a>
+</nav>
+
+<router-outlet></router-outlet>

@@ -1,0 +1,40 @@
+<h1>{{ title }}</h1>
+
+<div class="toolbar">
+  <div class="pager">
+    <button (click)="prev()" [disabled]="page === 1 || loading">
+      Prev
+    </button>
+
+    <span>Page {{ page }} / {{ totalPages }}</span>
+
+    <button (click)="next()" [disabled]="page === totalPages || loading">
+      Next
+    </button>
+  </div>
+</div>
+
+  @if (items.length === 0) {
+    <p class="empty">No results.</p>
+  } @else {
+    <div class="grid">
+      @for (item of items; track item.id) {
+        <div class="card"
+             [routerLink]="item.mediaType === 'MOVIE' ? ['/movies/details', item.id] : ['/tv/details', item.id]">
+          <img
+            [src]="item.posterUrl || 'assets/no-poster.png'"
+            [alt]="item.title"
+          />
+
+          <div class="meta">
+            <div class="title">{{ item.title }}</div>
+            <div class="sub">
+              ⭐ {{ item.rating ?? 'N/A' }}
+              · {{ item.date ?? '—' }}
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+

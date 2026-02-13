@@ -1,0 +1,149 @@
+/* ---------- HERO ---------- */
+.hero {
+  position: relative;
+  min-height: 70vh;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0,0,0,0.85) 0%,
+    rgba(0,0,0,0.6) 40%,
+    rgba(0,0,0,0.2) 100%
+  );
+}
+
+.overlay {
+  position: relative;
+  display: flex;
+  gap: 2rem;
+  padding: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ---------- POSTER ---------- */
+.poster {
+  width: 300px;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
+
+/* ---------- INFO ---------- */
+.info {
+  max-width: 700px;
+}
+
+.info h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tagline {
+  font-style: italic;
+  opacity: 0.8;
+  margin-bottom: 1rem;
+}
+
+.meta {
+  font-size: 0.9rem;
+  opacity: 0.85;
+  margin-bottom: 1rem;
+}
+
+.overview {
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+/* ---------- GENRES ---------- */
+.genres {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.genres span {
+  background: rgba(255,255,255,0.15);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+
+/* ---------- CAST ---------- */
+.cast {
+  max-width: 1200px;
+  margin: 3rem auto;
+  padding: 0 2rem;
+}
+
+.cast h2 {
+  margin-bottom: 1rem;
+}
+
+.cast-row {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+
+.cast-card {
+  min-width: 140px;
+  background: #111;
+  border-radius: 10px;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.cast-card img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.cast-card div {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.cast-card small {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+/* ---------- STATES ---------- */
+.loading,
+.error {
+  padding: 4rem;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 900px) {
+  .overlay {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .poster {
+    width: 220px;
+  }
+
+  .info {
+    max-width: 100%;
+  }
+
+  .genres {
+    justify-content: center;
+  }
+}
+
