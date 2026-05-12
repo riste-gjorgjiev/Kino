@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  backend:
+    build: ./kino-backend
+    environment:
+      TMDB_API_KEY: ${TMDB_API_KEY}
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build: ./kino-frontend
+    depends_on:
+      - backend
+    ports:
+      - "4200:80"

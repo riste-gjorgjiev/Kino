@@ -5,7 +5,6 @@ target/
 !**/src/test/**/target/
 kino-backend/.env
 kino-backend/target/
-
 kino-frontend/node_modules
 kino-frontend/dist/
 
