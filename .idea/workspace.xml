@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5efbbcbe-aeb8-42cd-98c7-ff66fcbaed3c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kino-frontend/src/app/kino-api.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/kino-frontend/src/app/kino-api.service.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,6 +58,7 @@
     "RequestMappingsPanelWidth0": "75",
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "Spring Boot.KinoApplication.executor": "Debug",
@@ -68,7 +67,7 @@
     "git-widget-placeholder": "master",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/riste/IdeaProjects/Kino",
+    "last_opened_file_path": "/home/riste/IdeaProjects/E-Commerce-Labs-main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -79,7 +78,7 @@
     "project.structure.side.proportion": "0.0",
     "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
     "to.speed.mode.migration.done": "true",
-    "ts.external.directory.path": "/home/riste/.local/share/JetBrains/Toolbox/apps/intellij-idea/plugins/javascript-plugin/jsLanguageServicesImpl/external",
+    "ts.external.directory.path": "/home/riste/IdeaProjects/Kino/kino-frontend/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -122,7 +121,8 @@
       <workItem from="1770682911419" duration="1318000" />
       <workItem from="1770684231824" duration="16000" />
       <workItem from="1771010429749" duration="146000" />
-      <workItem from="1778600456672" duration="1844000" />
+      <workItem from="1778600456672" duration="6958000" />
+      <workItem from="1778630230958" duration="133000" />
     </task>
     <servers />
   </component>
