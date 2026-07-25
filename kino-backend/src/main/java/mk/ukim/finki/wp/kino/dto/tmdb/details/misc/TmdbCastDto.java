@@ -2,8 +2,10 @@ package mk.ukim.finki.wp.kino.dto.tmdb.details.misc;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class TmdbCastDto {
     private Long id;
     private String name;

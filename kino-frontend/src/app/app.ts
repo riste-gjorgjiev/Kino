@@ -8,5 +8,5 @@ import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('kino-frontend');
+  protected readonly title = signal('Kino');
 }

@@ -41,7 +41,6 @@ export class MediaListPage {
       media === 'movies' ? this.fetchMovies(category as MoviesCategory, this.page)
       : this.fetchTv(category as TvCategory, this.page);
 
-    console.log('SUBSCRIBE', req)
     req.subscribe({
       next: (res) => {
         this.items = res.items;

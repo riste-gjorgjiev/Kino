@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import {MediaCardDto} from '../../core/models/media-card.dto';
 import {ActivatedRoute, RouterLink} from '@angular/router';
 import {KinoApiService} from '../../kino-api.service';
-import {combineLatest} from 'rxjs/internal/operators/combineLatest';
 import {CommonModule} from '@angular/common';
 import {forkJoin} from 'rxjs';
 

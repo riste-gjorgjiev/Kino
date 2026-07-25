@@ -18,6 +18,6 @@ public class TmdbMultiSearchDto {
     private Double popularity;
     @JsonProperty("release_date")
     private String releaseDate;
-    @JsonProperty("vote-average")
+    @JsonProperty("vote_average")
     private Double voteAverage;
 }

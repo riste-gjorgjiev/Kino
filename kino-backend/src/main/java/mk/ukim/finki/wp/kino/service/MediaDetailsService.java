@@ -12,7 +12,6 @@ import mk.ukim.finki.wp.kino.tmdb.TmdbClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.print.attribute.standard.Media;
 import java.util.List;
 import java.util.Objects;
 

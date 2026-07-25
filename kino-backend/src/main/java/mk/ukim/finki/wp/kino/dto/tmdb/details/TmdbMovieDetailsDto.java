@@ -2,11 +2,13 @@ package mk.ukim.finki.wp.kino.dto.tmdb.details;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.Setter;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbGenreDto;
 
 import java.util.List;
 
 @Getter
+@Setter
 public class TmdbMovieDetailsDto {
     private Long id;
     private String title;

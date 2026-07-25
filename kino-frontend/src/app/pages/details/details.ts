@@ -22,7 +22,6 @@ export class Details implements OnInit, OnDestroy{
   constructor(private route: ActivatedRoute, private router: Router, private api: KinoApiService) {}
 
   ngOnInit() {
-    console.log('DETAILS INIT', this.router.url);
     this.sub.add(this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe(() => this.load())

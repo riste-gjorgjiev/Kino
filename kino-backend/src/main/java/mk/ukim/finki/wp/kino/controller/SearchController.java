@@ -1,11 +1,15 @@
 package mk.ukim.finki.wp.kino.controller;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import mk.ukim.finki.wp.kino.dto.api.MediaCardDto;
 import mk.ukim.finki.wp.kino.dto.api.PagedResponseDto;
 import mk.ukim.finki.wp.kino.service.SearchService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@Validated
 @RestController
 @RequestMapping("/api/search")
 public class SearchController {
@@ -17,24 +21,24 @@ public class SearchController {
 
     @GetMapping("/movie")
     public PagedResponseDto<MediaCardDto> searchedMovies(
-            @RequestParam(required = true) String query,
-            @RequestParam(defaultValue = "1") int page
+            @RequestParam(required = true) @NotBlank(message = "must not be blank") @Size(max = 200, message = "must be at most 200 characters") String query,
+            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page
     ){
         return searchService.searchMovies(query, page);
     }
 
     @GetMapping("/tv")
     public PagedResponseDto<MediaCardDto> searchedTv(
-            @RequestParam(required = true) String query,
-            @RequestParam(defaultValue = "1") int page
+            @RequestParam(required = true) @NotBlank(message = "must not be blank") @Size(max = 200, message = "must be at most 200 characters") String query,
+            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page
     ){
         return searchService.searchTv(query, page);
     }
 
     @GetMapping("/all")
     public PagedResponseDto<MediaCardDto> searchedAll(
-            @RequestParam(required = true) String query,
-            @RequestParam(defaultValue = "1") int page
+            @RequestParam(required = true) @NotBlank(message = "must not be blank") @Size(max = 200, message = "must be at most 200 characters") String query,
+            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page
     ){
         return searchService.searchMulti(query, page);
     }
