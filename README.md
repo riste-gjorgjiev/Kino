@@ -7,16 +7,19 @@ It uses **Spring Boot (Java)** for the backend and **Angular** for the frontend,
 Backend
 
 - **Java 21**
-- **Spring Boot**
+- **Spring Boot 4.0.2**
 - **Spring Web (RestClient)**
-- **Jackson (JSON mapping)**
+- **Jackson 3.x (JSON mapping)**
+- **Caffeine (caching)**
 - **TMDB API**
+- **JUnit 5 + Mockito (testing)**
 
 Frontend
-- **Angular (standalone components)**
+- **Angular 21 (standalone components)**
 - **Angular Router**
 - **HttpClient**
 - **RxJS**
+- **Vitest (testing)**
 
 ---
 
@@ -116,30 +119,18 @@ ng serve
 ```
 Runs on: http://localhost:4200
 
-## 🚧 Planned Features
-**Short-term**
-- Sorting:
-  - Popularity (asc/desc)
-  - Rating (asc/desc)
-  - Release / First Air Date
-  - Title (A–Z / Z–A)
-- Filtering:
-  - By genres
-  - By release date range
-- Front page horizontal carousels
-- Improved loading skeletons
+## 🧪 Running Tests
+**Backend**
+```
+cd kino-backend
+./mvnw test
+```
 
-**Mid-term**
-- Trailer playback (TMDB videos)
-- Keywords & additional metadata
-- Seasons & episodes view for TV shows
-- Responsive polish & animations
-
-**Long-term**
-- User accounts
-- Watchlist / favorites
-- Ratings & reviews
-- Recommendations
+**Frontend**
+```
+cd kino-frontend
+npm test
+```
 
 ## 📌 Notes
 - The project intentionally separates TMDB DTOs from API DTOs to keep the frontend independent from TMDB’s data format.
