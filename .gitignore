@@ -17,6 +17,7 @@ kino-frontend/dist/
 .springBeans
 .sts4-cache
 .env
+.opencode
 
 ### IntelliJ IDEA ###
 kino-backend/.idea
