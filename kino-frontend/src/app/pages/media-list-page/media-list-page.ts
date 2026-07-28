@@ -1,16 +1,18 @@
 import { Component } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MediaCardDto} from '../../core/models/media-card.dto';
-import {ActivatedRoute, RouterLink} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {KinoApiService} from '../../kino-api.service';
 import {combineLatest} from 'rxjs';
+import {DEFAULT_FILTER, FilterState} from '../../core/models/filter-state.model';
+import {FilterControlsComponent} from '../../shared/filter-controls/filter-controls.component';
 
 type MoviesCategory = 'popular' | 'upcoming' | 'top-rated';
 type TvCategory = 'popular' | 'on-the-air' | 'top-rated';
 
 @Component({
   selector: 'app-media-list-page',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FilterControlsComponent],
   templateUrl: './media-list-page.html',
   styleUrl: './media-list-page.css',
 })
@@ -21,12 +23,55 @@ export class MediaListPage {
   loading = false;
 
   title = '';
+  filter: FilterState = { ...DEFAULT_FILTER }
 
-  constructor(private route: ActivatedRoute, private api: KinoApiService) {
-    combineLatest([this.route.data, this.route.paramMap]).subscribe(() => {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private api: KinoApiService
+  ) {}
+
+  ngOnInit(): void {
+    combineLatest([this.route.data, this.route.paramMap, this.route.queryParamMap]).subscribe(
+      () => {
+      this.readFiltersFromUrl();
       this.page = 1;
       this.load();
-    })
+    });
+  }
+
+  onFilterChanged(filter: FilterState): void {
+    this.filter = { ...filter };
+  }
+
+  applyFilters(): void {
+    this.page = 1;
+    this.syncFiltersToUrl();
+    this.load();
+  }
+
+  private readFiltersFromUrl(): void {
+    const queryParams = this.route.snapshot.queryParamMap;
+    this.filter = {
+      yearFrom: queryParams.has('yearFrom') ? Number(queryParams.get('yearFrom')) : null,
+      yearTo: queryParams.has('yearTo') ? Number(queryParams.get('yearTo')) : null,
+      sortBy: queryParams.get('sortBy'),
+      sortOrder: (queryParams.get('sortOrder') as 'asc' | 'desc') || 'asc',
+    };
+  }
+
+  private syncFiltersToUrl(): void {
+    const queryParams: any = {};
+    if (this.filter.yearFrom != null) queryParams.yearFrom = this.filter.yearFrom;
+    if (this.filter.yearTo != null) queryParams.yearTo = this.filter.yearTo;
+    if (this.filter.sortBy) queryParams.sortBy = this.filter.sortBy;
+    if (this.filter.sortOrder !== 'asc') queryParams.sortOrder = this.filter.sortOrder;
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      queryParamsHandling: 'merge',
+    });
   }
 
   private load(){
@@ -56,17 +101,17 @@ export class MediaListPage {
 
   private fetchMovies(category: MoviesCategory, page: number){
     switch (category){
-      case 'popular': return this.api.popularMovies(page);
-      case 'upcoming': return this.api.upcomingMovies(page);
-      case 'top-rated': return this.api.topRatedMovies(page);
+      case 'popular': return this.api.popularMovies(page, this.filter);
+      case 'upcoming': return this.api.upcomingMovies(page, this.filter);
+      case 'top-rated': return this.api.topRatedMovies(page, this.filter);
     }
   }
 
   private fetchTv(category: TvCategory, page: number){
     switch (category){
-      case 'popular': return this.api.popularTv(page);
-      case 'on-the-air': return this.api.onTheAirTv(page);
-      case 'top-rated': return this.api.topRatedTv(page);
+      case 'popular': return this.api.popularTv(page, this.filter);
+      case 'on-the-air': return this.api.onTheAirTv(page, this.filter);
+      case 'top-rated': return this.api.topRatedTv(page, this.filter);
     }
   }
 

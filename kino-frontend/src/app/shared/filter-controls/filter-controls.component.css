@@ -1,0 +1,45 @@
+.filter-controls {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: #1a1a2e;
+  border-radius: 8px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.filter-group label {
+  font-size: 0.8rem;
+  color: #aaa;
+  text-transform: uppercase;
+}
+
+.filter-group input,
+.filter-group select {
+  padding: 0.5rem;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background: #16213e;
+  color: #eee;
+  min-width: 120px;
+}
+
+.clear-btn {
+  padding: 0.5rem 1rem;
+  background: #e94560;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.clear-btn:hover {
+  background: #c73e54;
+}

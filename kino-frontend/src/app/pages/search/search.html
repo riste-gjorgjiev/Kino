@@ -17,6 +17,14 @@
   <button (click)="setTab('tv')" [class.active]="tab==='tv'">TV</button>
 </div>
 
+<app-filter-controls [filter]="filter" (filterChanged)="onFilterChanged($event)"></app-filter-controls>
+
+<div class="toolbar">
+  <button class="apply-btn" (click)="applyFilters()" [disabled]="loading">
+    Apply Filters
+  </button>
+</div>
+
 @if (loading) {
   <p>Loading...</p>
 } @else if (error) {

@@ -3,6 +3,7 @@ package mk.ukim.finki.wp.kino.service;
 import mk.ukim.finki.wp.kino.dto.api.MediaCardDto;
 import mk.ukim.finki.wp.kino.dto.api.MediaType;
 import mk.ukim.finki.wp.kino.dto.api.PagedResponseDto;
+import mk.ukim.finki.wp.kino.dto.api.MediaFilterDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbPagedResponse;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbTvDto;
 import mk.ukim.finki.wp.kino.tmdb.TmdbClient;
@@ -22,6 +23,8 @@ import static org.mockito.Mockito.*;
 class TvServiceTest {
 
     @Mock
+    @Mock
+    private MediaFilterService mediaFilterService;
     private TmdbClient tmdbClient;
 
     private TvService tvService;
@@ -29,7 +32,7 @@ class TvServiceTest {
 
     @BeforeEach
     void setUp() {
-        tvService = new TvService(tmdbClient, imageBaseUrl);
+        tvService = new TvService(tmdbClient, imageBaseUrl, mediaFilterService);
     }
 
     @Test
@@ -39,9 +42,9 @@ class TvServiceTest {
             List.of(tv), 1, 5, 100
         );
 
-        when(tmdbClient.getTrendingTvShows("day", 1)).thenReturn(tmdbResponse);
+        when(tmdbClient.getTrendingTvShows("day", 1, new MediaFilterDto())).thenReturn(tmdbResponse);
 
-        PagedResponseDto<MediaCardDto> result = tvService.getTrendingTvShows("day", 1);
+        PagedResponseDto<MediaCardDto> result = tvService.getTrendingTvShows("day", 1, new MediaFilterDto());
 
         assertNotNull(result);
         assertEquals(1, result.getPage());
@@ -57,7 +60,7 @@ class TvServiceTest {
         assertEquals(8.2, card.getRating());
         assertEquals("2024-04-20", card.getDate());
 
-        verify(tmdbClient).getTrendingTvShows("day", 1);
+        verify(tmdbClient).getTrendingTvShows("day", 1, new MediaFilterDto());
     }
 
     @Test
@@ -65,9 +68,9 @@ class TvServiceTest {
         TmdbTvDto tv = TestDataFactory.createTvShow(1L, "Test TV Show", null);
         TmdbPagedResponse<TmdbTvDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(tv));
 
-        when(tmdbClient.getTrendingTvShows("day", 1)).thenReturn(tmdbResponse);
+        when(tmdbClient.getTrendingTvShows("day", 1, new MediaFilterDto())).thenReturn(tmdbResponse);
 
-        PagedResponseDto<MediaCardDto> result = tvService.getTrendingTvShows("day", 1);
+        PagedResponseDto<MediaCardDto> result = tvService.getTrendingTvShows("day", 1, new MediaFilterDto());
 
         assertNull(result.getItems().get(0).getPosterUrl());
     }
@@ -77,9 +80,9 @@ class TvServiceTest {
         TmdbTvDto tv = TestDataFactory.createTvShow(1L, "Test TV Show", "   ");
         TmdbPagedResponse<TmdbTvDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(tv));
 
-        when(tmdbClient.getTrendingTvShows("day", 1)).thenReturn(tmdbResponse);
+        when(tmdbClient.getTrendingTvShows("day", 1, new MediaFilterDto())).thenReturn(tmdbResponse);
 
-        PagedResponseDto<MediaCardDto> result = tvService.getTrendingTvShows("day", 1);
+        PagedResponseDto<MediaCardDto> result = tvService.getTrendingTvShows("day", 1, new MediaFilterDto());
 
         assertNull(result.getItems().get(0).getPosterUrl());
     }
@@ -89,15 +92,15 @@ class TvServiceTest {
         TmdbTvDto tv = TestDataFactory.createTvShow(2L, "Popular TV", "/popular.jpg");
         TmdbPagedResponse<TmdbTvDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(tv));
 
-        when(tmdbClient.getPopularTvShows(1)).thenReturn(tmdbResponse);
+        when(tmdbClient.getPopularTvShows(1, new MediaFilterDto())).thenReturn(tmdbResponse);
 
-        PagedResponseDto<MediaCardDto> result = tvService.getPopularTvShows(1);
+        PagedResponseDto<MediaCardDto> result = tvService.getPopularTvShows(1, new MediaFilterDto());
 
         assertNotNull(result);
         assertEquals(1, result.getItems().size());
         assertEquals("Popular TV", result.getItems().get(0).getTitle());
         assertEquals(MediaType.TV, result.getItems().get(0).getMediaType());
-        verify(tmdbClient).getPopularTvShows(1);
+        verify(tmdbClient).getPopularTvShows(1, new MediaFilterDto());
     }
 
     @Test
@@ -105,14 +108,14 @@ class TvServiceTest {
         TmdbTvDto tv = TestDataFactory.createTvShow(3L, "Top Rated TV", "/top.jpg");
         TmdbPagedResponse<TmdbTvDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(tv));
 
-        when(tmdbClient.getTopRatedTvShows(2)).thenReturn(tmdbResponse);
+        when(tmdbClient.getTopRatedTvShows(2, new MediaFilterDto())).thenReturn(tmdbResponse);
 
-        PagedResponseDto<MediaCardDto> result = tvService.getTopRatedTvShows(2);
+        PagedResponseDto<MediaCardDto> result = tvService.getTopRatedTvShows(2, new MediaFilterDto());
 
         assertNotNull(result);
         assertEquals(1, result.getItems().size());
         assertEquals("Top Rated TV", result.getItems().get(0).getTitle());
-        verify(tmdbClient).getTopRatedTvShows(2);
+        verify(tmdbClient).getTopRatedTvShows(2, new MediaFilterDto());
     }
 
     @Test
@@ -120,23 +123,23 @@ class TvServiceTest {
         TmdbTvDto tv = TestDataFactory.createTvShow(4L, "Airing TV", "/airing.jpg");
         TmdbPagedResponse<TmdbTvDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(tv));
 
-        when(tmdbClient.getAiringTvShows(3)).thenReturn(tmdbResponse);
+        when(tmdbClient.getAiringTvShows(3, new MediaFilterDto())).thenReturn(tmdbResponse);
 
-        PagedResponseDto<MediaCardDto> result = tvService.getAiringTvShows(3);
+        PagedResponseDto<MediaCardDto> result = tvService.getAiringTvShows(3, new MediaFilterDto());
 
         assertNotNull(result);
         assertEquals(1, result.getItems().size());
         assertEquals("Airing TV", result.getItems().get(0).getTitle());
-        verify(tmdbClient).getAiringTvShows(3);
+        verify(tmdbClient).getAiringTvShows(3, new MediaFilterDto());
     }
 
     @Test
     void getPopularTvShows_withEmptyResults_returnsEmptyList() {
         TmdbPagedResponse<TmdbTvDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of());
 
-        when(tmdbClient.getPopularTvShows(1)).thenReturn(tmdbResponse);
+        when(tmdbClient.getPopularTvShows(1, new MediaFilterDto())).thenReturn(tmdbResponse);
 
-        PagedResponseDto<MediaCardDto> result = tvService.getPopularTvShows(1);
+        PagedResponseDto<MediaCardDto> result = tvService.getPopularTvShows(1, new MediaFilterDto());
 
         assertNotNull(result);
         assertTrue(result.getItems().isEmpty());
@@ -152,9 +155,9 @@ class TvServiceTest {
             List.of(tv1, tv2, tv3)
         );
 
-        when(tmdbClient.getTrendingTvShows("week", 1)).thenReturn(tmdbResponse);
+        when(tmdbClient.getTrendingTvShows("week", 1, new MediaFilterDto())).thenReturn(tmdbResponse);
 
-        PagedResponseDto<MediaCardDto> result = tvService.getTrendingTvShows("week", 1);
+        PagedResponseDto<MediaCardDto> result = tvService.getTrendingTvShows("week", 1, new MediaFilterDto());
 
         assertEquals(3, result.getItems().size());
         assertEquals("Show One", result.getItems().get(0).getTitle());

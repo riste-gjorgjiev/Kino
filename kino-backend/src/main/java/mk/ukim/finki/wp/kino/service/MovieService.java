@@ -1,6 +1,7 @@
 package mk.ukim.finki.wp.kino.service;
 
 import mk.ukim.finki.wp.kino.dto.api.MediaCardDto;
+import mk.ukim.finki.wp.kino.dto.api.MediaFilterDto;
 import mk.ukim.finki.wp.kino.dto.api.MediaType;
 import mk.ukim.finki.wp.kino.dto.api.PagedResponseDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbMovieDto;
@@ -16,68 +17,101 @@ import java.util.List;
 public class MovieService {
     private final TmdbClient tmdbClient;
     private final String imageBaseUrl;
+    private final MediaFilterService mediaFilterService;
 
-    public MovieService(TmdbClient tmdbClient, @Value("${tmdb.image-base-url}") String imageBaseUrl) {
+    public MovieService(TmdbClient tmdbClient, @Value("${tmdb.image-base-url}") String imageBaseUrl, MediaFilterService mediaFilterService) {
         this.tmdbClient = tmdbClient;
         this.imageBaseUrl = imageBaseUrl;
+        this.mediaFilterService = mediaFilterService;
     }
 
-    @Cacheable(cacheNames = "trendingMovies", key = "#window + ':' + #page")
-    public PagedResponseDto<MediaCardDto> getTrendingMovies(String window, int page){
+    @Cacheable(cacheNames = "trendingMovies", key = "#window + ':' + #page + ':filter=' + #filter.hashCode()")
+    public PagedResponseDto<MediaCardDto> getTrendingMovies(String window, int page, MediaFilterDto filter){
         TmdbPagedResponse<TmdbMovieDto> tmdb = tmdbClient.getTrendingMovies(window, page);
 
         List<MediaCardDto> items = tmdb.getResults().stream()
                 .map(this::toMediaCard)
                 .toList();
 
+        int pageSize = 20;
+        List<MediaCardDto> filteredItems = mediaFilterService.applyFiltersAndSort(
+                items, filter, 1, pageSize
+        );
+        int totalResults = mediaFilterService.countAfterFilters(items, filter);
+        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
+
         return new PagedResponseDto<>(
-                tmdb.getPage(),
-                tmdb.getTotalPages(),
-                items,
-                tmdb.getTotalResults()
+                page,
+                totalPages,
+                filteredItems,
+                totalResults
         );
     }
-    @Cacheable(cacheNames = "popularMovies", key = "'page=' + #page")
-    public PagedResponseDto<MediaCardDto> getPopularMovies(int page){
+    @Cacheable(cacheNames = "popularMovies", key = "'page=' + #page + ':filter=' + #filter.hashCode()")
+    public PagedResponseDto<MediaCardDto> getPopularMovies(int page, MediaFilterDto filter){
         TmdbPagedResponse<TmdbMovieDto> tmdb = tmdbClient.getPopularMovies(page);
 
         List<MediaCardDto> items = tmdb.getResults().stream()
                 .map(this::toMediaCard)
                 .toList();
+
+        int pageSize = 20;
+        List<MediaCardDto> filteredItems = mediaFilterService.applyFiltersAndSort(
+                items, filter, 1, pageSize
+        );
+        int totalResults = mediaFilterService.countAfterFilters(items, filter);
+        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
+
         return new PagedResponseDto<>(
-                tmdb.getPage(),
-                tmdb.getTotalPages(),
-                items,
-                tmdb.getTotalResults()
+                page,
+                totalPages,
+                filteredItems,
+                totalResults
         );
     }
-    @Cacheable(cacheNames = "topRatedMovies", key = "'page=' + #page")
-    public PagedResponseDto<MediaCardDto> getTopRatedMovies(int page){
+    @Cacheable(cacheNames = "topRatedMovies", key = "'page=' + #page + ':filter=' + #filter.hashCode()")
+    public PagedResponseDto<MediaCardDto> getTopRatedMovies(int page, MediaFilterDto filter){
         TmdbPagedResponse<TmdbMovieDto> tmdb = tmdbClient.getTopRatedMovies(page);
 
         List<MediaCardDto> items = tmdb.getResults().stream()
                 .map(this::toMediaCard)
                 .toList();
+
+        int pageSize = 20;
+        List<MediaCardDto> filteredItems = mediaFilterService.applyFiltersAndSort(
+                items, filter, 1, pageSize
+        );
+        int totalResults = mediaFilterService.countAfterFilters(items, filter);
+        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
+
         return new PagedResponseDto<>(
-                tmdb.getPage(),
-                tmdb.getTotalPages(),
-                items,
-                tmdb.getTotalResults()
+                page,
+                totalPages,
+                filteredItems,
+                totalResults
         );
     }
 
-    @Cacheable(cacheNames = "upcomingMovies", key = "'page=' + #page")
-    public PagedResponseDto<MediaCardDto> getUpcomingMovies(int page){
+    @Cacheable(cacheNames = "upcomingMovies", key = "'page=' + #page + ':filter=' + #filter.hashCode()")
+    public PagedResponseDto<MediaCardDto> getUpcomingMovies(int page, MediaFilterDto filter){
         TmdbPagedResponse<TmdbMovieDto> tmdb = tmdbClient.getUpcomingMovies(page);
 
         List<MediaCardDto> items = tmdb.getResults().stream()
                 .map(this::toMediaCard)
                 .toList();
+
+        int pageSize = 20;
+        List<MediaCardDto> filteredItems = mediaFilterService.applyFiltersAndSort(
+                items, filter, 1, pageSize
+        );
+        int totalResults = mediaFilterService.countAfterFilters(items, filter);
+        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
+
         return new PagedResponseDto<>(
-                tmdb.getPage(),
-                tmdb.getTotalPages(),
-                items,
-                tmdb.getTotalResults()
+                page,
+                totalPages,
+                filteredItems,
+                totalResults
         );
     }
 

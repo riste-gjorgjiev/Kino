@@ -1,6 +1,7 @@
 package mk.ukim.finki.wp.kino.service;
 
 import mk.ukim.finki.wp.kino.dto.api.MediaCardDto;
+import mk.ukim.finki.wp.kino.dto.api.MediaFilterDto;
 import mk.ukim.finki.wp.kino.dto.api.MediaType;
 import mk.ukim.finki.wp.kino.dto.api.PagedResponseDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbMovieDto;
@@ -17,13 +18,15 @@ import java.util.List;
 public class SearchService {
     private final TmdbClient tmdbClient;
     private final String imageBaseUrl;
+    private final MediaFilterService mediaFilterService;
 
-    public SearchService(TmdbClient tmdbClient, @Value("${tmdb.image-base-url}") String imageBaseUrl) {
+    public SearchService(TmdbClient tmdbClient, @Value("${tmdb.image-base-url}") String imageBaseUrl, MediaFilterService mediaFilterService) {
         this.tmdbClient = tmdbClient;
         this.imageBaseUrl = imageBaseUrl;
+        this.mediaFilterService = mediaFilterService;
     }
 
-    public PagedResponseDto<MediaCardDto> searchMovies(String query, int page){
+    public PagedResponseDto<MediaCardDto> searchMovies(String query, int page, MediaFilterDto filter){
         if (query == null || query.isBlank()){
             return new  PagedResponseDto<>(1, 0, java.util.List.of(), 0);
         }
@@ -33,14 +36,23 @@ public class SearchService {
         List<MediaCardDto> items = tmdb.getResults().stream()
                 .map(this::toMediaCardMovies)
                 .toList();
+
+        int pageSize = 20;
+        List<MediaCardDto> filteredItems = mediaFilterService.applyFiltersAndSort(
+                items, filter, 1, pageSize
+        );
+
+        int totalResults = mediaFilterService.countAfterFilters(items, filter);
+        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
+
         return new PagedResponseDto<>(
-                tmdb.getPage(),
-                tmdb.getTotalPages(),
-                items,
-                tmdb.getTotalResults()
+                page,
+                totalPages,
+                filteredItems,
+                totalResults
         );
     }
-    public PagedResponseDto<MediaCardDto> searchTv(String query, int page){
+    public PagedResponseDto<MediaCardDto> searchTv(String query, int page, MediaFilterDto filter){
         if (query == null || query.isBlank()){
             return new  PagedResponseDto<>(1, 0, java.util.List.of(), 0);
         }
@@ -51,15 +63,24 @@ public class SearchService {
         List<MediaCardDto> items = tmdb.getResults().stream()
                 .map(this::toMediaCardTv)
                 .toList();
+
+        int pageSize = 20;
+        List<MediaCardDto> filteredItems = mediaFilterService.applyFiltersAndSort(
+                items, filter, 1, pageSize
+        );
+
+        int totalResults = mediaFilterService.countAfterFilters(items, filter);
+        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
+
         return new PagedResponseDto<>(
-                tmdb.getPage(),
-                tmdb.getTotalPages(),
-                items,
-                tmdb.getTotalResults()
+                page,
+                totalPages,
+                filteredItems,
+                totalResults
         );
     }
 
-    public PagedResponseDto<MediaCardDto> searchMulti(String query, int page){
+    public PagedResponseDto<MediaCardDto> searchMulti(String query, int page, MediaFilterDto filter){
         if (query == null || query.isBlank()){
             return new  PagedResponseDto<>(1, 0, java.util.List.of(), 0);
         }
@@ -71,11 +92,21 @@ public class SearchService {
                 .filter(r -> "movie".equals(r.getMediaType()) || "tv".equals(r.getMediaType()))
                 .map(this::toMultiMediaCard)
                 .toList();
+
+        int pageSize = 20;
+        List<MediaCardDto> filteredItems = mediaFilterService.applyFiltersAndSort(
+                items, filter, 1, pageSize
+        );
+
+        int totalResults = mediaFilterService.countAfterFilters(items, filter);
+        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
+
+
         return new PagedResponseDto<>(
-                tmdb.getPage(),
-                tmdb.getTotalPages(),
-                items,
-                tmdb.getTotalResults()
+                page,
+                totalPages,
+                filteredItems,
+                totalResults
         );
     }
 

@@ -1,8 +1,10 @@
 package mk.ukim.finki.wp.kino.service;
 
 import mk.ukim.finki.wp.kino.dto.api.MediaCardDto;
+import mk.ukim.finki.wp.kino.dto.api.MediaFilterDto;
 import mk.ukim.finki.wp.kino.dto.api.MediaType;
 import mk.ukim.finki.wp.kino.dto.api.PagedResponseDto;
+import mk.ukim.finki.wp.kino.dto.api.MediaFilterDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbMovieDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbPagedResponse;
 import mk.ukim.finki.wp.kino.tmdb.TmdbClient;
@@ -22,14 +24,21 @@ import static org.mockito.Mockito.*;
 class MovieServiceTest {
 
     @Mock
+    @Mock
+    private MediaFilterService mediaFilterService;
     private TmdbClient tmdbClient;
+
+    @Mock
+    @Mock
+    private MediaFilterService mediaFilterService;
+    private MediaFilterService mediaFilterService;
 
     private MovieService movieService;
     private final String imageBaseUrl = "https://image.tmdb.org/t/p/w500";
 
     @BeforeEach
     void setUp() {
-        movieService = new MovieService(tmdbClient, imageBaseUrl);
+        movieService = new MovieService(tmdbClient, imageBaseUrl, mediaFilterService);
     }
 
     @Test
@@ -39,9 +48,9 @@ class MovieServiceTest {
             List.of(movie), 1, 5, 100
         );
 
-        when(tmdbClient.getTrendingMovies("day", 1)).thenReturn(tmdbResponse);
+        when(tmdbClient.getTrendingMovies("day", 1, new MediaFilterDto())).thenReturn(tmdbResponse);
 
-        PagedResponseDto<MediaCardDto> result = movieService.getTrendingMovies("day", 1);
+        PagedResponseDto<MediaCardDto> result = movieService.getTrendingMovies("day", 1, new MediaFilterDto());
 
         assertNotNull(result);
         assertEquals(1, result.getPage());
@@ -57,7 +66,7 @@ class MovieServiceTest {
         assertEquals(7.5, card.getRating());
         assertEquals("2024-01-15", card.getDate());
 
-        verify(tmdbClient).getTrendingMovies("day", 1);
+        verify(tmdbClient).getTrendingMovies("day", 1, new MediaFilterDto());
     }
 
     @Test
@@ -65,9 +74,9 @@ class MovieServiceTest {
         TmdbMovieDto movie = TestDataFactory.createMovie(1L, "Test Movie", null);
         TmdbPagedResponse<TmdbMovieDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(movie));
 
-        when(tmdbClient.getTrendingMovies("day", 1)).thenReturn(tmdbResponse);
+        when(tmdbClient.getTrendingMovies("day", 1, new MediaFilterDto())).thenReturn(tmdbResponse);
 
-        PagedResponseDto<MediaCardDto> result = movieService.getTrendingMovies("day", 1);
+        PagedResponseDto<MediaCardDto> result = movieService.getTrendingMovies("day", 1, new MediaFilterDto());
 
         assertNull(result.getItems().get(0).getPosterUrl());
     }
@@ -77,9 +86,9 @@ class MovieServiceTest {
         TmdbMovieDto movie = TestDataFactory.createMovie(1L, "Test Movie", "   ");
         TmdbPagedResponse<TmdbMovieDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(movie));
 
-        when(tmdbClient.getTrendingMovies("day", 1)).thenReturn(tmdbResponse);
+        when(tmdbClient.getTrendingMovies("day", 1, new MediaFilterDto())).thenReturn(tmdbResponse);
 
-        PagedResponseDto<MediaCardDto> result = movieService.getTrendingMovies("day", 1);
+        PagedResponseDto<MediaCardDto> result = movieService.getTrendingMovies("day", 1, new MediaFilterDto());
 
         assertNull(result.getItems().get(0).getPosterUrl());
     }
@@ -89,15 +98,15 @@ class MovieServiceTest {
         TmdbMovieDto movie = TestDataFactory.createMovie(2L, "Popular Movie", "/popular.jpg");
         TmdbPagedResponse<TmdbMovieDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(movie));
 
-        when(tmdbClient.getPopularMovies(1)).thenReturn(tmdbResponse);
+        when(tmdbClient.getPopularMovies(1, new MediaFilterDto())).thenReturn(tmdbResponse);
 
-        PagedResponseDto<MediaCardDto> result = movieService.getPopularMovies(1);
+        PagedResponseDto<MediaCardDto> result = movieService.getPopularMovies(1, new MediaFilterDto());
 
         assertNotNull(result);
         assertEquals(1, result.getItems().size());
         assertEquals("Popular Movie", result.getItems().get(0).getTitle());
         assertEquals(MediaType.MOVIE, result.getItems().get(0).getMediaType());
-        verify(tmdbClient).getPopularMovies(1);
+        verify(tmdbClient).getPopularMovies(1, new MediaFilterDto());
     }
 
     @Test
@@ -105,14 +114,14 @@ class MovieServiceTest {
         TmdbMovieDto movie = TestDataFactory.createMovie(3L, "Top Rated", "/top.jpg");
         TmdbPagedResponse<TmdbMovieDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(movie));
 
-        when(tmdbClient.getTopRatedMovies(2)).thenReturn(tmdbResponse);
+        when(tmdbClient.getTopRatedMovies(2, new MediaFilterDto())).thenReturn(tmdbResponse);
 
-        PagedResponseDto<MediaCardDto> result = movieService.getTopRatedMovies(2);
+        PagedResponseDto<MediaCardDto> result = movieService.getTopRatedMovies(2, new MediaFilterDto());
 
         assertNotNull(result);
         assertEquals(1, result.getItems().size());
         assertEquals("Top Rated", result.getItems().get(0).getTitle());
-        verify(tmdbClient).getTopRatedMovies(2);
+        verify(tmdbClient).getTopRatedMovies(2, new MediaFilterDto());
     }
 
     @Test
@@ -120,23 +129,23 @@ class MovieServiceTest {
         TmdbMovieDto movie = TestDataFactory.createMovie(4L, "Upcoming", "/upcoming.jpg");
         TmdbPagedResponse<TmdbMovieDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(movie));
 
-        when(tmdbClient.getUpcomingMovies(3)).thenReturn(tmdbResponse);
+        when(tmdbClient.getUpcomingMovies(3, new MediaFilterDto())).thenReturn(tmdbResponse);
 
-        PagedResponseDto<MediaCardDto> result = movieService.getUpcomingMovies(3);
+        PagedResponseDto<MediaCardDto> result = movieService.getUpcomingMovies(3, new MediaFilterDto());
 
         assertNotNull(result);
         assertEquals(1, result.getItems().size());
         assertEquals("Upcoming", result.getItems().get(0).getTitle());
-        verify(tmdbClient).getUpcomingMovies(3);
+        verify(tmdbClient).getUpcomingMovies(3, new MediaFilterDto());
     }
 
     @Test
     void getPopularMovies_withEmptyResults_returnsEmptyList() {
         TmdbPagedResponse<TmdbMovieDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of());
 
-        when(tmdbClient.getPopularMovies(1)).thenReturn(tmdbResponse);
+        when(tmdbClient.getPopularMovies(1, new MediaFilterDto())).thenReturn(tmdbResponse);
 
-        PagedResponseDto<MediaCardDto> result = movieService.getPopularMovies(1);
+        PagedResponseDto<MediaCardDto> result = movieService.getPopularMovies(1, new MediaFilterDto());
 
         assertNotNull(result);
         assertTrue(result.getItems().isEmpty());
@@ -152,9 +161,9 @@ class MovieServiceTest {
             List.of(movie1, movie2, movie3)
         );
 
-        when(tmdbClient.getTrendingMovies("week", 1)).thenReturn(tmdbResponse);
+        when(tmdbClient.getTrendingMovies("week", 1, new MediaFilterDto())).thenReturn(tmdbResponse);
 
-        PagedResponseDto<MediaCardDto> result = movieService.getTrendingMovies("week", 1);
+        PagedResponseDto<MediaCardDto> result = movieService.getTrendingMovies("week", 1, new MediaFilterDto());
 
         assertEquals(3, result.getItems().size());
         assertEquals("Movie One", result.getItems().get(0).getTitle());

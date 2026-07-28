@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import mk.ukim.finki.wp.kino.dto.api.MediaCardDto;
+import mk.ukim.finki.wp.kino.dto.api.MediaFilterDto;
 import mk.ukim.finki.wp.kino.dto.api.PagedResponseDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.MediaDetailsDto;
 import mk.ukim.finki.wp.kino.service.MediaDetailsService;
@@ -31,28 +32,49 @@ public class TvController {
     @GetMapping("/trending")
     public PagedResponseDto<MediaCardDto> trending(
             @RequestParam(defaultValue = "day") @Pattern(regexp = "day|week", message = "must be 'day' or 'week'") String window,
-            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page){
-        return tvService.getTrendingTvShows(window, page);
+            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page,
+            @RequestParam(required = false) Integer yearFrom,
+            @RequestParam(required = false) Integer yearTo,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder
+            ){
+        MediaFilterDto filter = new MediaFilterDto(yearFrom, yearTo, sortBy, sortOrder);
+        return tvService.getTrendingTvShows(window, page, filter);
     }
 
     @GetMapping("/popular")
     public PagedResponseDto<MediaCardDto> popular(
-            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page
+            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page,
+            @RequestParam(required = false) Integer yearFrom,
+            @RequestParam(required = false) Integer yearTo,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder
     ){
-        return tvService.getPopularTvShows(page);
+        MediaFilterDto filter = new MediaFilterDto(yearFrom, yearTo, sortBy, sortOrder);
+        return tvService.getPopularTvShows(page, filter);
     }
 
     @GetMapping("/top-rated")
     public PagedResponseDto<MediaCardDto> topRated(
-            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page
+            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page,
+            @RequestParam(required = false) Integer yearFrom,
+            @RequestParam(required = false) Integer yearTo,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder
     ){
-        return tvService.getTopRatedTvShows(page);
+        MediaFilterDto filter = new MediaFilterDto(yearFrom, yearTo, sortBy, sortOrder);
+        return tvService.getTopRatedTvShows(page, filter);
     }
 
     @GetMapping("/on-the-air")
     public PagedResponseDto<MediaCardDto> onTheAir(
-            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page
+            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page,
+            @RequestParam(required = false) Integer yearFrom,
+            @RequestParam(required = false) Integer yearTo,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder
     ){
-        return tvService.getAiringTvShows(page);
+        MediaFilterDto filter = new MediaFilterDto(yearFrom, yearTo, sortBy, sortOrder);
+        return tvService.getAiringTvShows(page, filter);
     }
 }

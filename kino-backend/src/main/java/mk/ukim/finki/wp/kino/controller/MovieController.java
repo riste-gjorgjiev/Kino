@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import mk.ukim.finki.wp.kino.dto.api.MediaCardDto;
+import mk.ukim.finki.wp.kino.dto.api.MediaFilterDto;
 import mk.ukim.finki.wp.kino.dto.api.PagedResponseDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.MediaDetailsDto;
 import mk.ukim.finki.wp.kino.service.MediaDetailsService;
@@ -31,29 +32,50 @@ public class MovieController {
     @GetMapping("/trending")
     public PagedResponseDto<MediaCardDto> trending(
             @RequestParam(defaultValue = "day") @Pattern(regexp = "day|week", message = "must be 'day' or 'week'") String window,
-            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page
+            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page,
+            @RequestParam(required = false) Integer yearFrom,
+            @RequestParam(required = false) Integer yearTo,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder
     ){
-        return movieService.getTrendingMovies(window, page);
+        MediaFilterDto filter = new MediaFilterDto(yearFrom, yearTo, sortBy, sortOrder);
+        return movieService.getTrendingMovies(window, page, filter);
     }
 
     @GetMapping("/popular")
     public PagedResponseDto<MediaCardDto> popular(
-            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page
+            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page,
+            @RequestParam(required = false) Integer yearFrom,
+            @RequestParam(required = false) Integer yearTo,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder
     ){
-        return movieService.getPopularMovies(page);
+        MediaFilterDto filter = new MediaFilterDto(yearFrom, yearTo, sortBy, sortOrder);
+        return movieService.getPopularMovies(page, filter);
     }
 
     @GetMapping("/top-rated")
     public PagedResponseDto<MediaCardDto> topRated(
-            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page
+            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page,
+            @RequestParam(required = false) Integer yearFrom,
+            @RequestParam(required = false) Integer yearTo,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder
     ){
-        return movieService.getTopRatedMovies(page);
+        MediaFilterDto filter = new MediaFilterDto(yearFrom, yearTo, sortBy, sortOrder);
+        return movieService.getTopRatedMovies(page, filter);
     }
 
     @GetMapping("/upcoming")
     public PagedResponseDto<MediaCardDto> upcoming(
-            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page
+            @RequestParam(defaultValue = "1") @Min(value = 1, message = "must be at least 1") int page,
+            @RequestParam(required = false) Integer yearFrom,
+            @RequestParam(required = false) Integer yearTo,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder
+
     ){
-        return movieService.getUpcomingMovies(page);
+        MediaFilterDto filter = new MediaFilterDto(yearFrom, yearTo, sortBy, sortOrder);
+        return movieService.getUpcomingMovies(page, filter);
     }
 }
