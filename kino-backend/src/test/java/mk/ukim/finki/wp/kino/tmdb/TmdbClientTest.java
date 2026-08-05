@@ -59,7 +59,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        TmdbPagedResponse<TmdbMovieDto> result = tmdbClient.getTrendingMovies("day", 1, new MediaFilterDto());
+        TmdbPagedResponse<TmdbMovieDto> result = tmdbClient.getTrendingMovies("day", 1);
 
         assertNotNull(result);
         assertEquals(1, result.getPage());
@@ -76,7 +76,7 @@ class TmdbClientTest {
         mockServer.expect(requestToPath("/3/trending/movie/day"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getTrendingMovies("invalid", 1, new MediaFilterDto());
+        tmdbClient.getTrendingMovies("invalid", 1);
         mockServer.verify();
     }
 
@@ -88,7 +88,7 @@ class TmdbClientTest {
         mockServer.expect(requestToPath("/3/trending/movie/day"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getTrendingMovies(null, 1, new MediaFilterDto());
+        tmdbClient.getTrendingMovies(null, 1);
         mockServer.verify();
     }
 
@@ -101,7 +101,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getTrendingMovies("day", 0, new MediaFilterDto());
+        tmdbClient.getTrendingMovies("day", 0);
         mockServer.verify();
     }
 
@@ -114,7 +114,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "2"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getTrendingMovies("week", 2, new MediaFilterDto());
+        tmdbClient.getTrendingMovies("week", 2);
         mockServer.verify();
     }
 
@@ -133,7 +133,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        TmdbPagedResponse<TmdbMovieDto> result = tmdbClient.getPopularMovies(1, new MediaFilterDto());
+        TmdbPagedResponse<TmdbMovieDto> result = tmdbClient.getPopularMovies(1);
 
         assertNotNull(result);
         assertEquals(1, result.getResults().size());
@@ -149,7 +149,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getPopularMovies(-5, new MediaFilterDto());
+        tmdbClient.getPopularMovies(-5);
         mockServer.verify();
     }
 
@@ -164,7 +164,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "3"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getTopRatedMovies(3, new MediaFilterDto());
+        tmdbClient.getTopRatedMovies(3);
         mockServer.verify();
     }
 
@@ -177,7 +177,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getTopRatedMovies(0, new MediaFilterDto());
+        tmdbClient.getTopRatedMovies(0);
         mockServer.verify();
     }
 
@@ -192,7 +192,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getUpcomingMovies(1, new MediaFilterDto());
+        tmdbClient.getUpcomingMovies(1);
         mockServer.verify();
     }
 
@@ -205,7 +205,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getUpcomingMovies(-1, new MediaFilterDto());
+        tmdbClient.getUpcomingMovies(-1);
         mockServer.verify();
     }
 
@@ -224,7 +224,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        TmdbPagedResponse<TmdbTvDto> result = tmdbClient.getTrendingTvShows("day", 1, new MediaFilterDto());
+        TmdbPagedResponse<TmdbTvDto> result = tmdbClient.getTrendingTvShows("day", 1);
 
         assertNotNull(result);
         assertEquals(1, result.getResults().size());
@@ -240,7 +240,7 @@ class TmdbClientTest {
         mockServer.expect(requestToPath("/3/trending/tv/day"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getTrendingTvShows("bad", 1, new MediaFilterDto());
+        tmdbClient.getTrendingTvShows("bad", 1);
         mockServer.verify();
     }
 
@@ -252,7 +252,7 @@ class TmdbClientTest {
         mockServer.expect(requestToPath("/3/trending/tv/day"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getTrendingTvShows(null, 1, new MediaFilterDto());
+        tmdbClient.getTrendingTvShows(null, 1);
         mockServer.verify();
     }
 
@@ -265,7 +265,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getTrendingTvShows("day", 0, new MediaFilterDto());
+        tmdbClient.getTrendingTvShows("day", 0);
         mockServer.verify();
     }
 
@@ -278,7 +278,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "2"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getTrendingTvShows("week", 2, new MediaFilterDto());
+        tmdbClient.getTrendingTvShows("week", 2);
         mockServer.verify();
     }
 
@@ -293,7 +293,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getPopularTvShows(1, new MediaFilterDto());
+        tmdbClient.getPopularTvShows(1);
         mockServer.verify();
     }
 
@@ -306,7 +306,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getPopularTvShows(-10, new MediaFilterDto());
+        tmdbClient.getPopularTvShows(-10);
         mockServer.verify();
     }
 
@@ -321,7 +321,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "4"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getTopRatedTvShows(4, new MediaFilterDto());
+        tmdbClient.getTopRatedTvShows(4);
         mockServer.verify();
     }
 
@@ -334,7 +334,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getTopRatedTvShows(0, new MediaFilterDto());
+        tmdbClient.getTopRatedTvShows(0);
         mockServer.verify();
     }
 
@@ -349,7 +349,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getAiringTvShows(1, new MediaFilterDto());
+        tmdbClient.getAiringTvShows(1);
         mockServer.verify();
     }
 
@@ -362,7 +362,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.getAiringTvShows(-1, new MediaFilterDto());
+        tmdbClient.getAiringTvShows(-1);
         mockServer.verify();
     }
 
@@ -382,7 +382,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        TmdbPagedResponse<TmdbMovieDto> result = tmdbClient.searchMovies("batman", 1, new MediaFilterDto());
+        TmdbPagedResponse<TmdbMovieDto> result = tmdbClient.searchMovies("batman", 1);
 
         assertNotNull(result);
         assertEquals(1, result.getResults().size());
@@ -398,7 +398,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.searchMovies("test", 0, new MediaFilterDto());
+        tmdbClient.searchMovies("test", 0);
         mockServer.verify();
     }
 
@@ -454,7 +454,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        TmdbPagedResponse<TmdbMultiSearchDto> result = tmdbClient.searchMulti("star wars", 1, new MediaFilterDto());
+        TmdbPagedResponse<TmdbMultiSearchDto> result = tmdbClient.searchMulti("star wars", 1);
 
         assertNotNull(result);
         assertEquals(2, result.getResults().size());
@@ -470,7 +470,7 @@ class TmdbClientTest {
             .andExpect(queryParam("page", "1"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        tmdbClient.searchMulti("test", 0, new MediaFilterDto());
+        tmdbClient.searchMulti("test", 0);
         mockServer.verify();
     }
 
@@ -567,7 +567,7 @@ class TmdbClientTest {
         mockServer.expect(requestToPath("/3/movie/popular"))
             .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
-        TmdbPagedResponse<TmdbMovieDto> result = tmdbClient.getPopularMovies(1, new MediaFilterDto());
+        TmdbPagedResponse<TmdbMovieDto> result = tmdbClient.getPopularMovies(1);
 
         assertEquals(1, result.getPage());
         assertEquals(5, result.getTotalPages());

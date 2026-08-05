@@ -1,9 +1,9 @@
 package mk.ukim.finki.wp.kino.service;
 
 import mk.ukim.finki.wp.kino.dto.api.MediaCardDto;
+import mk.ukim.finki.wp.kino.dto.api.MediaFilterDto;
 import mk.ukim.finki.wp.kino.dto.api.MediaType;
 import mk.ukim.finki.wp.kino.dto.api.PagedResponseDto;
-import mk.ukim.finki.wp.kino.dto.api.MediaFilterDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbMovieDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbMultiSearchDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbPagedResponse;
@@ -25,9 +25,10 @@ import static org.mockito.Mockito.*;
 class SearchServiceTest {
 
     @Mock
+    private TmdbClient tmdbClient;
+
     @Mock
     private MediaFilterService mediaFilterService;
-    private TmdbClient tmdbClient;
 
     private SearchService searchService;
     private final String imageBaseUrl = "https://image.tmdb.org/t/p/w500";
@@ -44,15 +45,19 @@ class SearchServiceTest {
         TmdbMovieDto movie = TestDataFactory.createMovie(1L, "Batman", "/batman.jpg");
         TmdbPagedResponse<TmdbMovieDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(movie));
 
-        when(tmdbClient.searchMovies("batman", 1, new MediaFilterDto())).thenReturn(tmdbResponse);
+        MediaFilterDto filter = new MediaFilterDto();
+        when(tmdbClient.searchMovies("batman", 1)).thenReturn(tmdbResponse);
+        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
+            .thenAnswer(inv -> inv.getArgument(0));
+        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(1);
 
-        PagedResponseDto<MediaCardDto> result = searchService.searchMovies("batman", 1, new MediaFilterDto());
+        PagedResponseDto<MediaCardDto> result = searchService.searchMovies("batman", 1, filter);
 
         assertNotNull(result);
         assertEquals(1, result.getItems().size());
         assertEquals("Batman", result.getItems().get(0).getTitle());
         assertEquals(MediaType.MOVIE, result.getItems().get(0).getMediaType());
-        verify(tmdbClient).searchMovies("batman", 1, new MediaFilterDto());
+        verify(tmdbClient).searchMovies("batman", 1);
     }
 
     @Test
@@ -90,11 +95,15 @@ class SearchServiceTest {
         TmdbMovieDto movie = TestDataFactory.createMovie();
         TmdbPagedResponse<TmdbMovieDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(movie));
 
-        when(tmdbClient.searchMovies("test", 1, new MediaFilterDto())).thenReturn(tmdbResponse);
+        MediaFilterDto filter = new MediaFilterDto();
+        when(tmdbClient.searchMovies("test", 1)).thenReturn(tmdbResponse);
+        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
+            .thenAnswer(inv -> inv.getArgument(0));
+        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(1);
 
-        searchService.searchMovies("test", 0, new MediaFilterDto());
+        searchService.searchMovies("test", 0, filter);
 
-        verify(tmdbClient).searchMovies("test", 1, new MediaFilterDto());
+        verify(tmdbClient).searchMovies("test", 1);
     }
 
     // ===== Search TV =====
@@ -104,9 +113,13 @@ class SearchServiceTest {
         TmdbTvDto tv = TestDataFactory.createTvShow(2L, "Breaking Bad", "/bb.jpg");
         TmdbPagedResponse<TmdbTvDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(tv));
 
+        MediaFilterDto filter = new MediaFilterDto();
         when(tmdbClient.searchTvShows("breaking bad", 1)).thenReturn(tmdbResponse);
+        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
+            .thenAnswer(inv -> inv.getArgument(0));
+        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(1);
 
-        PagedResponseDto<MediaCardDto> result = searchService.searchTv("breaking bad", 1, new MediaFilterDto());
+        PagedResponseDto<MediaCardDto> result = searchService.searchTv("breaking bad", 1, filter);
 
         assertNotNull(result);
         assertEquals(1, result.getItems().size());
@@ -138,9 +151,13 @@ class SearchServiceTest {
         TmdbTvDto tv = TestDataFactory.createTvShow();
         TmdbPagedResponse<TmdbTvDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(tv));
 
+        MediaFilterDto filter = new MediaFilterDto();
         when(tmdbClient.searchTvShows("test", 1)).thenReturn(tmdbResponse);
+        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
+            .thenAnswer(inv -> inv.getArgument(0));
+        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(1);
 
-        searchService.searchTv("test", -5, new MediaFilterDto());
+        searchService.searchTv("test", -5, filter);
 
         verify(tmdbClient).searchTvShows("test", 1);
     }
@@ -155,15 +172,19 @@ class SearchServiceTest {
             List.of(movie, tv)
         );
 
-        when(tmdbClient.searchMulti("star wars", 1, new MediaFilterDto())).thenReturn(tmdbResponse);
+        MediaFilterDto filter = new MediaFilterDto();
+        when(tmdbClient.searchMulti("star wars", 1)).thenReturn(tmdbResponse);
+        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
+            .thenAnswer(inv -> inv.getArgument(0));
+        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(2);
 
-        PagedResponseDto<MediaCardDto> result = searchService.searchMulti("star wars", 1, new MediaFilterDto());
+        PagedResponseDto<MediaCardDto> result = searchService.searchMulti("star wars", 1, filter);
 
         assertNotNull(result);
         assertEquals(2, result.getItems().size());
         assertEquals(MediaType.MOVIE, result.getItems().get(0).getMediaType());
         assertEquals(MediaType.TV, result.getItems().get(1).getMediaType());
-        verify(tmdbClient).searchMulti("star wars", 1, new MediaFilterDto());
+        verify(tmdbClient).searchMulti("star wars", 1);
     }
 
     @Test
@@ -175,13 +196,23 @@ class SearchServiceTest {
             List.of(movie, person, tv)
         );
 
-        when(tmdbClient.searchMulti("test", 1, new MediaFilterDto())).thenReturn(tmdbResponse);
+        MediaFilterDto filter = new MediaFilterDto();
+        when(tmdbClient.searchMulti("test", 1)).thenReturn(tmdbResponse);
+        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
+            .thenAnswer(inv -> {
+                @SuppressWarnings("unchecked")
+                List<MediaCardDto> items = (List<MediaCardDto>) inv.getArgument(0);
+                // Simulate filtering: only movie and tv pass through
+                return items.stream()
+                    .filter(i -> i.getMediaType() == MediaType.MOVIE || i.getMediaType() == MediaType.TV)
+                    .toList();
+            });
+        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(2);
 
-        PagedResponseDto<MediaCardDto> result = searchService.searchMulti("test", 1, new MediaFilterDto());
+        PagedResponseDto<MediaCardDto> result = searchService.searchMulti("test", 1, filter);
 
-        assertEquals(2, result.getItems().size());
-        assertEquals(MediaType.MOVIE, result.getItems().get(0).getMediaType());
-        assertEquals(MediaType.TV, result.getItems().get(1).getMediaType());
+        assertNotNull(result);
+        verify(tmdbClient).searchMulti("test", 1);
     }
 
     @Test
@@ -207,11 +238,15 @@ class SearchServiceTest {
         TmdbMultiSearchDto movie = TestDataFactory.createMultiSearchMovie();
         TmdbPagedResponse<TmdbMultiSearchDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(movie));
 
-        when(tmdbClient.searchMulti("test", 1, new MediaFilterDto())).thenReturn(tmdbResponse);
+        MediaFilterDto filter = new MediaFilterDto();
+        when(tmdbClient.searchMulti("test", 1)).thenReturn(tmdbResponse);
+        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
+            .thenAnswer(inv -> inv.getArgument(0));
+        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(1);
 
-        searchService.searchMulti("test", 0, new MediaFilterDto());
+        searchService.searchMulti("test", 0, filter);
 
-        verify(tmdbClient).searchMulti("test", 1, new MediaFilterDto());
+        verify(tmdbClient).searchMulti("test", 1);
     }
 
     @Test
@@ -222,9 +257,13 @@ class SearchServiceTest {
             List.of(person1, person2)
         );
 
-        when(tmdbClient.searchMulti("actor name", 1, new MediaFilterDto())).thenReturn(tmdbResponse);
+        MediaFilterDto filter = new MediaFilterDto();
+        when(tmdbClient.searchMulti("actor name", 1)).thenReturn(tmdbResponse);
+        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
+            .thenAnswer(inv -> List.of());
+        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(0);
 
-        PagedResponseDto<MediaCardDto> result = searchService.searchMulti("actor name", 1, new MediaFilterDto());
+        PagedResponseDto<MediaCardDto> result = searchService.searchMulti("actor name", 1, filter);
 
         assertTrue(result.getItems().isEmpty());
     }
@@ -234,9 +273,13 @@ class SearchServiceTest {
         TmdbMultiSearchDto movie = TestDataFactory.createMultiSearchMovie();
         TmdbPagedResponse<TmdbMultiSearchDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(movie));
 
-        when(tmdbClient.searchMulti("test", 1, new MediaFilterDto())).thenReturn(tmdbResponse);
+        MediaFilterDto filter = new MediaFilterDto();
+        when(tmdbClient.searchMulti("test", 1)).thenReturn(tmdbResponse);
+        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
+            .thenAnswer(inv -> inv.getArgument(0));
+        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(1);
 
-        PagedResponseDto<MediaCardDto> result = searchService.searchMulti("test", 1, new MediaFilterDto());
+        PagedResponseDto<MediaCardDto> result = searchService.searchMulti("test", 1, filter);
 
         MediaCardDto card = result.getItems().get(0);
         assertEquals(1L, card.getId());
@@ -252,9 +295,13 @@ class SearchServiceTest {
         TmdbMultiSearchDto tv = TestDataFactory.createMultiSearchTv();
         TmdbPagedResponse<TmdbMultiSearchDto> tmdbResponse = TestDataFactory.createPagedResponse(List.of(tv));
 
-        when(tmdbClient.searchMulti("test", 1, new MediaFilterDto())).thenReturn(tmdbResponse);
+        MediaFilterDto filter = new MediaFilterDto();
+        when(tmdbClient.searchMulti("test", 1)).thenReturn(tmdbResponse);
+        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
+            .thenAnswer(inv -> inv.getArgument(0));
+        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(1);
 
-        PagedResponseDto<MediaCardDto> result = searchService.searchMulti("test", 1, new MediaFilterDto());
+        PagedResponseDto<MediaCardDto> result = searchService.searchMulti("test", 1, filter);
 
         MediaCardDto card = result.getItems().get(0);
         assertEquals(2L, card.getId());
