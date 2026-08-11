@@ -38,14 +38,7 @@
     @if (tab === 'all') {
       <div class="grid">
         @for (it of allItems; track it.id) {
-          <div class="card"
-               [routerLink]="it.mediaType === 'MOVIE' ? ['/movies/details', it.id] : ['/tv/details', it.id]">
-            <img [src]="it.posterUrl || 'assets/no-poster.png'" [alt]="it.title" />
-            <div class="meta">
-              <div class="title">{{ it.title }}</div>
-              <div class="sub">{{ it.title }} · ⭐ {{ it.rating ?? 'N/A' }}</div>
-            </div>
-          </div>
+          <app-media-card [item]="it" />
         }
       </div>
     }
@@ -59,14 +52,7 @@
 
       <div class="grid">
         @for (it of movieItems; track it.id) {
-          <div class="card"
-               [routerLink]="it.mediaType === 'MOVIE' ? ['/movies/details', it.id] : ['/tv/details', it.id]">
-            <img [src]="it.posterUrl || 'assets/no-poster.png'" [alt]="it.title" />
-            <div class="meta">
-              <div class="title">{{ it.title }}</div>
-              <div class="sub">⭐ {{ it.rating ?? 'N/A' }} · {{ it.date ?? '—' }}</div>
-            </div>
-          </div>
+          <app-media-card [item]="it" />
         }
       </div>
     }
@@ -80,14 +66,7 @@
 
       <div class="grid">
         @for (it of tvItems; track it.id) {
-          <div class="card"
-               [routerLink]="it.mediaType === 'MOVIE' ? ['/movies/details', it.id] : ['/tv/details', it.id]">
-            <img [src]="it.posterUrl || 'assets/no-poster.png'" [alt]="it.title" />
-            <div class="meta">
-              <div class="title">{{ it.title }}</div>
-              <div class="sub">⭐ {{ it.rating ?? 'N/A' }} · {{ it.date ?? '—' }}</div>
-            </div>
-          </div>
+          <app-media-card [item]="it" />
         }
       </div>
     }

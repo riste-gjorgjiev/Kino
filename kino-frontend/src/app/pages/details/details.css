@@ -126,6 +126,46 @@
   font-size: 1.2rem;
 }
 
+.error {
+  color: #d32f2f;
+}
+
+.retry-btn {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.retry-btn:hover {
+  background: #0056b3;
+}
+
+/* ---------- NO BACKDROP ---------- */
+.hero.no-backdrop {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+/* ---------- NO PROFILE IMAGE ---------- */
+.no-profile {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #333;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: #666;
+}
+
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 900px) {
   .overlay {

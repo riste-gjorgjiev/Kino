@@ -20,26 +20,24 @@
   </div>
 </div>
 
-@if (items.length === 0) {
-  <p class="empty">No results.</p>
+@if (loading) {
+  <div class="loading">
+    <p>Loading...</p>
+  </div>
+} @else if (error) {
+  <div class="error">
+    <p>{{ error }}</p>
+    <button class="retry-btn" (click)="load()">Retry</button>
+  </div>
+} @else if (items.length === 0) {
+  <div class="empty">
+    <p>No results found.</p>
+    <p class="empty-hint">Try adjusting your filters or browse a different category.</p>
+  </div>
 } @else {
   <div class="grid">
     @for (item of items; track item.id) {
-      <div class="card"
-           [routerLink]="item.mediaType === 'MOVIE' ? ['/movies/details', item.id] : ['/tv/details', item.id]">
-        <img
-          [src]="item.posterUrl || 'assets/no-poster.png'"
-          [alt]="item.title"
-        />
-
-        <div class="meta">
-          <div class="title">{{ item.title }}</div>
-          <div class="sub">
-            ⭐ {{ item.rating ?? 'N/A' }}
-            · {{ item.date ?? '—' }}
-          </div>
-        </div>
-      </div>
+      <app-media-card [item]="item" />
     }
   </div>
 }

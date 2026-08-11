@@ -33,7 +33,7 @@ export class Details implements OnInit, OnDestroy{
     this.sub.unsubscribe();
   }
 
-  private load() {
+  load() {
     const id = Number(this.route.snapshot.paramMap.get('id'))
     const isMovie = this.router.url.startsWith('/movies');
 

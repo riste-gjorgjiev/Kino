@@ -1,0 +1,144 @@
+.carousel-section {
+  margin: 18px 0;
+}
+
+.section-head h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  padding: 0 20px;
+}
+
+@media (max-width: 768px) {
+  .section-head h2 {
+    font-size: 16px;
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-head h2 {
+    font-size: 15px;
+    padding: 0 12px;
+  }
+}
+
+.carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.carousel-container {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 0 20px 10px;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .carousel-container {
+    gap: 10px;
+    padding: 0 16px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-container {
+    gap: 8px;
+    padding: 0 12px 10px;
+  }
+}
+
+.carousel-container::-webkit-scrollbar {
+  height: 10px;
+}
+
+.carousel-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 999px;
+}
+
+.carousel-container::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+.carousel-btn {
+  position: absolute;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
+}
+
+.carousel-btn:active {
+  transform: scale(0.95);
+}
+
+.prev-btn {
+  left: 8px;
+}
+
+.next-btn {
+  right: 8px;
+}
+
+@media (max-width: 768px) {
+  .carousel-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
+
+  .prev-btn {
+    left: 4px;
+  }
+
+  .next-btn {
+    right: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+}
+
+/* Ensure media cards have consistent sizing in carousel */
+app-media-card {
+  flex: 0 0 140px;
+  scroll-snap-align: start;
+}
+
+@media (max-width: 768px) {
+  app-media-card {
+    flex: 0 0 130px;
+  }
+}
+
+@media (max-width: 480px) {
+  app-media-card {
+    flex: 0 0 120px;
+  }
+}

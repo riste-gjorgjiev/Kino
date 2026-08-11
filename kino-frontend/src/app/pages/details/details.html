@@ -3,29 +3,33 @@
 }
 
 @if (error) {
-  <div class="error">{{ error }}</div>
+  <div class="error">
+    <p>{{ error }}</p>
+    <button class="retry-btn" (click)="load()">Retry</button>
+  </div>
 }
 
 @if (data) {
   <section class="hero"
-           [style.backgroundImage]="'url(' + data.backdropUrl + ')'">
+           [style.backgroundImage]="data.backdropUrl ? 'url(' + data.backdropUrl + ')' : 'none'"
+           [class.no-backdrop]="!data.backdropUrl">
 
     <div class="overlay">
-      <img class="poster" [src]="data.posterUrl" />
+      <img class="poster" [src]="data.posterUrl || 'assets/no-poster.png'" [alt]="data.title" />
 
       <div class="info">
         <h1>{{ data.title }}</h1>
         <p class="tagline" *ngIf="data.tagline">{{ data.tagline }}</p>
 
         <div class="meta">
-          ⭐ {{ data.rating }}
-          • {{ data.date }}
-          • {{ data.runtimeMinutes }} min
+          <span *ngIf="data.rating">⭐ {{ data.rating }}</span>
+          <span *ngIf="data.date">• {{ data.date }}</span>
+          <span *ngIf="data.runtimeMinutes">• {{ data.runtimeMinutes }} min</span>
         </div>
 
-        <p class="overview">{{ data.overview }}</p>
+        <p class="overview" *ngIf="data.overview">{{ data.overview }}</p>
 
-        <div class="genres">
+        <div class="genres" *ngIf="data.genres?.length">
           <span *ngFor="let g of data.genres">{{ g }}</span>
         </div>
 
@@ -43,7 +47,8 @@
 
     <div class="cast-row">
       <div class="cast-card" *ngFor="let c of data.cast">
-        <img *ngIf="c.profileUrl" [src]="c.profileUrl" />
+        <img *ngIf="c.profileUrl" [src]="c.profileUrl" [alt]="c.name" />
+        <div *ngIf="!c.profileUrl" class="no-profile">No Image</div>
         <div>{{ c.name }}</div>
         <small>{{ c.character }}</small>
       </div>

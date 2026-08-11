@@ -1,0 +1,21 @@
+<div class="carousel-section">
+  <div class="section-head">
+    <h2>{{ title }}</h2>
+  </div>
+
+  <div class="carousel-wrapper">
+    <button class="carousel-btn prev-btn" (click)="scrollLeft()" aria-label="Scroll left">
+      ‹
+    </button>
+
+    <div class="carousel-container" #carouselContainer>
+      @for (item of items; track item.id) {
+        <app-media-card [item]="item" />
+      }
+    </div>
+
+    <button class="carousel-btn next-btn" (click)="scrollRight()" aria-label="Scroll right">
+      ›
+    </button>
+  </div>
+</div>

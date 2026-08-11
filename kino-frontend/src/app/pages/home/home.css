@@ -1,6 +1,21 @@
 h1 {
   margin: 16px 0 8px;
   font-size: 24px;
+  padding: 0 20px;
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 20px;
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 18px;
+    padding: 0 12px;
+  }
 }
 
 .section {
@@ -10,14 +25,43 @@ h1 {
 .section-head h2 {
   margin: 0 0 10px;
   font-size: 18px;
+  padding: 0 20px;
+}
+
+@media (max-width: 768px) {
+  .section-head h2 {
+    font-size: 16px;
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-head h2 {
+    font-size: 15px;
+    padding: 0 12px;
+  }
 }
 
 .row {
   display: flex;
   gap: 12px;
   overflow-x: auto;
-  padding-bottom: 10px;
+  padding: 0 20px 10px;
   scroll-snap-type: x mandatory;
+}
+
+@media (max-width: 768px) {
+  .row {
+    gap: 10px;
+    padding: 0 16px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .row {
+    gap: 8px;
+    padding: 0 12px 10px;
+  }
 }
 
 .row::-webkit-scrollbar {

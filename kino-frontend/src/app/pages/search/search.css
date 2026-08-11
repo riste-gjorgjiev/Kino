@@ -2,6 +2,20 @@
   display: flex;
   gap: 10px;
   margin: 12px 0 14px;
+  padding: 0 20px;
+}
+
+@media (max-width: 768px) {
+  .searchbar {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .searchbar {
+    padding: 0 12px;
+    flex-direction: column;
+  }
 }
 
 .searchbar input {
@@ -23,6 +37,20 @@
   display: flex;
   gap: 8px;
   margin-bottom: 12px;
+  padding: 0 20px;
+}
+
+@media (max-width: 768px) {
+  .tabs {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabs {
+    padding: 0 12px;
+    flex-wrap: wrap;
+  }
 }
 
 .tabs button {
@@ -42,6 +70,19 @@
   display: flex;
   justify-content: flex-start;
   margin: 12px 0;
+  padding: 0 20px;
+}
+
+@media (max-width: 768px) {
+  .toolbar {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .toolbar {
+    padding: 0 12px;
+  }
 }
 
 .apply-btn {
@@ -75,6 +116,23 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 16px;
+  padding: 0 20px 20px;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    padding: 0 16px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+    padding: 0 12px 12px;
+  }
 }
 
 .card {

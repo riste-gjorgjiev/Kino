@@ -3,17 +3,17 @@ import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {MediaCardDto} from '../../core/models/media-card.dto';
 import {KinoApiService} from '../../kino-api.service';
-import {forkJoin} from 'rxjs';
-import {ActivatedRoute, Route, Router, RouterLink} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {DEFAULT_FILTER, FilterState} from '../../core/models/filter-state.model';
 import {FilterControlsComponent} from '../../shared/filter-controls/filter-controls.component';
+import {MediaCardComponent} from '../../shared/media-card/media-card.component';
 
 type SearchTab = 'all' | 'movie' | 'tv'
 
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, FilterControlsComponent],
+  imports: [CommonModule, FormsModule, FilterControlsComponent, MediaCardComponent],
   templateUrl: './search.html',
   styleUrl: './search.css',
 })

@@ -7,43 +7,7 @@
   <button (click)="load()">Retry</button>
 } @else {
 
-  <section class="section">
-    <div class="section-head">
-      <h2>Trending Movies</h2>
-    </div>
-
-    <div class="row">
-      @for (m of movies; track m.id) {
-        <div class="card"
-             [routerLink]="m.mediaType === 'MOVIE' ? ['/movies/details', m.id] : ['/tv/details', m.id]">
-
-          <img [src]="m.posterUrl || 'assets/no-poster.png'" [alt]="m.title" />
-          <div class="meta">
-            <div class="title">{{ m.title }}</div>
-            <div class="sub">⭐ {{ m.rating ?? 'N/A' }}</div>
-          </div>
-        </div>
-      }
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-head">
-      <h2>Trending TV</h2>
-    </div>
-
-    <div class="row">
-      @for (t of tv; track t.id) {
-        <div class="card"
-        [routerLink]="t.mediaType === 'MOVIE' ? ['/movies/details', t.id] : ['/tv/details', t.id]">
-          <img [src]="t.posterUrl || 'assets/no-poster.png'" [alt]="t.title" />
-          <div class="meta">
-            <div class="title">{{ t.title }}</div>
-            <div class="sub">⭐ {{ t.rating ?? 'N/A' }}</div>
-          </div>
-        </div>
-      }
-    </div>
-  </section>
+  <app-media-carousel title="Trending Movies" [items]="movies" />
+  <app-media-carousel title="Trending TV" [items]="tv" />
 
 }

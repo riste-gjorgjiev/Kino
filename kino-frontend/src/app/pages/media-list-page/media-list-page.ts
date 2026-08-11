@@ -1,18 +1,19 @@
 import { Component } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MediaCardDto} from '../../core/models/media-card.dto';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {KinoApiService} from '../../kino-api.service';
 import {combineLatest} from 'rxjs';
 import {DEFAULT_FILTER, FilterState} from '../../core/models/filter-state.model';
 import {FilterControlsComponent} from '../../shared/filter-controls/filter-controls.component';
+import {MediaCardComponent} from '../../shared/media-card/media-card.component';
 
 type MoviesCategory = 'popular' | 'upcoming' | 'top-rated';
 type TvCategory = 'popular' | 'on-the-air' | 'top-rated';
 
 @Component({
   selector: 'app-media-list-page',
-  imports: [CommonModule, RouterLink, FilterControlsComponent],
+  imports: [CommonModule, FilterControlsComponent, MediaCardComponent],
   templateUrl: './media-list-page.html',
   styleUrl: './media-list-page.css',
 })
@@ -21,6 +22,7 @@ export class MediaListPage {
   page = 1;
   totalPages = 1;
   loading = false;
+  error = '';
 
   title = '';
   filter: FilterState = { ...DEFAULT_FILTER }
@@ -74,13 +76,14 @@ export class MediaListPage {
     });
   }
 
-  private load(){
+  load(){
     const media = this.route.snapshot.url[0]?.path;
     const category = this.route.snapshot.paramMap.get('category') || '';
 
     this.title = this.makeTitle(media, category);
 
     this.loading = true;
+    this.error = '';
 
     const req =
       media === 'movies' ? this.fetchMovies(category as MoviesCategory, this.page)
@@ -93,8 +96,10 @@ export class MediaListPage {
         this.totalPages = res.totalPages;
         this.loading = false;
       },
-      error: () => {
+      error: (err) => {
+        this.error = 'Failed to load content. Please try again.';
         this.loading = false;
+        console.error(err);
       },
     });
   }

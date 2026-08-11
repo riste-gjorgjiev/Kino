@@ -1,0 +1,13 @@
+<div class="card" [routerLink]="getDetailLink()">
+  <img
+    [src]="item.posterUrl || 'assets/no-poster.png'"
+    [alt]="getDisplayTitle()"
+  />
+  <div class="meta">
+    <div class="title">{{ getDisplayTitle() }}</div>
+    <div class="sub">
+      ⭐ {{ getDisplayRating() }}
+      · {{ getDisplayDate() }}
+    </div>
+  </div>
+</div>

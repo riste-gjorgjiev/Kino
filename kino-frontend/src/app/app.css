@@ -1,21 +1,126 @@
-.nav { display:flex; gap:16px; padding:12px; border-bottom:1px solid #ddd; align-items:center; }
+/* Navigation */
+.nav {
+  display: flex;
+  gap: 16px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #ddd;
+  align-items: center;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
 
-.dropdown { position: relative; }
-.dropbtn { background: none; border: none; cursor: pointer; font: inherit; padding: 6px 10px; }
+.nav a {
+  padding: 8px 12px;
+  text-decoration: none;
+  color: #333;
+  border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav a:hover {
+  background: #f0f0f0;
+}
+
+.nav a.active {
+  background: #007bff;
+  color: white;
+}
+
+/* Dropdown */
+.dropdown {
+  position: relative;
+}
+
+.dropbtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.dropbtn:hover {
+  background: #f0f0f0;
+}
 
 .menu {
   display: none;
   position: absolute;
   top: 100%;
   left: 0;
-  min-width: 140px;
+  min-width: 160px;
   border: 1px solid #ddd;
   background: white;
   flex-direction: column;
   z-index: 1000;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-top: 4px;
 }
 
-.dropdown:hover .menu { display: flex; }
+.dropdown:hover .menu,
+.dropdown:focus-within .menu {
+  display: flex;
+}
 
-.menu a { padding: 8px 10px; text-decoration: none; color: inherit; }
-.menu a:hover { background: #f2f2f2; }
+.menu a {
+  padding: 10px 16px;
+  text-decoration: none;
+  color: #333;
+  border-radius: 0;
+}
+
+.menu a:hover {
+  background: #f0f0f0;
+}
+
+.menu a.active {
+  background: #007bff;
+  color: white;
+}
+
+/* Mobile Navigation */
+@media (max-width: 768px) {
+  .nav {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 16px;
+  }
+
+  .nav a {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+  .dropbtn {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+  .menu {
+    min-width: 140px;
+  }
+
+  .menu a {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav {
+    gap: 6px;
+    padding: 8px 12px;
+  }
+
+  .nav a,
+  .dropbtn {
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+}
