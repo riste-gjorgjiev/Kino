@@ -3,6 +3,14 @@
 **Kino** is a full-stack web application for discovering **Movies** and **TV shows**, inspired by platforms like **TMDB** and **Letterboxd**.
 It uses **Spring Boot (Java)** for the backend and **Angular** for the frontend, with all media data powered by the **TMDB API**.
 
+## 🌐 Live Demo
+
+**Frontend:** https://kino-hsslvqdqb-riste-gjorgjievs-projects-5ec22153.vercel.app
+
+**Backend:** https://kino-wt69.onrender.com
+
+> ⚠️ **Note:** The backend is hosted on Render's free tier, which goes to sleep after inactivity. The first request may take around a minute to load as the service wakes up. Please be patient if the initial load seems slow.
+
 ## 🛠 Tech Stack
 Backend
 
