@@ -21,7 +21,7 @@ export class KinoApiService {
     if (filter.yearTo != null) params = params.set('yearTo', String(filter.yearTo));
     if (filter.sortBy) params = params.set('sortBy', String(filter.sortBy));
     if (filter.sortOrder) params = params.set('sortOrder', String(filter.sortOrder));
-    return params;
+    return params; 
   }
 
   popularMovies(page: number = 1, filter?: FilterState): Observable<PagedResponseDto<MediaCardDto>> {

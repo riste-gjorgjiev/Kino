@@ -5,7 +5,7 @@ It uses **Spring Boot (Java)** for the backend and **Angular** for the frontend,
 
 ## 🌐 Live Demo
 
-**Frontend:** https://kino-hsslvqdqb-riste-gjorgjievs-projects-5ec22153.vercel.app
+**Frontend:** https://kino-one-eta.vercel.app/
 
 **Backend:** https://kino-wt69.onrender.com
 
