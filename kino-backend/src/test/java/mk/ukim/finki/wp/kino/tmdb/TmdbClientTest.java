@@ -553,6 +553,50 @@ class TmdbClientTest {
         mockServer.verify();
     }
 
+    // ===== Movie Videos =====
+
+    @Test
+    void getMovieVideos_callsCorrectUrl() throws Exception {
+        TmdbVideoResponseDto expected = TestDataFactory.createTmdbVideoResponse(
+            List.of(TestDataFactory.createVideo("v1", "key1", "Trailer", "YouTube", "Trailer", true, "2024-01-15"))
+        );
+        String json = objectMapper.writeValueAsString(expected);
+
+        mockServer.expect(requestToPath("/3/movie/550/videos"))
+            .andExpect(queryParam("api_key", "test-api-key"))
+            .andExpect(queryParam("language", "en-US"))
+            .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+
+        TmdbVideoResponseDto result = tmdbClient.getMovieVideos(550);
+
+        assertNotNull(result);
+        assertEquals(1, result.getResults().size());
+        assertEquals("v1", result.getResults().get(0).getId());
+        mockServer.verify();
+    }
+
+    // ===== TV Videos =====
+
+    @Test
+    void getTvVideos_callsCorrectUrl() throws Exception {
+        TmdbVideoResponseDto expected = TestDataFactory.createTmdbVideoResponse(
+            List.of(TestDataFactory.createVideo("v2", "key2", "Teaser", "YouTube", "Teaser", false, "2024-02-20"))
+        );
+        String json = objectMapper.writeValueAsString(expected);
+
+        mockServer.expect(requestToPath("/3/tv/1399/videos"))
+            .andExpect(queryParam("api_key", "test-api-key"))
+            .andExpect(queryParam("language", "en-US"))
+            .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+
+        TmdbVideoResponseDto result = tmdbClient.getTvVideos(1399);
+
+        assertNotNull(result);
+        assertEquals(1, result.getResults().size());
+        assertEquals("v2", result.getResults().get(0).getId());
+        mockServer.verify();
+    }
+
     // ===== Response Deserialization =====
 
     @Test

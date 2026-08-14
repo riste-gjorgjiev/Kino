@@ -54,4 +54,15 @@
       </div>
     </div>
   </section>
+
+  <app-video-section
+    *ngIf="data?.videos?.length"
+    [videos]="data.videos"
+    (playVideo)="onPlayVideo($event)">
+  </app-video-section>
+
+  <app-trailer-modal
+    [videoKey]="selectedVideoKey"
+    (close)="onCloseModal()">
+  </app-trailer-modal>
 }

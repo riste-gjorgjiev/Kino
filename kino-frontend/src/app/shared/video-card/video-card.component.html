@@ -1,0 +1,15 @@
+<div class="video-card" (click)="onClick()" (keydown.enter)="onClick()" (keydown.space)="onClick(); $event.preventDefault()" tabindex="0" role="button" [attr.aria-label]="'Play video: ' + video.name">
+  <div class="thumbnail-wrapper">
+    <img [src]="thumbnailUrl" [alt]="video.name" />
+    <div class="play-overlay" aria-hidden="true">
+      <span class="play-icon">&#9654;</span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="video-title">{{ video.name }}</div>
+    <div class="badges">
+      <span class="badge type-badge">{{ video.type }}</span>
+      <span *ngIf="video.official" class="badge official-badge">Official</span>
+    </div>
+  </div>
+</div>

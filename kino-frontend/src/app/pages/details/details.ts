@@ -4,11 +4,13 @@ import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {KinoApiService} from '../../kino-api.service';
 import {filter, Subscription} from 'rxjs';
 import {CommonModule} from '@angular/common';
+import {VideoSectionComponent} from '../../shared/video-section/video-section.component';
+import {TrailerModalComponent} from '../../shared/trailer-modal/trailer-modal.component';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, VideoSectionComponent, TrailerModalComponent],
   templateUrl: './details.html',
   styleUrl: './details.css',
 })
@@ -16,6 +18,7 @@ export class Details implements OnInit, OnDestroy{
   data?: MediaDetailsDto;
   loading = true;
   error = '';
+  selectedVideoKey: string | null = null;
 
   private sub = new Subscription();
 
@@ -31,6 +34,14 @@ export class Details implements OnInit, OnDestroy{
 
   ngOnDestroy() {
     this.sub.unsubscribe();
+  }
+
+  onPlayVideo(key: string) {
+    this.selectedVideoKey = key;
+  }
+
+  onCloseModal() {
+    this.selectedVideoKey = null;
   }
 
   load() {

@@ -1,0 +1,14 @@
+@if (videoKey) {
+  <div class="modal-backdrop" (click)="onBackdropClick($event)" role="dialog" aria-modal="true" aria-label="Video player">
+    <button class="close-btn" (click)="close.emit()" aria-label="Close video player">&times;</button>
+    <div class="video-container">
+      <iframe
+        [src]="iframeSrc"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        sandbox="allow-scripts allow-same-origin allow-presentation"
+        allowfullscreen
+        title="Video player">
+      </iframe>
+    </div>
+  </div>
+}

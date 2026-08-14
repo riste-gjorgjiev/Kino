@@ -4,14 +4,18 @@ import mk.ukim.finki.wp.kino.dto.tmdb.details.CastDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.MediaDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbMovieDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbTvDetailsDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.details.VideoDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbCreatorDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbCreditsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbCrewDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbGenreDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbVideoDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbVideoResponseDto;
 import mk.ukim.finki.wp.kino.tmdb.TmdbClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,9 +34,11 @@ public class MediaDetailsService {
     public MediaDetailsDto getMovieDetails(long id){
         TmdbMovieDetailsDto movie = tmdbClient.getMovieDetails(id);
         TmdbCreditsDto credits = tmdbClient.getMovieCredits(id);
+        TmdbVideoResponseDto videos = tmdbClient.getMovieVideos(id);
 
         List<CastDto> topCast = mapCast(credits, 12);
         List<String> directors = extractDirectors(credits);
+        List<VideoDto> mappedVideos = mapVideos(videos);
 
         MediaDetailsDto dto = new MediaDetailsDto();
 
@@ -52,6 +58,7 @@ public class MediaDetailsService {
         dto.setCreator(null);
         dto.setDirectors(directors);
         dto.setCast(topCast);
+        dto.setVideos(mappedVideos);
 
         return dto;
     }
@@ -59,10 +66,12 @@ public class MediaDetailsService {
     public MediaDetailsDto getTvDetails(long id){
         TmdbTvDetailsDto tv = tmdbClient.getTvDetails(id);
         TmdbCreditsDto credits = tmdbClient.getTvCredits(id);
+        TmdbVideoResponseDto videos = tmdbClient.getTvVideos(id);
 
         List<CastDto> topCast = mapCast(credits, 12);
         String creator = extractFirstCreator(tv.getCreatedBy());
         Integer runtime = extractFirstRuntime(tv.getEpisodeRunTime());
+        List<VideoDto> mappedVideos = mapVideos(videos);
 
         MediaDetailsDto dto = new MediaDetailsDto();
 
@@ -82,6 +91,7 @@ public class MediaDetailsService {
         dto.setCreator(creator);
         dto.setDirectors(List.of());
         dto.setCast(topCast);
+        dto.setVideos(mappedVideos);
 
         return dto;
     }
@@ -132,6 +142,50 @@ public class MediaDetailsService {
     private String fullImageUrl(String profilePath) {
         if (profilePath == null || profilePath.isBlank()) return null;
         return imageBaseUrl + profilePath;
+    }
+
+    private List<VideoDto> mapVideos(TmdbVideoResponseDto response) {
+        if (response == null || response.getResults() == null) {
+            return List.of();
+        }
+
+        return response.getResults().stream()
+                .filter(v -> Objects.nonNull(v.getSite())
+                        && v.getSite().equalsIgnoreCase("YouTube")
+                        && Objects.nonNull(v.getType())
+                        && isAllowedVideoType(v.getType()))
+                .sorted(Comparator.comparing(TmdbVideoDto::isOfficial).reversed()
+                        .thenComparing(Comparator.comparingInt((TmdbVideoDto v) -> videoTypePriority(v.getType())))
+                        .thenComparing(TmdbVideoDto::getPublishedAt, Comparator.nullsLast(Comparator.reverseOrder())))
+                .limit(12)
+                .map(v -> new VideoDto(
+                        v.getId(),
+                        v.getKey(),
+                        v.getName(),
+                        v.getSite(),
+                        v.getType(),
+                        v.isOfficial(),
+                        v.getPublishedAt()
+                ))
+                .toList();
+    }
+
+    private boolean isAllowedVideoType(String type) {
+        return type.equalsIgnoreCase("Trailer")
+                || type.equalsIgnoreCase("Teaser")
+                || type.equalsIgnoreCase("Clip")
+                || type.equalsIgnoreCase("Featurette");
+    }
+
+    private int videoTypePriority(String type) {
+        if (type == null) return Integer.MAX_VALUE;
+        return switch (type.toLowerCase()) {
+            case "trailer" -> 0;
+            case "teaser" -> 1;
+            case "featurette" -> 2;
+            case "clip" -> 3;
+            default -> Integer.MAX_VALUE;
+        };
     }
 
     private String blankToNull(String s){

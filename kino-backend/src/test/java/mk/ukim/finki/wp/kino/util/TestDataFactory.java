@@ -7,6 +7,7 @@ import mk.ukim.finki.wp.kino.dto.tmdb.TmdbTvDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.MediaDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbMovieDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbTvDetailsDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.details.VideoDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.*;
 
 import java.util.List;
@@ -216,5 +217,32 @@ public final class TestDataFactory {
         details.setOriginalLanguage("en");
         details.setCreator("Test Creator");
         return details;
+    }
+
+    public static TmdbVideoDto createVideo(String id, String key, String name, String site, String type, boolean official, String publishedAt) {
+        TmdbVideoDto video = new TmdbVideoDto();
+        video.setId(id);
+        video.setKey(key);
+        video.setName(name);
+        video.setSite(site);
+        video.setType(type);
+        video.setOfficial(official);
+        video.setPublishedAt(publishedAt);
+        return video;
+    }
+
+    public static TmdbVideoResponseDto createTmdbVideoResponse(List<TmdbVideoDto> videos) {
+        TmdbVideoResponseDto response = new TmdbVideoResponseDto();
+        response.setId(1L);
+        response.setResults(videos);
+        return response;
+    }
+
+    public static VideoDto createVideoDto(String id, String key, String name, String site, String type, boolean official, String publishedAt) {
+        return new VideoDto(id, key, name, site, type, official, publishedAt);
+    }
+
+    public static VideoDto createVideoDto() {
+        return createVideoDto("vid1", "abc123", "Official Trailer", "YouTube", "Trailer", true, "2024-01-15T10:00:00.000Z");
     }
 }

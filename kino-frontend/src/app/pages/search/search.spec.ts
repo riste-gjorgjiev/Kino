@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 import { Search } from './search';
 
@@ -8,7 +10,10 @@ describe('Search', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Search]
+      imports: [Search],
+      providers: [
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' }, queryParamMap: { has: () => false, get: () => null } }, params: of({}), queryParams: of({}) } }
+      ]
     })
     .compileComponents();
 

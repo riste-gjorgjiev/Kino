@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 import { Details } from './details';
 
@@ -8,7 +10,10 @@ describe('Details', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Details]
+      imports: [Details],
+      providers: [
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } }, params: of({}) } }
+      ]
     })
     .compileComponents();
 

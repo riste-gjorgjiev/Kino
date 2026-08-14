@@ -7,6 +7,7 @@ import mk.ukim.finki.wp.kino.dto.tmdb.TmdbTvDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbMovieDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbTvDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbCreditsDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbVideoResponseDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,8 @@ public class TmdbClient {
     private static final ParameterizedTypeReference<TmdbPagedResponse<TmdbTvDto>> TV_PAGE_TYPE =
             new ParameterizedTypeReference<>() {};
     private static final ParameterizedTypeReference<TmdbPagedResponse<TmdbMultiSearchDto>> TMDB_MULTI_SEARCH =
+            new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<TmdbVideoResponseDto> TMDB_VIDEO_RESPONSE =
             new ParameterizedTypeReference<>() {};
 
     private final RestClient restClient;
@@ -247,5 +250,25 @@ public class TmdbClient {
                         .build(id))
                 .retrieve()
                 .body(TmdbCreditsDto.class);
+    }
+    public TmdbVideoResponseDto getMovieVideos(long id){
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/movie/{id}/videos")
+                        .queryParam("api_key", apiKey)
+                        .queryParam("language", language)
+                        .build(id))
+                .retrieve()
+                .body(TMDB_VIDEO_RESPONSE);
+    }
+    public TmdbVideoResponseDto getTvVideos(long id){
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/tv/{id}/videos")
+                        .queryParam("api_key", apiKey)
+                        .queryParam("language", language)
+                        .build(id))
+                .retrieve()
+                .body(TMDB_VIDEO_RESPONSE);
     }
 }

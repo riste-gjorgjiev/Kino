@@ -10,7 +10,8 @@ export type WindowParam = 'day' | 'week';
 
 @Injectable({providedIn: 'root'})
 export class KinoApiService {
-  private readonly baseUrl = 'https://kino-wt69.onrender.com/api';
+  private readonly baseUrl = 'http://localhost:8080/api';
+  //private readonly baseUrl = 'https://kino-wt69.onrender.com/api';
 
   constructor(private http: HttpClient) {}
 

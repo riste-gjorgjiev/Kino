@@ -1,5 +1,6 @@
 import { CastDto } from './cast-dto';
 import {MediaType} from './media-card.dto';
+import { VideoDto } from './video-dto';
 
 export interface MediaDetailsDto{
   id: number
@@ -20,4 +21,5 @@ export interface MediaDetailsDto{
   creator: string | null;
   directors: string[];
   cast: CastDto[];
+  videos: VideoDto[];
 }

@@ -24,5 +24,6 @@ public class MediaDetailsDto {
     private String creator;
     private List<CastDto> cast;
     private List<String> directors;
+    private List<VideoDto> videos;
 
 }

@@ -1,0 +1,12 @@
+@if (videos?.length) {
+  <section class="video-section">
+    <h2>Videos</h2>
+    <div class="video-gallery" role="list" aria-label="Video gallery">
+      @for (video of videos; track video.id) {
+        <div class="video-gallery-item" role="listitem">
+          <app-video-card [video]="video" (playVideo)="onPlayVideo($event)" />
+        </div>
+      }
+    </div>
+  </section>
+}
