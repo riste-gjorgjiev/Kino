@@ -5,13 +5,13 @@ import {PagedResponseDto} from './core/models/paged-response.dto';
 import {MediaCardDto} from './core/models/media-card.dto';
 import {MediaDetailsDto} from './core/models/media-details-dto';
 import {FilterState} from './core/models/filter-state.model';
+import { environment } from '../environments/environment';
 
 export type WindowParam = 'day' | 'week';
 
 @Injectable({providedIn: 'root'})
 export class KinoApiService {
-  private readonly baseUrl = 'http://localhost:8080/api';
-  //private readonly baseUrl = 'https://kino-wt69.onrender.com/api';
+  private readonly baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
