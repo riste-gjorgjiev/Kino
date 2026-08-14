@@ -1,6 +1,12 @@
 package mk.ukim.finki.wp.kino.service;
 
+import mk.ukim.finki.wp.kino.dto.api.MediaCardDto;
+import mk.ukim.finki.wp.kino.dto.api.MediaType;
+import mk.ukim.finki.wp.kino.dto.tmdb.TmdbMovieDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.TmdbPagedResponse;
+import mk.ukim.finki.wp.kino.dto.tmdb.TmdbTvDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.CastDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.details.KeywordDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.MediaDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbMovieDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbTvDetailsDto;
@@ -9,15 +15,21 @@ import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbCreatorDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbCreditsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbCrewDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbGenreDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbKeywordDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbKeywordsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbVideoDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbVideoResponseDto;
 import mk.ukim.finki.wp.kino.tmdb.TmdbClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Supplier;
 
 @Service
 
@@ -35,10 +47,15 @@ public class MediaDetailsService {
         TmdbMovieDetailsDto movie = tmdbClient.getMovieDetails(id);
         TmdbCreditsDto credits = tmdbClient.getMovieCredits(id);
         TmdbVideoResponseDto videos = tmdbClient.getMovieVideos(id);
+        TmdbKeywordsDto keywords = safeCall(() -> tmdbClient.getMovieKeywords(id));
+        TmdbPagedResponse<TmdbMovieDto> recommendations = safeCall(() -> tmdbClient.getMovieRecommendations(id, 1));
+        TmdbPagedResponse<TmdbMovieDto> similar = safeCall(() -> tmdbClient.getMovieSimilar(id, 1));
 
         List<CastDto> topCast = mapCast(credits, 12);
         List<String> directors = extractDirectors(credits);
         List<VideoDto> mappedVideos = mapVideos(videos);
+        List<KeywordDto> mappedKeywords = mapKeywords(keywords);
+        List<MediaCardDto> mappedRecommendations = buildMovieRecommendations(recommendations, similar);
 
         MediaDetailsDto dto = new MediaDetailsDto();
 
@@ -59,6 +76,8 @@ public class MediaDetailsService {
         dto.setDirectors(directors);
         dto.setCast(topCast);
         dto.setVideos(mappedVideos);
+        dto.setKeywords(mappedKeywords);
+        dto.setRecommendations(mappedRecommendations);
 
         return dto;
     }
@@ -67,11 +86,16 @@ public class MediaDetailsService {
         TmdbTvDetailsDto tv = tmdbClient.getTvDetails(id);
         TmdbCreditsDto credits = tmdbClient.getTvCredits(id);
         TmdbVideoResponseDto videos = tmdbClient.getTvVideos(id);
+        TmdbKeywordsDto keywords = safeCall(() -> tmdbClient.getTvKeywords(id));
+        TmdbPagedResponse<TmdbTvDto> recommendations = safeCall(() -> tmdbClient.getTvRecommendations(id, 1));
+        TmdbPagedResponse<TmdbTvDto> similar = safeCall(() -> tmdbClient.getTvSimilar(id, 1));
 
         List<CastDto> topCast = mapCast(credits, 12);
         String creator = extractFirstCreator(tv.getCreatedBy());
         Integer runtime = extractFirstRuntime(tv.getEpisodeRunTime());
         List<VideoDto> mappedVideos = mapVideos(videos);
+        List<KeywordDto> mappedKeywords = mapKeywords(keywords);
+        List<MediaCardDto> mappedRecommendations = buildTvRecommendations(recommendations, similar);
 
         MediaDetailsDto dto = new MediaDetailsDto();
 
@@ -92,6 +116,8 @@ public class MediaDetailsService {
         dto.setDirectors(List.of());
         dto.setCast(topCast);
         dto.setVideos(mappedVideos);
+        dto.setKeywords(mappedKeywords);
+        dto.setRecommendations(mappedRecommendations);
 
         return dto;
     }
@@ -192,5 +218,78 @@ public class MediaDetailsService {
         if (s == null) return null;
         String t = s.trim();
         return t.isEmpty() ? null : t;
+    }
+
+    private <T> T safeCall(Supplier<T> call) {
+        try {
+            return call.get();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private List<KeywordDto> mapKeywords(TmdbKeywordsDto response) {
+        if (response == null) return List.of();
+        return response.getAllKeywords().stream()
+                .filter(k -> k.getName() != null && !k.getName().isBlank())
+                .map(k -> {
+                    KeywordDto dto = new KeywordDto();
+                    dto.setId(k.getId());
+                    dto.setName(k.getName().trim());
+                    return dto;
+                })
+                .toList();
+    }
+
+    private List<MediaCardDto> buildMovieRecommendations(TmdbPagedResponse<TmdbMovieDto> recommendations,
+                                                         TmdbPagedResponse<TmdbMovieDto> similar) {
+        List<MediaCardDto> merged = new ArrayList<>();
+        Set<Long> seen = new HashSet<>();
+
+        if (recommendations != null && recommendations.getResults() != null) {
+            recommendations.getResults().stream()
+                    .filter(m -> m.getId() != null)
+                    .filter(m -> seen.add(m.getId()))
+                    .map(m -> new MediaCardDto(m.getId(), MediaType.MOVIE, m.getTitle(),
+                            fullImageUrl(m.getPosterPath()), m.getVoteAverage(), m.getReleaseDate()))
+                    .forEach(merged::add);
+        }
+
+        if (similar != null && similar.getResults() != null) {
+            similar.getResults().stream()
+                    .filter(m -> m.getId() != null)
+                    .filter(m -> seen.add(m.getId()))
+                    .map(m -> new MediaCardDto(m.getId(), MediaType.MOVIE, m.getTitle(),
+                            fullImageUrl(m.getPosterPath()), m.getVoteAverage(), m.getReleaseDate()))
+                    .forEach(merged::add);
+        }
+
+        return merged.stream().limit(8).toList();
+    }
+
+    private List<MediaCardDto> buildTvRecommendations(TmdbPagedResponse<TmdbTvDto> recommendations,
+                                                      TmdbPagedResponse<TmdbTvDto> similar) {
+        List<MediaCardDto> merged = new ArrayList<>();
+        Set<Long> seen = new HashSet<>();
+
+        if (recommendations != null && recommendations.getResults() != null) {
+            recommendations.getResults().stream()
+                    .filter(t -> t.getId() != null)
+                    .filter(t -> seen.add(t.getId()))
+                    .map(t -> new MediaCardDto(t.getId(), MediaType.TV, t.getName(),
+                            fullImageUrl(t.getPosterPath()), t.getVoteAverage(), t.getFirstAirDate()))
+                    .forEach(merged::add);
+        }
+
+        if (similar != null && similar.getResults() != null) {
+            similar.getResults().stream()
+                    .filter(t -> t.getId() != null)
+                    .filter(t -> seen.add(t.getId()))
+                    .map(t -> new MediaCardDto(t.getId(), MediaType.TV, t.getName(),
+                            fullImageUrl(t.getPosterPath()), t.getVoteAverage(), t.getFirstAirDate()))
+                    .forEach(merged::add);
+        }
+
+        return merged.stream().limit(8).toList();
     }
 }

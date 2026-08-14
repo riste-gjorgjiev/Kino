@@ -8,6 +8,7 @@ import mk.ukim.finki.wp.kino.dto.tmdb.details.MediaDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbMovieDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbTvDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.VideoDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.details.KeywordDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.*;
 
 import java.util.List;
@@ -244,5 +245,31 @@ public final class TestDataFactory {
 
     public static VideoDto createVideoDto() {
         return createVideoDto("vid1", "abc123", "Official Trailer", "YouTube", "Trailer", true, "2024-01-15T10:00:00.000Z");
+    }
+
+    public static TmdbKeywordDto createKeyword(Long id, String name) {
+        TmdbKeywordDto keyword = new TmdbKeywordDto();
+        keyword.setId(id);
+        keyword.setName(name);
+        return keyword;
+    }
+
+    public static TmdbKeywordsDto createTmdbMovieKeywords(List<TmdbKeywordDto> keywords) {
+        TmdbKeywordsDto dto = new TmdbKeywordsDto();
+        dto.setKeywords(keywords);
+        return dto;
+    }
+
+    public static TmdbKeywordsDto createTmdbTvKeywords(List<TmdbKeywordDto> keywords) {
+        TmdbKeywordsDto dto = new TmdbKeywordsDto();
+        dto.setResults(keywords);
+        return dto;
+    }
+
+    public static KeywordDto createKeywordDto(Long id, String name) {
+        KeywordDto dto = new KeywordDto();
+        dto.setId(id);
+        dto.setName(name);
+        return dto;
     }
 }

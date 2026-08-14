@@ -2,6 +2,7 @@ package mk.ukim.finki.wp.kino.dto.tmdb.details;
 
 import lombok.Getter;
 import lombok.Setter;
+import mk.ukim.finki.wp.kino.dto.api.MediaCardDto;
 
 import java.util.List;
 
@@ -25,5 +26,7 @@ public class MediaDetailsDto {
     private List<CastDto> cast;
     private List<String> directors;
     private List<VideoDto> videos;
+    private List<KeywordDto> keywords;
+    private List<MediaCardDto> recommendations;
 
 }

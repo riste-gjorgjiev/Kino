@@ -1,0 +1,8 @@
+<section class="keyword-section" *ngIf="keywords?.length">
+  <h3>Keywords</h3>
+  <div class="keyword-list">
+    <span class="keyword-chip" *ngFor="let keyword of keywords">
+      {{ keyword.name }}
+    </span>
+  </div>
+</section>

@@ -1,5 +1,6 @@
 import { CastDto } from './cast-dto';
-import {MediaType} from './media-card.dto';
+import { KeywordDto } from './keyword-dto';
+import { MediaCardDto, MediaType } from './media-card.dto';
 import { VideoDto } from './video-dto';
 
 export interface MediaDetailsDto{
@@ -22,4 +23,6 @@ export interface MediaDetailsDto{
   directors: string[];
   cast: CastDto[];
   videos: VideoDto[];
+  keywords: KeywordDto[];
+  recommendations: MediaCardDto[];
 }

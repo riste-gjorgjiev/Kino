@@ -7,6 +7,7 @@ import mk.ukim.finki.wp.kino.dto.tmdb.TmdbTvDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbMovieDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbTvDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbCreditsDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbKeywordsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbVideoResponseDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -22,6 +23,8 @@ public class TmdbClient {
     private static final ParameterizedTypeReference<TmdbPagedResponse<TmdbMultiSearchDto>> TMDB_MULTI_SEARCH =
             new ParameterizedTypeReference<>() {};
     private static final ParameterizedTypeReference<TmdbVideoResponseDto> TMDB_VIDEO_RESPONSE =
+            new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<TmdbKeywordsDto> TMDB_KEYWORDS_TYPE =
             new ParameterizedTypeReference<>() {};
 
     private final RestClient restClient;
@@ -270,5 +273,83 @@ public class TmdbClient {
                         .build(id))
                 .retrieve()
                 .body(TMDB_VIDEO_RESPONSE);
+    }
+
+    public TmdbKeywordsDto getMovieKeywords(long id){
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/movie/{id}/keywords")
+                        .queryParam("api_key", apiKey)
+                        .queryParam("language", language)
+                        .build(id))
+                .retrieve()
+                .body(TMDB_KEYWORDS_TYPE);
+    }
+
+    public TmdbKeywordsDto getTvKeywords(long id){
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/tv/{id}/keywords")
+                        .queryParam("api_key", apiKey)
+                        .queryParam("language", language)
+                        .build(id))
+                .retrieve()
+                .body(TMDB_KEYWORDS_TYPE);
+    }
+
+    public TmdbPagedResponse<TmdbMovieDto> getMovieRecommendations(long id, int page){
+        if (page < 1) page = 1;
+        int finalPage = page;
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/movie/{id}/recommendations")
+                        .queryParam("api_key", apiKey)
+                        .queryParam("language", language)
+                        .queryParam("page", finalPage)
+                        .build(id))
+                .retrieve()
+                .body(MOVIE_PAGE_TYPE);
+    }
+
+    public TmdbPagedResponse<TmdbMovieDto> getMovieSimilar(long id, int page){
+        if (page < 1) page = 1;
+        int finalPage = page;
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/movie/{id}/similar")
+                        .queryParam("api_key", apiKey)
+                        .queryParam("language", language)
+                        .queryParam("page", finalPage)
+                        .build(id))
+                .retrieve()
+                .body(MOVIE_PAGE_TYPE);
+    }
+
+    public TmdbPagedResponse<TmdbTvDto> getTvRecommendations(long id, int page){
+        if (page < 1) page = 1;
+        int finalPage = page;
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/tv/{id}/recommendations")
+                        .queryParam("api_key", apiKey)
+                        .queryParam("language", language)
+                        .queryParam("page", finalPage)
+                        .build(id))
+                .retrieve()
+                .body(TV_PAGE_TYPE);
+    }
+
+    public TmdbPagedResponse<TmdbTvDto> getTvSimilar(long id, int page){
+        if (page < 1) page = 1;
+        int finalPage = page;
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/tv/{id}/similar")
+                        .queryParam("api_key", apiKey)
+                        .queryParam("language", language)
+                        .queryParam("page", finalPage)
+                        .build(id))
+                .retrieve()
+                .body(TV_PAGE_TYPE);
     }
 }

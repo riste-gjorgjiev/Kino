@@ -1,5 +1,9 @@
 package mk.ukim.finki.wp.kino.service;
 
+import mk.ukim.finki.wp.kino.dto.api.MediaType;
+import mk.ukim.finki.wp.kino.dto.tmdb.TmdbMovieDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.TmdbPagedResponse;
+import mk.ukim.finki.wp.kino.dto.tmdb.TmdbTvDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.MediaDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.VideoDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbCreditsDto;
@@ -17,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -37,6 +42,9 @@ class MediaDetailsServiceTest {
     void getMovieDetails_onlyYouTubeVideosOfAllowedTypesReturned() {
         when(tmdbClient.getMovieDetails(anyLong())).thenReturn(TestDataFactory.createMovieDetails());
         when(tmdbClient.getMovieCredits(anyLong())).thenReturn(TestDataFactory.createCredits());
+        when(tmdbClient.getMovieKeywords(anyLong())).thenReturn(null);
+        when(tmdbClient.getMovieRecommendations(anyLong(), anyInt())).thenReturn(null);
+        when(tmdbClient.getMovieSimilar(anyLong(), anyInt())).thenReturn(null);
 
         List<TmdbVideoDto> videos = List.of(
             TestDataFactory.createVideo("v1", "k1", "YT Trailer", "YouTube", "Trailer", true, "2024-01-15"),
@@ -64,6 +72,9 @@ class MediaDetailsServiceTest {
     void getMovieDetails_sortingPriorityOfficialTrailerFirst() {
         when(tmdbClient.getMovieDetails(anyLong())).thenReturn(TestDataFactory.createMovieDetails());
         when(tmdbClient.getMovieCredits(anyLong())).thenReturn(TestDataFactory.createCredits());
+        when(tmdbClient.getMovieKeywords(anyLong())).thenReturn(null);
+        when(tmdbClient.getMovieRecommendations(anyLong(), anyInt())).thenReturn(null);
+        when(tmdbClient.getMovieSimilar(anyLong(), anyInt())).thenReturn(null);
 
         List<TmdbVideoDto> videos = List.of(
             TestDataFactory.createVideo("v1", "k1", "Clip", "YouTube", "Clip", false, "2024-03-15"),
@@ -87,6 +98,9 @@ class MediaDetailsServiceTest {
     void getMovieDetails_videosCappedAt12() {
         when(tmdbClient.getMovieDetails(anyLong())).thenReturn(TestDataFactory.createMovieDetails());
         when(tmdbClient.getMovieCredits(anyLong())).thenReturn(TestDataFactory.createCredits());
+        when(tmdbClient.getMovieKeywords(anyLong())).thenReturn(null);
+        when(tmdbClient.getMovieRecommendations(anyLong(), anyInt())).thenReturn(null);
+        when(tmdbClient.getMovieSimilar(anyLong(), anyInt())).thenReturn(null);
 
         List<TmdbVideoDto> videos = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
@@ -104,6 +118,9 @@ class MediaDetailsServiceTest {
         when(tmdbClient.getMovieDetails(anyLong())).thenReturn(TestDataFactory.createMovieDetails());
         when(tmdbClient.getMovieCredits(anyLong())).thenReturn(TestDataFactory.createCredits());
         when(tmdbClient.getMovieVideos(anyLong())).thenReturn(null);
+        when(tmdbClient.getMovieKeywords(anyLong())).thenReturn(null);
+        when(tmdbClient.getMovieRecommendations(anyLong(), anyInt())).thenReturn(null);
+        when(tmdbClient.getMovieSimilar(anyLong(), anyInt())).thenReturn(null);
 
         MediaDetailsDto result = mediaDetailsService.getMovieDetails(1L);
 
@@ -115,6 +132,9 @@ class MediaDetailsServiceTest {
     void getMovieDetails_nullResultsReturnsEmptyList() {
         when(tmdbClient.getMovieDetails(anyLong())).thenReturn(TestDataFactory.createMovieDetails());
         when(tmdbClient.getMovieCredits(anyLong())).thenReturn(TestDataFactory.createCredits());
+        when(tmdbClient.getMovieKeywords(anyLong())).thenReturn(null);
+        when(tmdbClient.getMovieRecommendations(anyLong(), anyInt())).thenReturn(null);
+        when(tmdbClient.getMovieSimilar(anyLong(), anyInt())).thenReturn(null);
 
         TmdbVideoResponseDto response = new TmdbVideoResponseDto();
         response.setId(1L);
@@ -131,6 +151,9 @@ class MediaDetailsServiceTest {
     void getTvDetails_onlyYouTubeVideosOfAllowedTypesReturned() {
         when(tmdbClient.getTvDetails(anyLong())).thenReturn(TestDataFactory.createTvDetails());
         when(tmdbClient.getTvCredits(anyLong())).thenReturn(TestDataFactory.createCredits());
+        when(tmdbClient.getTvKeywords(anyLong())).thenReturn(null);
+        when(tmdbClient.getTvRecommendations(anyLong(), anyInt())).thenReturn(null);
+        when(tmdbClient.getTvSimilar(anyLong(), anyInt())).thenReturn(null);
 
         List<TmdbVideoDto> videos = List.of(
             TestDataFactory.createVideo("v1", "k1", "YT Trailer", "YouTube", "Trailer", true, "2024-01-15"),
@@ -149,6 +172,9 @@ class MediaDetailsServiceTest {
     void getMovieDetails_newestPublishedFirst() {
         when(tmdbClient.getMovieDetails(anyLong())).thenReturn(TestDataFactory.createMovieDetails());
         when(tmdbClient.getMovieCredits(anyLong())).thenReturn(TestDataFactory.createCredits());
+        when(tmdbClient.getMovieKeywords(anyLong())).thenReturn(null);
+        when(tmdbClient.getMovieRecommendations(anyLong(), anyInt())).thenReturn(null);
+        when(tmdbClient.getMovieSimilar(anyLong(), anyInt())).thenReturn(null);
 
         List<TmdbVideoDto> videos = List.of(
             TestDataFactory.createVideo("v1", "k1", "Old Trailer", "YouTube", "Trailer", true, "2023-01-15"),
@@ -163,5 +189,113 @@ class MediaDetailsServiceTest {
         assertEquals("v2", sorted.get(0).getId());
         assertEquals("v3", sorted.get(1).getId());
         assertEquals("v1", sorted.get(2).getId());
+    }
+
+    @Test
+    void getMovieDetails_populatesKeywords() {
+        when(tmdbClient.getMovieDetails(anyLong())).thenReturn(TestDataFactory.createMovieDetails());
+        when(tmdbClient.getMovieCredits(anyLong())).thenReturn(TestDataFactory.createCredits());
+        when(tmdbClient.getMovieVideos(anyLong())).thenReturn(null);
+        when(tmdbClient.getMovieRecommendations(anyLong(), anyInt())).thenReturn(null);
+        when(tmdbClient.getMovieSimilar(anyLong(), anyInt())).thenReturn(null);
+        when(tmdbClient.getMovieKeywords(anyLong())).thenReturn(
+                TestDataFactory.createTmdbMovieKeywords(List.of(
+                        TestDataFactory.createKeyword(1L, "superhero"),
+                        TestDataFactory.createKeyword(2L, "  blank-name  ")
+                ))
+        );
+
+        MediaDetailsDto result = mediaDetailsService.getMovieDetails(1L);
+
+        assertEquals(2, result.getKeywords().size());
+        assertEquals("superhero", result.getKeywords().get(0).getName());
+        assertEquals("blank-name", result.getKeywords().get(1).getName());
+    }
+
+    @Test
+    void getTvDetails_populatesKeywordsUsingResultsField() {
+        when(tmdbClient.getTvDetails(anyLong())).thenReturn(TestDataFactory.createTvDetails());
+        when(tmdbClient.getTvCredits(anyLong())).thenReturn(TestDataFactory.createCredits());
+        when(tmdbClient.getTvVideos(anyLong())).thenReturn(null);
+        when(tmdbClient.getTvRecommendations(anyLong(), anyInt())).thenReturn(null);
+        when(tmdbClient.getTvSimilar(anyLong(), anyInt())).thenReturn(null);
+        when(tmdbClient.getTvKeywords(anyLong())).thenReturn(
+                TestDataFactory.createTmdbTvKeywords(List.of(TestDataFactory.createKeyword(3L, "drama")))
+        );
+
+        MediaDetailsDto result = mediaDetailsService.getTvDetails(1L);
+
+        assertEquals(1, result.getKeywords().size());
+        assertEquals("drama", result.getKeywords().get(0).getName());
+    }
+
+    @Test
+    void getMovieDetails_combinesRecommendationsAndSimilarAndCapsAt8() {
+        when(tmdbClient.getMovieDetails(anyLong())).thenReturn(TestDataFactory.createMovieDetails());
+        when(tmdbClient.getMovieCredits(anyLong())).thenReturn(TestDataFactory.createCredits());
+        when(tmdbClient.getMovieVideos(anyLong())).thenReturn(null);
+        when(tmdbClient.getMovieKeywords(anyLong())).thenReturn(null);
+
+        List<TmdbMovieDto> recs = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            recs.add(TestDataFactory.createMovie(100L + i, "Rec " + i, "/p" + i + ".jpg"));
+        }
+        List<TmdbMovieDto> sims = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            sims.add(TestDataFactory.createMovie(200L + i, "Sim " + i, "/s" + i + ".jpg"));
+        }
+
+        when(tmdbClient.getMovieRecommendations(anyLong(), anyInt())).thenReturn(
+                TestDataFactory.createPagedResponse(recs)
+        );
+        when(tmdbClient.getMovieSimilar(anyLong(), anyInt())).thenReturn(
+                TestDataFactory.createPagedResponse(sims)
+        );
+
+        MediaDetailsDto result = mediaDetailsService.getMovieDetails(1L);
+
+        assertEquals(8, result.getRecommendations().size());
+        assertTrue(result.getRecommendations().stream()
+                .allMatch(r -> r.getMediaType() == MediaType.MOVIE));
+    }
+
+    @Test
+    void getMovieDetails_deduplicatesRecommendationsAndSimilar() {
+        when(tmdbClient.getMovieDetails(anyLong())).thenReturn(TestDataFactory.createMovieDetails());
+        when(tmdbClient.getMovieCredits(anyLong())).thenReturn(TestDataFactory.createCredits());
+        when(tmdbClient.getMovieVideos(anyLong())).thenReturn(null);
+        when(tmdbClient.getMovieKeywords(anyLong())).thenReturn(null);
+
+        TmdbMovieDto shared = TestDataFactory.createMovie(999L, "Shared", "/shared.jpg");
+        List<TmdbMovieDto> recs = List.of(shared);
+        List<TmdbMovieDto> sims = List.of(shared);
+
+        when(tmdbClient.getMovieRecommendations(anyLong(), anyInt())).thenReturn(
+                TestDataFactory.createPagedResponse(recs)
+        );
+        when(tmdbClient.getMovieSimilar(anyLong(), anyInt())).thenReturn(
+                TestDataFactory.createPagedResponse(sims)
+        );
+
+        MediaDetailsDto result = mediaDetailsService.getMovieDetails(1L);
+
+        assertEquals(1, result.getRecommendations().size());
+        assertEquals(999L, result.getRecommendations().get(0).getId());
+    }
+
+    @Test
+    void getMovieDetails_nonCriticalFailuresReturnEmptyLists() {
+        when(tmdbClient.getMovieDetails(anyLong())).thenReturn(TestDataFactory.createMovieDetails());
+        when(tmdbClient.getMovieCredits(anyLong())).thenReturn(TestDataFactory.createCredits());
+        when(tmdbClient.getMovieVideos(anyLong())).thenReturn(null);
+        when(tmdbClient.getMovieKeywords(anyLong())).thenThrow(new RuntimeException("TMDB down"));
+        when(tmdbClient.getMovieRecommendations(anyLong(), anyInt())).thenThrow(new RuntimeException("TMDB down"));
+        when(tmdbClient.getMovieSimilar(anyLong(), anyInt())).thenThrow(new RuntimeException("TMDB down"));
+
+        MediaDetailsDto result = mediaDetailsService.getMovieDetails(1L);
+
+        assertNotNull(result);
+        assertTrue(result.getKeywords().isEmpty());
+        assertTrue(result.getRecommendations().isEmpty());
     }
 }

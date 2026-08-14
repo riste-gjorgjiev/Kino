@@ -61,6 +61,18 @@
     (playVideo)="onPlayVideo($event)">
   </app-video-section>
 
+  <app-keyword-section
+    *ngIf="data?.keywords?.length"
+    [keywords]="data.keywords">
+  </app-keyword-section>
+
+  <section class="recommendations" *ngIf="data?.recommendations?.length">
+    <app-media-carousel
+      title="More Like This"
+      [items]="data.recommendations">
+    </app-media-carousel>
+  </section>
+
   <app-trailer-modal
     [videoKey]="selectedVideoKey"
     (close)="onCloseModal()">

@@ -187,3 +187,16 @@
   }
 }
 
+/* ---------- RECOMMENDATIONS ---------- */
+.recommendations {
+  max-width: 1200px;
+  margin: 3rem auto;
+  padding: 0 2rem;
+}
+
+@media (max-width: 768px) {
+  .recommendations {
+    padding: 0 1rem;
+  }
+}
+

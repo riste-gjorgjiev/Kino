@@ -622,4 +622,188 @@ class TmdbClientTest {
         assertEquals(7.5, result.getResults().get(0).getVoteAverage());
         mockServer.verify();
     }
+
+    // ===== Movie Keywords =====
+
+    @Test
+    void getMovieKeywords_callsCorrectUrl() throws Exception {
+        TmdbKeywordsDto expected = TestDataFactory.createTmdbMovieKeywords(
+            List.of(TestDataFactory.createKeyword(1L, "superhero"))
+        );
+        String json = objectMapper.writeValueAsString(expected);
+
+        mockServer.expect(requestToPath("/3/movie/550/keywords"))
+            .andExpect(queryParam("api_key", "test-api-key"))
+            .andExpect(queryParam("language", "en-US"))
+            .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+
+        TmdbKeywordsDto result = tmdbClient.getMovieKeywords(550);
+
+        assertNotNull(result);
+        assertEquals(1, result.getAllKeywords().size());
+        assertEquals("superhero", result.getAllKeywords().get(0).getName());
+        mockServer.verify();
+    }
+
+    // ===== TV Keywords =====
+
+    @Test
+    void getTvKeywords_callsCorrectUrl() throws Exception {
+        TmdbKeywordsDto expected = TestDataFactory.createTmdbTvKeywords(
+            List.of(TestDataFactory.createKeyword(2L, "drama"))
+        );
+        String json = objectMapper.writeValueAsString(expected);
+
+        mockServer.expect(requestToPath("/3/tv/1399/keywords"))
+            .andExpect(queryParam("api_key", "test-api-key"))
+            .andExpect(queryParam("language", "en-US"))
+            .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+
+        TmdbKeywordsDto result = tmdbClient.getTvKeywords(1399);
+
+        assertNotNull(result);
+        assertEquals(1, result.getAllKeywords().size());
+        assertEquals("drama", result.getAllKeywords().get(0).getName());
+        mockServer.verify();
+    }
+
+    // ===== Movie Recommendations =====
+
+    @Test
+    void getMovieRecommendations_callsCorrectUrl() throws Exception {
+        TmdbPagedResponse<TmdbMovieDto> expected = TestDataFactory.createPagedResponse(
+            List.of(TestDataFactory.createMovie())
+        );
+        String json = objectMapper.writeValueAsString(expected);
+
+        mockServer.expect(requestToPath("/3/movie/550/recommendations"))
+            .andExpect(queryParam("api_key", "test-api-key"))
+            .andExpect(queryParam("language", "en-US"))
+            .andExpect(queryParam("page", "1"))
+            .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+
+        TmdbPagedResponse<TmdbMovieDto> result = tmdbClient.getMovieRecommendations(550, 1);
+
+        assertNotNull(result);
+        assertEquals(1, result.getResults().size());
+        mockServer.verify();
+    }
+
+    @Test
+    void getMovieRecommendations_withPageLessThanOne_defaultsToOne() throws Exception {
+        TmdbPagedResponse<TmdbMovieDto> expected = TestDataFactory.createPagedResponse(List.of());
+        String json = objectMapper.writeValueAsString(expected);
+
+        mockServer.expect(requestToPath("/3/movie/550/recommendations"))
+            .andExpect(queryParam("page", "1"))
+            .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+
+        tmdbClient.getMovieRecommendations(550, 0);
+        mockServer.verify();
+    }
+
+    // ===== Movie Similar =====
+
+    @Test
+    void getMovieSimilar_callsCorrectUrl() throws Exception {
+        TmdbPagedResponse<TmdbMovieDto> expected = TestDataFactory.createPagedResponse(
+            List.of(TestDataFactory.createMovie())
+        );
+        String json = objectMapper.writeValueAsString(expected);
+
+        mockServer.expect(requestToPath("/3/movie/550/similar"))
+            .andExpect(queryParam("api_key", "test-api-key"))
+            .andExpect(queryParam("language", "en-US"))
+            .andExpect(queryParam("page", "1"))
+            .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+
+        TmdbPagedResponse<TmdbMovieDto> result = tmdbClient.getMovieSimilar(550, 1);
+
+        assertNotNull(result);
+        assertEquals(1, result.getResults().size());
+        mockServer.verify();
+    }
+
+    @Test
+    void getMovieSimilar_withPageLessThanOne_defaultsToOne() throws Exception {
+        TmdbPagedResponse<TmdbMovieDto> expected = TestDataFactory.createPagedResponse(List.of());
+        String json = objectMapper.writeValueAsString(expected);
+
+        mockServer.expect(requestToPath("/3/movie/550/similar"))
+            .andExpect(queryParam("page", "1"))
+            .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+
+        tmdbClient.getMovieSimilar(550, -1);
+        mockServer.verify();
+    }
+
+    // ===== TV Recommendations =====
+
+    @Test
+    void getTvRecommendations_callsCorrectUrl() throws Exception {
+        TmdbPagedResponse<TmdbTvDto> expected = TestDataFactory.createPagedResponse(
+            List.of(TestDataFactory.createTvShow())
+        );
+        String json = objectMapper.writeValueAsString(expected);
+
+        mockServer.expect(requestToPath("/3/tv/1399/recommendations"))
+            .andExpect(queryParam("api_key", "test-api-key"))
+            .andExpect(queryParam("language", "en-US"))
+            .andExpect(queryParam("page", "1"))
+            .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+
+        TmdbPagedResponse<TmdbTvDto> result = tmdbClient.getTvRecommendations(1399, 1);
+
+        assertNotNull(result);
+        assertEquals(1, result.getResults().size());
+        mockServer.verify();
+    }
+
+    @Test
+    void getTvRecommendations_withPageLessThanOne_defaultsToOne() throws Exception {
+        TmdbPagedResponse<TmdbTvDto> expected = TestDataFactory.createPagedResponse(List.of());
+        String json = objectMapper.writeValueAsString(expected);
+
+        mockServer.expect(requestToPath("/3/tv/1399/recommendations"))
+            .andExpect(queryParam("page", "1"))
+            .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+
+        tmdbClient.getTvRecommendations(1399, 0);
+        mockServer.verify();
+    }
+
+    // ===== TV Similar =====
+
+    @Test
+    void getTvSimilar_callsCorrectUrl() throws Exception {
+        TmdbPagedResponse<TmdbTvDto> expected = TestDataFactory.createPagedResponse(
+            List.of(TestDataFactory.createTvShow())
+        );
+        String json = objectMapper.writeValueAsString(expected);
+
+        mockServer.expect(requestToPath("/3/tv/1399/similar"))
+            .andExpect(queryParam("api_key", "test-api-key"))
+            .andExpect(queryParam("language", "en-US"))
+            .andExpect(queryParam("page", "1"))
+            .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+
+        TmdbPagedResponse<TmdbTvDto> result = tmdbClient.getTvSimilar(1399, 1);
+
+        assertNotNull(result);
+        assertEquals(1, result.getResults().size());
+        mockServer.verify();
+    }
+
+    @Test
+    void getTvSimilar_withPageLessThanOne_defaultsToOne() throws Exception {
+        TmdbPagedResponse<TmdbTvDto> expected = TestDataFactory.createPagedResponse(List.of());
+        String json = objectMapper.writeValueAsString(expected);
+
+        mockServer.expect(requestToPath("/3/tv/1399/similar"))
+            .andExpect(queryParam("page", "1"))
+            .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+
+        tmdbClient.getTvSimilar(1399, -5);
+        mockServer.verify();
+    }
 }
