@@ -1,15 +1,47 @@
 version: "3.9"
+
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: kino-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-kino_db}
+      POSTGRES_USER: ${POSTGRES_USER:-kino_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kino_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kino_user} -d ${POSTGRES_DB:-kino_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   backend:
     build: ./kino-backend
+    container_name: kino-backend
+    restart: unless-stopped
     environment:
       TMDB_API_KEY: ${TMDB_API_KEY}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-kino_db}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-kino_user}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-kino_password}
     ports:
       - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   frontend:
     build: ./kino-frontend
+    container_name: kino-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:8080"
     depends_on:
       - backend
-    ports:
-      - "4200:80"
+
+volumes:
+  postgres_data:

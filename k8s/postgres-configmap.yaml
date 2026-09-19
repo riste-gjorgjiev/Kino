@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: kino-kiii
+data:
+  POSTGRES_DB: "kino_db"
