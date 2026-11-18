@@ -171,7 +171,7 @@ This looks like a mistake. The media-list page expects `:category` (popular, top
    - Search works.
    - Details pages work for both movies and TV.
    - Mobile layout is acceptable.
-3. Write `docs/WEEK4_COMPLETION_SUMMARY.md` documenting:
+3. Write `docs/weekly/week4-summary.md` documenting:
    - What was done.
    - Known issues.
    - Phase 2 readiness.
