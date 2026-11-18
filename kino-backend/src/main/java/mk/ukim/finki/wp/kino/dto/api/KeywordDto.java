@@ -1,4 +1,4 @@
-package mk.ukim.finki.wp.kino.dto.tmdb.details;
+package mk.ukim.finki.wp.kino.dto.api;
 
 import lombok.Getter;
 import lombok.Setter;

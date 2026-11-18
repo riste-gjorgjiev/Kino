@@ -17,11 +17,4 @@ public class PagedResponseDto<T> {
     private Integer totalResults;
 
     public PagedResponseDto(){}
-
-    public PagedResponseDto(int page, int totalPages, List<T> items) {
-        this.page = page;
-        this.totalPages = totalPages;
-        this.items = items;
-    }
-
 }

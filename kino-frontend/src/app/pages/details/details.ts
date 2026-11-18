@@ -3,7 +3,6 @@ import {MediaDetailsDto} from '../../core/models/media-details-dto';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {KinoApiService} from '../../kino-api.service';
 import {filter, Subscription} from 'rxjs';
-import {CommonModule} from '@angular/common';
 import {VideoSectionComponent} from '../../shared/video-section/video-section.component';
 import {TrailerModalComponent} from '../../shared/trailer-modal/trailer-modal.component';
 import {MediaCarouselComponent} from '../../shared/media-carousel/media-carousel.component';
@@ -12,7 +11,7 @@ import {KeywordSectionComponent} from '../../shared/keyword-section/keyword-sect
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [CommonModule, VideoSectionComponent, TrailerModalComponent, MediaCarouselComponent, KeywordSectionComponent],
+  imports: [VideoSectionComponent, TrailerModalComponent, MediaCarouselComponent, KeywordSectionComponent],
   templateUrl: './details.html',
   styleUrl: './details.css',
 })

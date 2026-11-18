@@ -1,11 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { VideoDto } from '../../core/models/video-dto';
 
 @Component({
   selector: 'app-video-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './video-card.component.html',
   styleUrl: './video-card.component.css'
 })

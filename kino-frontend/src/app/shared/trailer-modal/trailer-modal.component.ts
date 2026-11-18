@@ -1,11 +1,10 @@
 import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-trailer-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './trailer-modal.component.html',
   styleUrl: './trailer-modal.component.css'
 })

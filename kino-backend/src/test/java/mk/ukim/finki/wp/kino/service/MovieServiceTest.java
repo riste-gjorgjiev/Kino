@@ -25,8 +25,7 @@ class MovieServiceTest {
     @Mock
     private TmdbClient tmdbClient;
 
-    @Mock
-    private MediaFilterService mediaFilterService;
+    private final MediaFilterService mediaFilterService = new MediaFilterService();
 
     private MovieService movieService;
     private final String imageBaseUrl = "https://image.tmdb.org/t/p/w500";
@@ -45,9 +44,6 @@ class MovieServiceTest {
 
         MediaFilterDto filter = new MediaFilterDto();
         when(tmdbClient.getTrendingMovies("day", 1)).thenReturn(tmdbResponse);
-        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
-            .thenAnswer(inv -> inv.getArgument(0));
-        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(1);
 
         PagedResponseDto<MediaCardDto> result = movieService.getTrendingMovies("day", 1, filter);
 
@@ -75,9 +71,6 @@ class MovieServiceTest {
 
         MediaFilterDto filter = new MediaFilterDto();
         when(tmdbClient.getTrendingMovies("day", 1)).thenReturn(tmdbResponse);
-        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
-            .thenAnswer(inv -> inv.getArgument(0));
-        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(1);
 
         PagedResponseDto<MediaCardDto> result = movieService.getTrendingMovies("day", 1, filter);
 
@@ -91,9 +84,6 @@ class MovieServiceTest {
 
         MediaFilterDto filter = new MediaFilterDto();
         when(tmdbClient.getTrendingMovies("day", 1)).thenReturn(tmdbResponse);
-        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
-            .thenAnswer(inv -> inv.getArgument(0));
-        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(1);
 
         PagedResponseDto<MediaCardDto> result = movieService.getTrendingMovies("day", 1, filter);
 
@@ -107,9 +97,6 @@ class MovieServiceTest {
 
         MediaFilterDto filter = new MediaFilterDto();
         when(tmdbClient.getPopularMovies(1)).thenReturn(tmdbResponse);
-        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
-            .thenAnswer(inv -> inv.getArgument(0));
-        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(1);
 
         PagedResponseDto<MediaCardDto> result = movieService.getPopularMovies(1, filter);
 
@@ -127,9 +114,6 @@ class MovieServiceTest {
 
         MediaFilterDto filter = new MediaFilterDto();
         when(tmdbClient.getTopRatedMovies(2)).thenReturn(tmdbResponse);
-        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
-            .thenAnswer(inv -> inv.getArgument(0));
-        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(1);
 
         PagedResponseDto<MediaCardDto> result = movieService.getTopRatedMovies(2, filter);
 
@@ -146,9 +130,6 @@ class MovieServiceTest {
 
         MediaFilterDto filter = new MediaFilterDto();
         when(tmdbClient.getUpcomingMovies(3)).thenReturn(tmdbResponse);
-        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
-            .thenAnswer(inv -> inv.getArgument(0));
-        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(1);
 
         PagedResponseDto<MediaCardDto> result = movieService.getUpcomingMovies(3, filter);
 
@@ -164,9 +145,6 @@ class MovieServiceTest {
 
         MediaFilterDto filter = new MediaFilterDto();
         when(tmdbClient.getPopularMovies(1)).thenReturn(tmdbResponse);
-        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
-            .thenAnswer(inv -> List.of());
-        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(0);
 
         PagedResponseDto<MediaCardDto> result = movieService.getPopularMovies(1, filter);
 
@@ -186,9 +164,6 @@ class MovieServiceTest {
 
         MediaFilterDto filter = new MediaFilterDto();
         when(tmdbClient.getTrendingMovies("week", 1)).thenReturn(tmdbResponse);
-        when(mediaFilterService.applyFiltersAndSort(anyList(), eq(filter), eq(1), eq(20)))
-            .thenAnswer(inv -> inv.getArgument(0));
-        when(mediaFilterService.countAfterFilters(anyList(), eq(filter))).thenReturn(3);
 
         PagedResponseDto<MediaCardDto> result = movieService.getTrendingMovies("week", 1, filter);
 

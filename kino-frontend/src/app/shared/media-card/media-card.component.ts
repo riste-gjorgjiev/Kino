@@ -1,12 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MediaCardDto } from '../../core/models/media-card.dto';
 
 @Component({
   selector: 'app-media-card',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink],
   templateUrl: './media-card.component.html',
   styleUrl: './media-card.component.css'
 })

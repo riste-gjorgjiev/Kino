@@ -16,6 +16,8 @@ import java.util.List;
 
 @Service
 public class SearchService {
+    private static final int PAGE_SIZE = 20;
+
     private final TmdbClient tmdbClient;
     private final String imageBaseUrl;
     private final MediaFilterService mediaFilterService;
@@ -27,87 +29,51 @@ public class SearchService {
     }
 
     public PagedResponseDto<MediaCardDto> searchMovies(String query, int page, MediaFilterDto filter){
-        if (query == null || query.isBlank()){
-            return new  PagedResponseDto<>(1, 0, java.util.List.of(), 0);
+        if (isBlankQuery(query)) {
+            return emptyResponse();
         }
         if (page < 1) page = 1;
-        TmdbPagedResponse<TmdbMovieDto> tmdb = tmdbClient.searchMovies(query, page);
 
+        TmdbPagedResponse<TmdbMovieDto> tmdb = tmdbClient.searchMovies(query, page);
         List<MediaCardDto> items = tmdb.getResults().stream()
                 .map(this::toMediaCardMovies)
                 .toList();
-
-        int pageSize = 20;
-        List<MediaCardDto> filteredItems = mediaFilterService.applyFiltersAndSort(
-                items, filter, 1, pageSize
-        );
-
-        int totalResults = mediaFilterService.countAfterFilters(items, filter);
-        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
-
-        return new PagedResponseDto<>(
-                page,
-                totalPages,
-                filteredItems,
-                totalResults
-        );
+        return mediaFilterService.paginate(items, filter, page, PAGE_SIZE);
     }
+
     public PagedResponseDto<MediaCardDto> searchTv(String query, int page, MediaFilterDto filter){
-        if (query == null || query.isBlank()){
-            return new  PagedResponseDto<>(1, 0, java.util.List.of(), 0);
+        if (isBlankQuery(query)) {
+            return emptyResponse();
         }
         if (page < 1) page = 1;
 
         TmdbPagedResponse<TmdbTvDto> tmdb = tmdbClient.searchTvShows(query, page);
-
         List<MediaCardDto> items = tmdb.getResults().stream()
                 .map(this::toMediaCardTv)
                 .toList();
-
-        int pageSize = 20;
-        List<MediaCardDto> filteredItems = mediaFilterService.applyFiltersAndSort(
-                items, filter, 1, pageSize
-        );
-
-        int totalResults = mediaFilterService.countAfterFilters(items, filter);
-        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
-
-        return new PagedResponseDto<>(
-                page,
-                totalPages,
-                filteredItems,
-                totalResults
-        );
+        return mediaFilterService.paginate(items, filter, page, PAGE_SIZE);
     }
 
     public PagedResponseDto<MediaCardDto> searchMulti(String query, int page, MediaFilterDto filter){
-        if (query == null || query.isBlank()){
-            return new  PagedResponseDto<>(1, 0, java.util.List.of(), 0);
+        if (isBlankQuery(query)) {
+            return emptyResponse();
         }
         if (page < 1) page = 1;
 
         TmdbPagedResponse<TmdbMultiSearchDto> tmdb = tmdbClient.searchMulti(query, page);
-
         List<MediaCardDto> items = tmdb.getResults().stream()
                 .filter(r -> "movie".equals(r.getMediaType()) || "tv".equals(r.getMediaType()))
                 .map(this::toMultiMediaCard)
                 .toList();
+        return mediaFilterService.paginate(items, filter, page, PAGE_SIZE);
+    }
 
-        int pageSize = 20;
-        List<MediaCardDto> filteredItems = mediaFilterService.applyFiltersAndSort(
-                items, filter, 1, pageSize
-        );
+    private boolean isBlankQuery(String query) {
+        return query == null || query.isBlank();
+    }
 
-        int totalResults = mediaFilterService.countAfterFilters(items, filter);
-        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
-
-
-        return new PagedResponseDto<>(
-                page,
-                totalPages,
-                filteredItems,
-                totalResults
-        );
+    private PagedResponseDto<MediaCardDto> emptyResponse() {
+        return new PagedResponseDto<>(1, 0, List.of(), 0);
     }
 
     private MediaCardDto toMediaCardMovies(TmdbMovieDto m){

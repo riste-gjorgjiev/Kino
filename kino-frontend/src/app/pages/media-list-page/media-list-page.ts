@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import {CommonModule} from '@angular/common';
 import {MediaCardDto} from '../../core/models/media-card.dto';
 import {ActivatedRoute, Router} from '@angular/router';
 import {KinoApiService} from '../../kino-api.service';
@@ -13,7 +12,7 @@ type TvCategory = 'popular' | 'on-the-air' | 'top-rated';
 
 @Component({
   selector: 'app-media-list-page',
-  imports: [CommonModule, FilterControlsComponent, MediaCardComponent],
+  imports: [FilterControlsComponent, MediaCardComponent],
   templateUrl: './media-list-page.html',
   styleUrl: './media-list-page.css',
 })

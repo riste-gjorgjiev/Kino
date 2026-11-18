@@ -1,12 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FilterState } from '../../core/models/filter-state.model';
 
 @Component({
   selector: 'app-filter-controls',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './filter-controls.component.html',
   styleUrl: './filter-controls.component.css',
 })

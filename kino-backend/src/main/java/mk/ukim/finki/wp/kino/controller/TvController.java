@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Positive;
 import mk.ukim.finki.wp.kino.dto.api.MediaCardDto;
 import mk.ukim.finki.wp.kino.dto.api.MediaFilterDto;
 import mk.ukim.finki.wp.kino.dto.api.PagedResponseDto;
-import mk.ukim.finki.wp.kino.dto.tmdb.details.MediaDetailsDto;
+import mk.ukim.finki.wp.kino.dto.api.MediaDetailsDto;
 import mk.ukim.finki.wp.kino.service.MediaDetailsService;
 import mk.ukim.finki.wp.kino.service.TvService;
 import org.springframework.validation.annotation.Validated;

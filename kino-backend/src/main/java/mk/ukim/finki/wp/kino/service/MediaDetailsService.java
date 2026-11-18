@@ -5,12 +5,12 @@ import mk.ukim.finki.wp.kino.dto.api.MediaType;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbMovieDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbPagedResponse;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbTvDto;
-import mk.ukim.finki.wp.kino.dto.tmdb.details.CastDto;
-import mk.ukim.finki.wp.kino.dto.tmdb.details.KeywordDto;
-import mk.ukim.finki.wp.kino.dto.tmdb.details.MediaDetailsDto;
+import mk.ukim.finki.wp.kino.dto.api.CastDto;
+import mk.ukim.finki.wp.kino.dto.api.KeywordDto;
+import mk.ukim.finki.wp.kino.dto.api.MediaDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbMovieDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbTvDetailsDto;
-import mk.ukim.finki.wp.kino.dto.tmdb.details.VideoDto;
+import mk.ukim.finki.wp.kino.dto.api.VideoDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbCreatorDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbCreditsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbCrewDto;
@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Service
@@ -60,7 +61,7 @@ public class MediaDetailsService {
         MediaDetailsDto dto = new MediaDetailsDto();
 
         dto.setId(movie.getId());
-        dto.setMediaType("MOVIE");
+        dto.setMediaType(MediaType.MOVIE);
         dto.setTitle(movie.getTitle());
         dto.setTagline(blankToNull(movie.getTagline()));
         dto.setOverview(blankToNull(movie.getOverview()));
@@ -100,7 +101,7 @@ public class MediaDetailsService {
         MediaDetailsDto dto = new MediaDetailsDto();
 
         dto.setId(tv.getId());
-        dto.setMediaType("TV");
+        dto.setMediaType(MediaType.TV);
         dto.setTitle(tv.getName());
         dto.setTagline(blankToNull(tv.getTagline()));
         dto.setOverview(blankToNull(tv.getOverview()));
@@ -243,50 +244,61 @@ public class MediaDetailsService {
 
     private List<MediaCardDto> buildMovieRecommendations(TmdbPagedResponse<TmdbMovieDto> recommendations,
                                                          TmdbPagedResponse<TmdbMovieDto> similar) {
-        List<MediaCardDto> merged = new ArrayList<>();
-        Set<Long> seen = new HashSet<>();
-
-        if (recommendations != null && recommendations.getResults() != null) {
-            recommendations.getResults().stream()
-                    .filter(m -> m.getId() != null)
-                    .filter(m -> seen.add(m.getId()))
-                    .map(m -> new MediaCardDto(m.getId(), MediaType.MOVIE, m.getTitle(),
-                            fullImageUrl(m.getPosterPath()), m.getVoteAverage(), m.getReleaseDate()))
-                    .forEach(merged::add);
-        }
-
-        if (similar != null && similar.getResults() != null) {
-            similar.getResults().stream()
-                    .filter(m -> m.getId() != null)
-                    .filter(m -> seen.add(m.getId()))
-                    .map(m -> new MediaCardDto(m.getId(), MediaType.MOVIE, m.getTitle(),
-                            fullImageUrl(m.getPosterPath()), m.getVoteAverage(), m.getReleaseDate()))
-                    .forEach(merged::add);
-        }
-
-        return merged.stream().limit(8).toList();
+        return mergeRecommendations(
+                recommendations,
+                similar,
+                MediaType.MOVIE,
+                TmdbMovieDto::getId,
+                TmdbMovieDto::getTitle,
+                TmdbMovieDto::getVoteAverage,
+                TmdbMovieDto::getPosterPath,
+                TmdbMovieDto::getReleaseDate
+        );
     }
 
     private List<MediaCardDto> buildTvRecommendations(TmdbPagedResponse<TmdbTvDto> recommendations,
                                                       TmdbPagedResponse<TmdbTvDto> similar) {
+        return mergeRecommendations(
+                recommendations,
+                similar,
+                MediaType.TV,
+                TmdbTvDto::getId,
+                TmdbTvDto::getName,
+                TmdbTvDto::getVoteAverage,
+                TmdbTvDto::getPosterPath,
+                TmdbTvDto::getFirstAirDate
+        );
+    }
+
+    /**
+     * Merges TMDB recommendations and "similar" titles into a single de-duplicated
+     * list, with recommendations taking priority over similar titles.
+     */
+    private <T> List<MediaCardDto> mergeRecommendations(
+            TmdbPagedResponse<T> recommendations,
+            TmdbPagedResponse<T> similar,
+            MediaType mediaType,
+            Function<T, Long> id,
+            Function<T, String> title,
+            Function<T, Double> rating,
+            Function<T, String> posterPath,
+            Function<T, String> date
+    ) {
         List<MediaCardDto> merged = new ArrayList<>();
         Set<Long> seen = new HashSet<>();
 
-        if (recommendations != null && recommendations.getResults() != null) {
-            recommendations.getResults().stream()
-                    .filter(t -> t.getId() != null)
-                    .filter(t -> seen.add(t.getId()))
-                    .map(t -> new MediaCardDto(t.getId(), MediaType.TV, t.getName(),
-                            fullImageUrl(t.getPosterPath()), t.getVoteAverage(), t.getFirstAirDate()))
-                    .forEach(merged::add);
-        }
-
-        if (similar != null && similar.getResults() != null) {
-            similar.getResults().stream()
-                    .filter(t -> t.getId() != null)
-                    .filter(t -> seen.add(t.getId()))
-                    .map(t -> new MediaCardDto(t.getId(), MediaType.TV, t.getName(),
-                            fullImageUrl(t.getPosterPath()), t.getVoteAverage(), t.getFirstAirDate()))
+        for (TmdbPagedResponse<T> page : new TmdbPagedResponse[]{recommendations, similar}) {
+            if (page == null || page.getResults() == null) continue;
+            page.getResults().stream()
+                    .filter(t -> id.apply(t) != null)
+                    .filter(t -> seen.add(id.apply(t)))
+                    .map(t -> new MediaCardDto(
+                            id.apply(t),
+                            mediaType,
+                            title.apply(t),
+                            fullImageUrl(posterPath.apply(t)),
+                            rating.apply(t),
+                            date.apply(t)))
                     .forEach(merged::add);
         }
 

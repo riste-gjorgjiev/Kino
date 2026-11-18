@@ -1,4 +1,4 @@
-package mk.ukim.finki.wp.kino.dto.tmdb.details;
+package mk.ukim.finki.wp.kino.dto.api;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 public class MediaDetailsDto {
     private Long id;
-    private String mediaType;
+    private MediaType mediaType;
     private String title;
     private String tagline;
     private String overview;

@@ -4,11 +4,12 @@ import mk.ukim.finki.wp.kino.dto.tmdb.TmdbMovieDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbMultiSearchDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbPagedResponse;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbTvDto;
-import mk.ukim.finki.wp.kino.dto.tmdb.details.MediaDetailsDto;
+import mk.ukim.finki.wp.kino.dto.api.MediaDetailsDto;
+import mk.ukim.finki.wp.kino.dto.api.MediaType;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbMovieDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbTvDetailsDto;
-import mk.ukim.finki.wp.kino.dto.tmdb.details.VideoDto;
-import mk.ukim.finki.wp.kino.dto.tmdb.details.KeywordDto;
+import mk.ukim.finki.wp.kino.dto.api.VideoDto;
+import mk.ukim.finki.wp.kino.dto.api.KeywordDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.*;
 
 import java.util.List;
@@ -186,7 +187,7 @@ public final class TestDataFactory {
     public static MediaDetailsDto createMovieDetailsDto() {
         MediaDetailsDto details = new MediaDetailsDto();
         details.setId(1L);
-        details.setMediaType("MOVIE");
+        details.setMediaType(MediaType.MOVIE);
         details.setTitle("Test Movie");
         details.setTagline("A test tagline");
         details.setOverview("A test movie overview");
@@ -204,7 +205,7 @@ public final class TestDataFactory {
     public static MediaDetailsDto createTvDetailsDto() {
         MediaDetailsDto details = new MediaDetailsDto();
         details.setId(2L);
-        details.setMediaType("TV");
+        details.setMediaType(MediaType.TV);
         details.setTitle("Test TV Show");
         details.setTagline("A test tagline");
         details.setOverview("A test TV show overview");

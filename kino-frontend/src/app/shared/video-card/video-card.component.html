@@ -9,7 +9,9 @@
     <div class="video-title">{{ video.name }}</div>
     <div class="badges">
       <span class="badge type-badge">{{ video.type }}</span>
-      <span *ngIf="video.official" class="badge official-badge">Official</span>
+      @if (video.official) {
+        <span class="badge official-badge">Official</span>
+      }
     </div>
   </div>
 </div>

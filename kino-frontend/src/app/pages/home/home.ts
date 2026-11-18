@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
 import {MediaCardDto} from '../../core/models/media-card.dto';
 import {KinoApiService} from '../../kino-api.service';
-import {CommonModule} from '@angular/common';
 import {forkJoin} from 'rxjs';
 import {MediaCarouselComponent} from '../../shared/media-carousel/media-carousel.component';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, MediaCarouselComponent],
+  imports: [MediaCarouselComponent],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

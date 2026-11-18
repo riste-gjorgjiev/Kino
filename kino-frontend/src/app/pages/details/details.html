@@ -19,59 +19,87 @@
 
       <div class="info">
         <h1>{{ data.title }}</h1>
-        <p class="tagline" *ngIf="data.tagline">{{ data.tagline }}</p>
+
+        @if (data.tagline) {
+          <p class="tagline">{{ data.tagline }}</p>
+        }
 
         <div class="meta">
-          <span *ngIf="data.rating">⭐ {{ data.rating }}</span>
-          <span *ngIf="data.date">• {{ data.date }}</span>
-          <span *ngIf="data.runtimeMinutes">• {{ data.runtimeMinutes }} min</span>
+          @if (data.rating) {
+            <span>⭐ {{ data.rating }}</span>
+          }
+          @if (data.date) {
+            <span>• {{ data.date }}</span>
+          }
+          @if (data.runtimeMinutes) {
+            <span>• {{ data.runtimeMinutes }} min</span>
+          }
         </div>
 
-        <p class="overview" *ngIf="data.overview">{{ data.overview }}</p>
+        @if (data.overview) {
+          <p class="overview">{{ data.overview }}</p>
+        }
 
-        <div class="genres" *ngIf="data.genres?.length">
-          <span *ngFor="let g of data.genres">{{ g }}</span>
-        </div>
+        @if (data.genres.length) {
+          <div class="genres">
+            @for (g of data.genres; track g) {
+              <span>{{ g }}</span>
+            }
+          </div>
+        }
 
-        <p *ngIf="data.creator"><b>Creator:</b> {{ data.creator }}</p>
+        @if (data.creator) {
+          <p><b>Creator:</b> {{ data.creator }}</p>
+        }
 
-        <p *ngIf="data.directors?.length">
-          <b>Director:</b> {{ data.directors.join(', ') }}
-        </p>
+        @if (data.directors.length) {
+          <p>
+            <b>Director:</b> {{ data.directors.join(', ') }}
+          </p>
+        }
       </div>
     </div>
   </section>
 
-  <section class="cast" *ngIf="data.cast?.length">
-    <h2>Cast</h2>
+  @if (data.cast.length) {
+    <section class="cast">
+      <h2>Cast</h2>
 
-    <div class="cast-row">
-      <div class="cast-card" *ngFor="let c of data.cast">
-        <img *ngIf="c.profileUrl" [src]="c.profileUrl" [alt]="c.name" />
-        <div *ngIf="!c.profileUrl" class="no-profile">No Image</div>
-        <div>{{ c.name }}</div>
-        <small>{{ c.character }}</small>
+      <div class="cast-row">
+        @for (c of data.cast; track c.id) {
+          <div class="cast-card">
+            @if (c.profileUrl) {
+              <img [src]="c.profileUrl" [alt]="c.name" />
+            } @else {
+              <div class="no-profile">No Image</div>
+            }
+            <div>{{ c.name }}</div>
+            <small>{{ c.character }}</small>
+          </div>
+        }
       </div>
-    </div>
-  </section>
+    </section>
+  }
 
-  <app-video-section
-    *ngIf="data?.videos?.length"
-    [videos]="data.videos"
-    (playVideo)="onPlayVideo($event)">
-  </app-video-section>
+  @if (data.videos.length) {
+    <app-video-section
+      [videos]="data.videos"
+      (playVideo)="onPlayVideo($event)">
+    </app-video-section>
+  }
 
-  <app-keyword-section
-    *ngIf="data?.keywords?.length"
-    [keywords]="data.keywords">
-  </app-keyword-section>
+  @if (data.keywords.length) {
+    <app-keyword-section [keywords]="data.keywords"></app-keyword-section>
+  }
 
-  <section class="recommendations" *ngIf="data?.recommendations?.length">
-    <app-media-carousel
-      title="More Like This"
-      [items]="data.recommendations">
-    </app-media-carousel>
-  </section>
+  @if (data.recommendations.length) {
+    <section class="recommendations">
+      <app-media-carousel
+        title="More Like This"
+        [items]="data.recommendations">
+      </app-media-carousel>
+    </section>
+  }
 
   <app-trailer-modal
     [videoKey]="selectedVideoKey"

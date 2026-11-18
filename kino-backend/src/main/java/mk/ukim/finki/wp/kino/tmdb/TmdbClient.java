@@ -37,14 +37,17 @@ public class TmdbClient {
         this.language = language;
     }
 
-    public TmdbPagedResponse<TmdbMovieDto> getTrendingMovies(String window, int page){
-        if (window == null || (!window.equals("day") && !window.equals("week"))){
-            window = "day";
-        }
-        if (page < 1) page = 1;
+    private static int normalizePage(int page) {
+        return Math.max(page, 1);
+    }
 
-        int finalPage = page;
-        String finalWindow = window;
+    private static String normalizeWindow(String window) {
+        return "week".equals(window) ? "week" : "day";
+    }
+
+    public TmdbPagedResponse<TmdbMovieDto> getTrendingMovies(String window, int page){
+        int finalPage = normalizePage(page);
+        String finalWindow = normalizeWindow(window);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/trending/movie/{window}")
@@ -56,13 +59,8 @@ public class TmdbClient {
                 .body(MOVIE_PAGE_TYPE);
     }
     public TmdbPagedResponse<TmdbTvDto> getTrendingTvShows(String window, int page){
-        if (window == null || (!window.equals("day") && !window.equals("week"))){
-            window = "day";
-        }
-        if (page < 1) page = 1;
-
-        int finalPage = page;
-        String finalWindow = window;
+        int finalPage = normalizePage(page);
+        String finalWindow = normalizeWindow(window);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/trending/tv/{window}")
@@ -75,9 +73,7 @@ public class TmdbClient {
     }
 
     public TmdbPagedResponse<TmdbMovieDto> getPopularMovies(int page){
-        if (page < 1) page = 1;
-
-        int finalPage = page;
+        int finalPage = normalizePage(page);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/movie/popular")
@@ -89,9 +85,7 @@ public class TmdbClient {
                 .body(MOVIE_PAGE_TYPE);
     }
     public TmdbPagedResponse<TmdbTvDto> getPopularTvShows(int page){
-        if (page < 1) page = 1;
-
-        int finalPage = page;
+        int finalPage = normalizePage(page);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/tv/popular")
@@ -104,9 +98,7 @@ public class TmdbClient {
     }
 
     public TmdbPagedResponse<TmdbMovieDto> getTopRatedMovies(int page){
-        if (page < 1) page = 1;
-
-        int finalPage = page;
+        int finalPage = normalizePage(page);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/movie/top_rated")
@@ -119,9 +111,7 @@ public class TmdbClient {
     }
 
     public TmdbPagedResponse<TmdbTvDto> getTopRatedTvShows(int page){
-        if (page < 1) page = 1;
-
-        int finalPage = page;
+        int finalPage = normalizePage(page);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/tv/top_rated")
@@ -134,9 +124,7 @@ public class TmdbClient {
     }
 
     public TmdbPagedResponse<TmdbMovieDto> getUpcomingMovies(int page){
-        if (page < 1) page = 1;
-
-        int finalPage = page;
+        int finalPage = normalizePage(page);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/movie/upcoming")
@@ -149,9 +137,7 @@ public class TmdbClient {
     }
 
     public TmdbPagedResponse<TmdbTvDto> getAiringTvShows(int page){
-        if (page < 1) page = 1;
-
-        int finalPage = page;
+        int finalPage = normalizePage(page);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/tv/on_the_air")
@@ -166,9 +152,7 @@ public class TmdbClient {
 
 
     public TmdbPagedResponse<TmdbMovieDto> searchMovies(String query, int page){
-        if (page < 1) page = 1;
-
-        int finalPage = page;
+        int finalPage = normalizePage(page);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/search/movie")
@@ -182,9 +166,7 @@ public class TmdbClient {
     }
 
     public TmdbPagedResponse<TmdbTvDto> searchTvShows(String query, int page){
-        if (page < 1) page = 1;
-
-        int finalPage = page;
+        int finalPage = normalizePage(page);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/search/tv")
@@ -198,9 +180,7 @@ public class TmdbClient {
     }
 
     public TmdbPagedResponse<TmdbMultiSearchDto> searchMulti(String query, int page){
-        if (page < 1) page = 1;
-
-        int finalPage = page;
+        int finalPage = normalizePage(page);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/search/multi")
@@ -298,8 +278,7 @@ public class TmdbClient {
     }
 
     public TmdbPagedResponse<TmdbMovieDto> getMovieRecommendations(long id, int page){
-        if (page < 1) page = 1;
-        int finalPage = page;
+        int finalPage = normalizePage(page);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/movie/{id}/recommendations")
@@ -312,8 +291,7 @@ public class TmdbClient {
     }
 
     public TmdbPagedResponse<TmdbMovieDto> getMovieSimilar(long id, int page){
-        if (page < 1) page = 1;
-        int finalPage = page;
+        int finalPage = normalizePage(page);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/movie/{id}/similar")
@@ -326,8 +304,7 @@ public class TmdbClient {
     }
 
     public TmdbPagedResponse<TmdbTvDto> getTvRecommendations(long id, int page){
-        if (page < 1) page = 1;
-        int finalPage = page;
+        int finalPage = normalizePage(page);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/tv/{id}/recommendations")
@@ -340,8 +317,7 @@ public class TmdbClient {
     }
 
     public TmdbPagedResponse<TmdbTvDto> getTvSimilar(long id, int page){
-        if (page < 1) page = 1;
-        int finalPage = page;
+        int finalPage = normalizePage(page);
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/tv/{id}/similar")

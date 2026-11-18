@@ -16,6 +16,8 @@ import java.util.List;
 
 @Service
 public class TvService {
+    private static final int PAGE_SIZE = 20;
+
     private final TmdbClient tmdbClient;
     private final String imageBaseUrl;
     private final MediaFilterService mediaFilterService;
@@ -25,97 +27,32 @@ public class TvService {
         this.imageBaseUrl = imageBaseUrl;
         this.mediaFilterService = mediaFilterService;
     }
+
     @Cacheable(cacheNames = "trendingTv", key = "#window + ':' + #page + ':filter=' + #filter.hashCode()")
     public PagedResponseDto<MediaCardDto> getTrendingTvShows(String window, int page, MediaFilterDto filter){
-        TmdbPagedResponse<TmdbTvDto> tmdb = tmdbClient.getTrendingTvShows(window, page);
-
-        List<MediaCardDto> items = tmdb.getResults().stream()
-                .map(this::toMediaCard)
-                .toList();
-
-        int pageSize = 20;
-        List<MediaCardDto> filteredItems = mediaFilterService.applyFiltersAndSort(
-                items, filter, 1, pageSize
-        );
-
-        int totalResults = mediaFilterService.countAfterFilters(items, filter);
-        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
-
-        return new PagedResponseDto<>(
-                page,
-                totalPages,
-                filteredItems,
-                totalResults
-        );
+        return paginate(tmdbClient.getTrendingTvShows(window, page), page, filter);
     }
+
     @Cacheable(cacheNames = "popularTv", key = "'page=' + #page + ':filter=' + #filter.hashCode()")
     public PagedResponseDto<MediaCardDto> getPopularTvShows(int page, MediaFilterDto filter){
-        TmdbPagedResponse<TmdbTvDto> tmdb = tmdbClient.getPopularTvShows(page);
-
-        List<MediaCardDto> items = tmdb.getResults().stream()
-                .map(this::toMediaCard)
-                .toList();
-
-        int pageSize = 20;
-        List<MediaCardDto> filteredItems = mediaFilterService.applyFiltersAndSort(
-                items, filter, 1, pageSize
-        );
-
-        int totalResults = mediaFilterService.countAfterFilters(items, filter);
-        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
-
-        return new PagedResponseDto<>(
-                page,
-                totalPages,
-                filteredItems,
-                totalResults
-        );
+        return paginate(tmdbClient.getPopularTvShows(page), page, filter);
     }
+
     @Cacheable(cacheNames = "topRatedTv", key = "'page=' + #page + ':filter=' + #filter.hashCode()")
     public PagedResponseDto<MediaCardDto> getTopRatedTvShows(int page, MediaFilterDto filter){
-        TmdbPagedResponse<TmdbTvDto> tmdb = tmdbClient.getTopRatedTvShows(page);
-
-        List<MediaCardDto> items = tmdb.getResults().stream()
-                .map(this::toMediaCard)
-                .toList();
-
-        int pageSize = 20;
-        List<MediaCardDto> filteredItems = mediaFilterService.applyFiltersAndSort(
-                items, filter, 1, pageSize
-        );
-
-        int totalResults = mediaFilterService.countAfterFilters(items, filter);
-        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
-
-        return new PagedResponseDto<>(
-                page,
-                totalPages,
-                filteredItems,
-                totalResults
-        );
+        return paginate(tmdbClient.getTopRatedTvShows(page), page, filter);
     }
+
     @Cacheable(cacheNames = "airingTvShows", key = "'page=' + #page + ':filter=' + #filter.hashCode()")
     public PagedResponseDto<MediaCardDto> getAiringTvShows(int page, MediaFilterDto filter){
-        TmdbPagedResponse<TmdbTvDto> tmdb = tmdbClient.getAiringTvShows(page);
+        return paginate(tmdbClient.getAiringTvShows(page), page, filter);
+    }
 
+    private PagedResponseDto<MediaCardDto> paginate(TmdbPagedResponse<TmdbTvDto> tmdb, int page, MediaFilterDto filter) {
         List<MediaCardDto> items = tmdb.getResults().stream()
                 .map(this::toMediaCard)
                 .toList();
-
-        int pageSize = 20;
-        List<MediaCardDto> filteredItems = mediaFilterService.applyFiltersAndSort(
-                items, filter, 1, pageSize
-        );
-
-        int totalResults = mediaFilterService.countAfterFilters(items, filter);
-        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
-
-        return new PagedResponseDto<>(
-                page,
-                totalPages,
-                filteredItems,
-                totalResults
-        );
+        return mediaFilterService.paginate(items, filter, page, PAGE_SIZE);
     }
 
     private MediaCardDto toMediaCard(TmdbTvDto t){

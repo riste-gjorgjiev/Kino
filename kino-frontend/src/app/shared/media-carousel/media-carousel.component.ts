@@ -1,12 +1,11 @@
 import { Component, Input, ViewChild, ElementRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MediaCardDto } from '../../core/models/media-card.dto';
 import { MediaCardComponent } from '../media-card/media-card.component';
 
 @Component({
   selector: 'app-media-carousel',
   standalone: true,
-  imports: [CommonModule, MediaCardComponent],
+  imports: [MediaCardComponent],
   templateUrl: './media-carousel.component.html',
   styleUrl: './media-carousel.component.css'
 })

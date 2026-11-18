@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {MediaCardDto} from '../../core/models/media-card.dto';
 import {KinoApiService} from '../../kino-api.service';
@@ -13,7 +12,7 @@ type SearchTab = 'all' | 'movie' | 'tv'
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule, FormsModule, FilterControlsComponent, MediaCardComponent],
+  imports: [FormsModule, FilterControlsComponent, MediaCardComponent],
   templateUrl: './search.html',
   styleUrl: './search.css',
 })
