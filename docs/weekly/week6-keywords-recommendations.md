@@ -853,5 +853,5 @@ What landed:
 - ✅ Backend and frontend tests.
 
 Deviation from the plan:
-- The merged recommendations + similar list is capped at **8** items in code, not 12 (see [backlog](../plans/backlog.md)).
+- The merged recommendations + similar list was initially capped at **8** items; it is now **12**, matching this plan.
 - The optional `@Cacheable` annotations for the new TMDB calls were not added.

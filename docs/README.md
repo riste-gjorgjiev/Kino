@@ -10,6 +10,7 @@ This folder holds all planning, architecture and process documentation for **Kin
 4. **[plans/backlog.md](plans/backlog.md)** — known issues and deferred cleanups.
 5. **[weekly/](weekly/)** — week-by-week history (plans and completion summaries), in chronological order.
 6. **[devops/](devops/)** — the KIII deployment guide and report.
+7. **[../CHANGELOG.md](../CHANGELOG.md)** — notable changes, newest first.
 
 ## Status legend
 
@@ -29,7 +30,8 @@ Used throughout the docs:
 | 3 | — | [Sorting & filtering](weekly/week3-sorting-filtering.md) |
 | 4 | [Plan](weekly/week4-plan.md) | [Summary](weekly/week4-summary.md) |
 | 5 | [Trailers & videos](weekly/week5-trailers.md) | (checklist completed in the plan) |
-| 6 | [Keywords & recommendations](weekly/week6-keywords-recommendations.md) | — |
+| 6 | [Keywords & recommendations](weekly/week6-keywords-recommendations.md) | (completion note at end of the plan) |
+| 7–8 | [TV seasons & episodes](weekly/week7-8-tv-seasons-episodes.md) | (summary in the same document) |
 
 > Note: `docs/` is tracked in git. It is **not** ignored, and the DevOps guide/report are part of the public repository.
 

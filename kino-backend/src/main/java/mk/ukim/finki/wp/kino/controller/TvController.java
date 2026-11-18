@@ -7,10 +7,16 @@ import mk.ukim.finki.wp.kino.dto.api.MediaCardDto;
 import mk.ukim.finki.wp.kino.dto.api.MediaFilterDto;
 import mk.ukim.finki.wp.kino.dto.api.PagedResponseDto;
 import mk.ukim.finki.wp.kino.dto.api.MediaDetailsDto;
+import mk.ukim.finki.wp.kino.dto.api.EpisodeDto;
+import mk.ukim.finki.wp.kino.dto.api.SeasonDetailsDto;
+import mk.ukim.finki.wp.kino.dto.api.SeasonDto;
 import mk.ukim.finki.wp.kino.service.MediaDetailsService;
+import mk.ukim.finki.wp.kino.service.TvSeasonService;
 import mk.ukim.finki.wp.kino.service.TvService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Validated
 @RestController
@@ -18,15 +24,38 @@ import org.springframework.web.bind.annotation.*;
 public class TvController {
     private final TvService tvService;
     private final MediaDetailsService mediaDetailsService;
+    private final TvSeasonService tvSeasonService;
 
-    public TvController(TvService tvService, MediaDetailsService mediaDetailsService) {
+    public TvController(TvService tvService, MediaDetailsService mediaDetailsService, TvSeasonService tvSeasonService) {
         this.tvService = tvService;
         this.mediaDetailsService = mediaDetailsService;
+        this.tvSeasonService = tvSeasonService;
     }
 
     @GetMapping("/{id}")
     public MediaDetailsDto details(@PathVariable @Positive long id){
         return mediaDetailsService.getTvDetails(id);
+    }
+
+    @GetMapping("/{id}/seasons")
+    public List<SeasonDto> seasons(@PathVariable @Positive long id){
+        return tvSeasonService.getSeasons(id);
+    }
+
+    @GetMapping("/{id}/seasons/{seasonNumber}")
+    public SeasonDetailsDto seasonDetails(
+            @PathVariable @Positive long id,
+            @PathVariable @Min(value = 0, message = "must be at least 0") int seasonNumber
+    ){
+        return tvSeasonService.getSeasonDetails(id, seasonNumber);
+    }
+
+    @GetMapping("/{id}/seasons/{seasonNumber}/episodes")
+    public List<EpisodeDto> episodes(
+            @PathVariable @Positive long id,
+            @PathVariable @Min(value = 0, message = "must be at least 0") int seasonNumber
+    ){
+        return tvSeasonService.getEpisodes(id, seasonNumber);
     }
 
     @GetMapping("/trending")

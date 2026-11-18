@@ -24,11 +24,12 @@ controller  →  service  →  tmdb/TmdbClient  →  TMDB REST API
 | Package | Responsibility |
 |---------|----------------|
 | `controller` | HTTP endpoints, request params, Bean Validation. Thin. |
-| `service` | Mapping TMDB → API DTOs, filtering/sorting/pagination, enrichment, caching. |
+| `service` | Mapping TMDB → API DTOs, filtering/sorting/pagination, enrichment, caching. `MediaCardMapper` and `util.ImageUrlBuilder` hold shared mapping/image logic. |
 | `tmdb.TmdbClient` | One method per TMDB endpoint; builds URLs and deserialises into `dto/tmdb/**`. |
 | `dto/api` | **Public** API contract. Safe to serialise to the frontend. |
 | `dto/tmdb` | **Internal** TMDB models. Must not leak into responses. |
 | `config` | CORS, caching, REST client, request logging. |
+| `util` | Small stateless helpers (e.g. `ImageUrlBuilder`). |
 | `exception` | `GlobalExceptionHandler` + `ApiErrorDto`. |
 
 ### DTO rules
@@ -38,12 +39,13 @@ controller  →  service  →  tmdb/TmdbClient  →  TMDB REST API
 3. `MediaCardDto` (list item) and `MediaDetailsDto` (details page) are the two core public models.
 4. `MediaType` (enum `MOVIE`/`TV`) is used for typing media; it serialises as `"MOVIE"`/`"TV"`.
 5. **Frontend mirroring:** `dto/api/**` is mirrored by hand in `kino-frontend/src/app/core/models/*.ts`. When you change a backend API DTO, update the matching frontend interface in the same change.
+6. TV seasons use `SeasonDto` (list), `SeasonDetailsDto` (season + episodes) and `EpisodeDto`; these are public models and must stay separate from the TMDB season/episode DTOs.
 
 ### Filtering, sorting, pagination
 
-- `MediaFilterService` is the single place that applies `yearFrom`/`yearTo`, sorts by `rating`/`date`/`title`, and slices a page.
-- `MediaFilterService.paginate(items, filter, page, pageSize)` also computes `totalPages`/`totalResults`, so services don't repeat that bookkeeping.
-- Filtering currently operates **within a single TMDB page** (20 items); it is not applied across the whole TMDB result set. See [backlog](plans/backlog.md).
+- `MediaFilterService.filterAndSort(...)` is the single place that applies `yearFrom`/`yearTo` and sorts by `rating`/`date`/`title`.
+- `MediaFilterService.toPage(...)` builds the public page using TMDB's `totalPages`/`totalResults`, so paging metadata is not derived from a filtered subset.
+- Filtering operates **within a single TMDB page** (20 items); it is not applied across the whole TMDB result set. The UI states this explicitly.
 
 ## API surface
 
@@ -55,6 +57,9 @@ controller  →  service  →  tmdb/TmdbClient  →  TMDB REST API
 | GET | `/api/movies/top-rated` | |
 | GET | `/api/movies/upcoming` | |
 | GET | `/api/tv/{id}` | TV details (creators, cast, videos, keywords, recommendations) |
+| GET | `/api/tv/{id}/seasons` | Season list (TMDB seasons sorted by season number) |
+| GET | `/api/tv/{id}/seasons/{seasonNumber}` | Season metadata + ordered episode list |
+| GET | `/api/tv/{id}/seasons/{seasonNumber}/episodes` | Episode list only |
 | GET | `/api/tv/trending` | `window=day\|week` |
 | GET | `/api/tv/popular` | |
 | GET | `/api/tv/top-rated` | |
@@ -75,7 +80,8 @@ src/app/
 ├── kino-api.service.ts   # single HttpClient wrapper for the backend
 ├── pages/                # routed pages: home, media-list-page, search, details
 ├── shared/               # reusable components: media-card, media-carousel,
-│                         # filter-controls, video-*, keyword-section, trailer-modal
+│                         # filter-controls, video-*, keyword-section,
+│                         # trailer-modal, season-episode-guide
 └── app.routes.ts         # route table
 ```
 
@@ -90,11 +96,17 @@ src/app/
 
 - Backend config lives in `kino-backend/src/main/resources/application.properties`.
 - The TMDB key is read from the `TMDB_API_KEY` env var (`.env` is loaded optionally via `spring.config.import`).
-- `kino.cors.allowed-origins` is a comma-separated allow-list.
+- `kino.cors.allowed-origins` is a comma-separated allow-list, overridable with `KINO_CORS_ALLOWED_ORIGINS` (defaults to local dev plus the deployed Vercel origin; wildcard patterns are intentionally not used).
+
+## Caching
+
+- Caffeine cache names: list endpoints (`trendingMovies`, `popularMovies`, …), search, and TV seasons (`tvSeasons`, `tvSeasonDetails`, `tvSeasonEpisodes`).
+- Entries expire 10 minutes after write; cache statistics are recorded.
 
 ## Testing
 
 - **Backend:** JUnit 5 + Mockito. Service tests are plain unit tests; controller tests use `@WebMvcTest`; `TmdbClient` is tested against `MockRestServiceServer`. Tests are hermetic — they use `src/test/resources/application.properties` and never need a real `.env`.
 - **Frontend:** Vitest. Component/page specs plus service tests.
+- **E2E:** Playwright smoke test (`kino-frontend/e2e/`) with mocked API routes, so it needs neither a backend nor a TMDB key. It drives the real SPA through home → details → list → search.
 
 See [RUNNING.md](RUNNING.md) for commands.

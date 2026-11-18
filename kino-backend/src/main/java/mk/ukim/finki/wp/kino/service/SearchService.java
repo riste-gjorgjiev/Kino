@@ -2,29 +2,26 @@ package mk.ukim.finki.wp.kino.service;
 
 import mk.ukim.finki.wp.kino.dto.api.MediaCardDto;
 import mk.ukim.finki.wp.kino.dto.api.MediaFilterDto;
-import mk.ukim.finki.wp.kino.dto.api.MediaType;
 import mk.ukim.finki.wp.kino.dto.api.PagedResponseDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbMovieDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbMultiSearchDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbPagedResponse;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbTvDto;
 import mk.ukim.finki.wp.kino.tmdb.TmdbClient;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class SearchService {
-    private static final int PAGE_SIZE = 20;
 
     private final TmdbClient tmdbClient;
-    private final String imageBaseUrl;
+    private final MediaCardMapper mediaCardMapper;
     private final MediaFilterService mediaFilterService;
 
-    public SearchService(TmdbClient tmdbClient, @Value("${tmdb.image-base-url}") String imageBaseUrl, MediaFilterService mediaFilterService) {
+    public SearchService(TmdbClient tmdbClient, MediaCardMapper mediaCardMapper, MediaFilterService mediaFilterService) {
         this.tmdbClient = tmdbClient;
-        this.imageBaseUrl = imageBaseUrl;
+        this.mediaCardMapper = mediaCardMapper;
         this.mediaFilterService = mediaFilterService;
     }
 
@@ -35,10 +32,8 @@ public class SearchService {
         if (page < 1) page = 1;
 
         TmdbPagedResponse<TmdbMovieDto> tmdb = tmdbClient.searchMovies(query, page);
-        List<MediaCardDto> items = tmdb.getResults().stream()
-                .map(this::toMediaCardMovies)
-                .toList();
-        return mediaFilterService.paginate(items, filter, page, PAGE_SIZE);
+        List<MediaCardDto> items = mapMovies(tmdb);
+        return toPage(items, tmdb, filter);
     }
 
     public PagedResponseDto<MediaCardDto> searchTv(String query, int page, MediaFilterDto filter){
@@ -48,10 +43,8 @@ public class SearchService {
         if (page < 1) page = 1;
 
         TmdbPagedResponse<TmdbTvDto> tmdb = tmdbClient.searchTvShows(query, page);
-        List<MediaCardDto> items = tmdb.getResults().stream()
-                .map(this::toMediaCardTv)
-                .toList();
-        return mediaFilterService.paginate(items, filter, page, PAGE_SIZE);
+        List<MediaCardDto> items = mapTv(tmdb);
+        return toPage(items, tmdb, filter);
     }
 
     public PagedResponseDto<MediaCardDto> searchMulti(String query, int page, MediaFilterDto filter){
@@ -61,11 +54,13 @@ public class SearchService {
         if (page < 1) page = 1;
 
         TmdbPagedResponse<TmdbMultiSearchDto> tmdb = tmdbClient.searchMulti(query, page);
-        List<MediaCardDto> items = tmdb.getResults().stream()
-                .filter(r -> "movie".equals(r.getMediaType()) || "tv".equals(r.getMediaType()))
-                .map(this::toMultiMediaCard)
-                .toList();
-        return mediaFilterService.paginate(items, filter, page, PAGE_SIZE);
+        List<MediaCardDto> items = tmdb.getResults() == null
+                ? List.of()
+                : tmdb.getResults().stream()
+                        .filter(r -> "movie".equals(r.getMediaType()) || "tv".equals(r.getMediaType()))
+                        .map(mediaCardMapper::toCard)
+                        .toList();
+        return toPage(items, tmdb, filter);
     }
 
     private boolean isBlankQuery(String query) {
@@ -76,50 +71,23 @@ public class SearchService {
         return new PagedResponseDto<>(1, 0, List.of(), 0);
     }
 
-    private MediaCardDto toMediaCardMovies(TmdbMovieDto m){
-        return new MediaCardDto(
-                m.getId(),
-                MediaType.MOVIE,
-                m.getTitle(),
-                fullImageUrl(m.getPosterPath()),
-                m.getVoteAverage(),
-                m.getReleaseDate()
-        );
+    private List<MediaCardDto> mapMovies(TmdbPagedResponse<TmdbMovieDto> tmdb) {
+        if (tmdb.getResults() == null) return List.of();
+        return tmdb.getResults().stream().map(mediaCardMapper::toCard).toList();
     }
 
-    private MediaCardDto toMediaCardTv(TmdbTvDto t){
-        return new MediaCardDto(
-                t.getId(),
-                MediaType.TV,
-                t.getName(),
-                fullImageUrl(t.getPosterPath()),
-                t.getVoteAverage(),
-                t.getFirstAirDate()
-        );
+    private List<MediaCardDto> mapTv(TmdbPagedResponse<TmdbTvDto> tmdb) {
+        if (tmdb.getResults() == null) return List.of();
+        return tmdb.getResults().stream().map(mediaCardMapper::toCard).toList();
     }
-    private MediaCardDto toMultiMediaCard(TmdbMultiSearchDto m){
-        if ("movie".equals(m.getMediaType())){
-            return new MediaCardDto(
-                    m.getId(),
-                    MediaType.MOVIE,
-                    m.getTitle(),
-                    fullImageUrl(m.getPosterPath()),
-                    m.getVoteAverage(),
-                    m.getReleaseDate()
-            );
-        }
-        return new MediaCardDto(
-                m.getId(),
-                MediaType.TV,
-                m.getName(),
-                fullImageUrl(m.getPosterPath()),
-                m.getVoteAverage(),
-                m.getFirstAirDate()
-        );
 
-    }
-    private String fullImageUrl(String path){
-        if (path == null || path.isBlank()) return null;
-        return imageBaseUrl + path;
+    private PagedResponseDto<MediaCardDto> toPage(List<MediaCardDto> items, TmdbPagedResponse<?> tmdb, MediaFilterDto filter) {
+        return mediaFilterService.toPage(
+                items,
+                filter,
+                Math.max(tmdb.getPage(), 1),
+                tmdb.getTotalPages(),
+                tmdb.getTotalResults()
+        );
     }
 }

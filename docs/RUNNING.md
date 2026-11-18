@@ -20,6 +20,8 @@ cp .env.example .env
 
 `.env` is gitignored — never commit real keys. `.env.example` is the tracked template.
 
+Allowed frontend origins are configured with `KINO_CORS_ALLOWED_ORIGINS` (comma-separated). The default in `application.properties` allows `http://localhost:4200` and the deployed Vercel origin; set the variable to add or replace origins without touching code.
+
 ## Local development
 
 Backend:
@@ -54,7 +56,20 @@ Frontend:
 
 ```bash
 cd kino-frontend
-npm test
+npm test -- --watch=false
+```
+
+End-to-end (Playwright, mocked API — no backend or TMDB key needed):
+
+```bash
+cd kino-frontend
+npm run test:e2e
+```
+
+The config starts `ng serve` on `127.0.0.1:4200` automatically. If Playwright's bundled browser is unavailable, point it at a system Chromium:
+
+```bash
+PLAYWRIGHT_CHROMIUM_PATH=/usr/bin/chromium npm run test:e2e
 ```
 
 Production build:

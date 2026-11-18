@@ -14,29 +14,38 @@ import java.util.stream.Stream;
 public class MediaFilterService {
 
     /**
-     * Applies the filter/sort rules and wraps the result in a page, computing the
-     * total number of matches so callers do not repeat this bookkeeping.
+     * Filters and sorts the items of a single TMDB page and wraps them with the
+     * pagination metadata reported by TMDB.
+     *
+     * <p>Filters and sorting deliberately operate on the current page only: the
+     * application does not fetch the whole TMDB result set. Keeping TMDB's
+     * {@code totalPages}/{@code totalResults} makes page navigation coherent and
+     * the limitation is surfaced in the UI.</p>
      */
-    public PagedResponseDto<MediaCardDto> paginate(List<MediaCardDto> items, MediaFilterDto filter, int page, int pageSize) {
-        List<MediaCardDto> filteredItems = applyFiltersAndSort(items, filter, 1, pageSize);
-        int totalResults = countAfterFilters(items, filter);
-        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
-        return new PagedResponseDto<>(page, totalPages, filteredItems, totalResults);
-    }
-
-    public List<MediaCardDto> applyFiltersAndSort(
+    public PagedResponseDto<MediaCardDto> toPage(
             List<MediaCardDto> items,
             MediaFilterDto filter,
             int page,
-            int pageSize
+            int totalPages,
+            Integer totalResults
     ) {
-        List<MediaCardDto> filtered = applyFilters(items, filter).collect(Collectors.toList());
-        sortInPlace(filtered, filter);
-        return slice(filtered, page, pageSize);
+        int safePage = Math.max(page, 1);
+        int safeTotalPages = Math.max(totalPages, 0);
+        return new PagedResponseDto<>(
+                safePage,
+                safeTotalPages,
+                filterAndSort(items, filter),
+                totalResults == null ? 0 : Math.max(totalResults, 0)
+        );
     }
 
-    public int countAfterFilters(List<MediaCardDto> items, MediaFilterDto filter) {
-        return (int) applyFilters(items, filter).count();
+    public List<MediaCardDto> filterAndSort(List<MediaCardDto> items, MediaFilterDto filter) {
+        if (items == null || items.isEmpty()) {
+            return List.of();
+        }
+        List<MediaCardDto> filtered = applyFilters(items, filter).collect(Collectors.toList());
+        sortInPlace(filtered, filter);
+        return filtered;
     }
 
     private Stream<MediaCardDto> applyFilters(List<MediaCardDto> items, MediaFilterDto filter) {
@@ -69,15 +78,6 @@ public class MediaFilterService {
             comparator = comparator.reversed();
         }
         items.sort(comparator);
-    }
-
-    private List<MediaCardDto> slice(List<MediaCardDto> items, int page, int pageSize) {
-        int fromIndex = (page - 1) * pageSize;
-        if (fromIndex >= items.size()) {
-            return List.of();
-        }
-        int toIndex = Math.min(fromIndex + pageSize, items.size());
-        return items.subList(fromIndex, toIndex);
     }
 
     private Integer extractYear(String date) {

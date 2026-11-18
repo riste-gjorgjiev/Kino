@@ -36,6 +36,7 @@ It uses **Spring Boot (Java)** for the backend and **Angular** for the frontend,
 - Movie & TV endpoints: trending, popular, top-rated, upcoming (movies), on-the-air (TV)
 - Search: movies, TV, and multi (all)
 - Media details: overview, genres, runtime/status, directors (movies), creators (TV), cast, trailers/videos, keywords, and merged recommendations + similar titles
+- TV seasons: season list, season details and episode list endpoints
 - Filtering by year range and sorting by rating/date/title, with pagination
 - Server-side image URL resolution
 - Caffeine caching and a global exception handler
@@ -47,6 +48,7 @@ It uses **Spring Boot (Java)** for the backend and **Angular** for the frontend,
 - Filter & sort controls with URL synchronisation
 - Search page with All / Movies / TV tabs and per-tab pagination
 - Details page: backdrop hero, poster, tagline, overview, genres, rating, runtime/status, cast, video gallery with trailer modal, keyword chips, and a "More Like This" carousel
+- TV details season selector and episode guide (episode codes, air dates, runtimes, ratings)
 - Loading / empty / error states on every page
 - Responsive layout
 
@@ -68,7 +70,8 @@ Kino/
 │   └── src/app/
 │       ├── pages/                # home, media-list-page, search, details
 │       ├── shared/               # media-card, media-carousel, filter-controls,
-│       │                         # video-*, keyword-section, trailer-modal
+│       │                         # video-*, keyword-section, trailer-modal,
+│       │                         # season-episode-guide
 │       ├── core/models/          # DTOs mirroring the backend API
 │       ├── kino-api.service.ts   # HttpClient wrapper
 │       └── app.routes.ts
@@ -111,11 +114,12 @@ docker compose up -d --build
 ## 🧪 Running Tests
 
 ```bash
-cd kino-backend && ./mvnw test    # backend
-cd kino-frontend && npm test      # frontend
+cd kino-backend && ./mvnw test                # backend
+cd kino-frontend && npm test -- --watch=false # frontend
+cd kino-frontend && npm run test:e2e          # Playwright smoke test (mocked API)
 ```
 
-Backend tests are hermetic and do not require a TMDB key.
+Backend tests are hermetic and do not require a TMDB key. The E2E suite mocks the API, so it does not need the backend or a key either.
 
 ## 📚 Documentation
 
@@ -124,6 +128,7 @@ Backend tests are hermetic and do not require a TMDB key.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — how the code is organised
 - [docs/RUNNING.md](docs/RUNNING.md) — run & test guide
 - [docs/plans/backlog.md](docs/plans/backlog.md) — known issues & deferred work
+- [CHANGELOG.md](CHANGELOG.md) — notable changes
 
 ## 📌 Notes
 

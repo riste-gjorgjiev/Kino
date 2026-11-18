@@ -7,6 +7,7 @@ import mk.ukim.finki.wp.kino.dto.api.PagedResponseDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbPagedResponse;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbTvDto;
 import mk.ukim.finki.wp.kino.tmdb.TmdbClient;
+import mk.ukim.finki.wp.kino.util.ImageUrlBuilder;
 import mk.ukim.finki.wp.kino.util.TestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,10 +30,11 @@ class TvServiceTest {
 
     private TvService tvService;
     private final String imageBaseUrl = "https://image.tmdb.org/t/p/w500";
+    private final MediaCardMapper mediaCardMapper = new MediaCardMapper(new ImageUrlBuilder(imageBaseUrl));
 
     @BeforeEach
     void setUp() {
-        tvService = new TvService(tmdbClient, imageBaseUrl, mediaFilterService);
+        tvService = new TvService(tmdbClient, mediaCardMapper, mediaFilterService);
     }
 
     @Test
@@ -49,8 +51,8 @@ class TvServiceTest {
 
         assertNotNull(result);
         assertEquals(1, result.getPage());
-        assertEquals(1, result.getTotalPages());
-        assertEquals(1, result.getTotalResults());
+        assertEquals(5, result.getTotalPages());
+        assertEquals(100, result.getTotalResults());
         assertEquals(1, result.getItems().size());
 
         MediaCardDto card = result.getItems().get(0);

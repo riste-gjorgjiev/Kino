@@ -20,7 +20,7 @@ import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbKeywordsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbVideoDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbVideoResponseDto;
 import mk.ukim.finki.wp.kino.tmdb.TmdbClient;
-import org.springframework.beans.factory.annotation.Value;
+import mk.ukim.finki.wp.kino.util.ImageUrlBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,12 +35,14 @@ import java.util.function.Supplier;
 @Service
 
 public class MediaDetailsService {
-    private final TmdbClient tmdbClient;
-    private final String imageBaseUrl;
+    private static final int RECOMMENDATIONS_LIMIT = 12;
 
-    public MediaDetailsService(TmdbClient tmdbClient, @Value("${tmdb.image-base-url}") String imageBaseUrl) {
+    private final TmdbClient tmdbClient;
+    private final ImageUrlBuilder imageUrlBuilder;
+
+    public MediaDetailsService(TmdbClient tmdbClient, ImageUrlBuilder imageUrlBuilder) {
         this.tmdbClient = tmdbClient;
-        this.imageBaseUrl = imageBaseUrl;
+        this.imageUrlBuilder = imageUrlBuilder;
     }
 
 
@@ -65,8 +67,8 @@ public class MediaDetailsService {
         dto.setTitle(movie.getTitle());
         dto.setTagline(blankToNull(movie.getTagline()));
         dto.setOverview(blankToNull(movie.getOverview()));
-        dto.setPosterUrl(fullImageUrl(movie.getPosterPath()));
-        dto.setBackdropUrl(fullImageUrl(movie.getBackdropPath()));
+        dto.setPosterUrl(imageUrlBuilder.build(movie.getPosterPath()));
+        dto.setBackdropUrl(imageUrlBuilder.build(movie.getBackdropPath()));
         dto.setRating(movie.getVoteAverage());
         dto.setDate(blankToNull(movie.getReleaseDate()));
         dto.setGenres(mapGenres(movie.getGenres()));
@@ -105,8 +107,8 @@ public class MediaDetailsService {
         dto.setTitle(tv.getName());
         dto.setTagline(blankToNull(tv.getTagline()));
         dto.setOverview(blankToNull(tv.getOverview()));
-        dto.setPosterUrl(fullImageUrl(tv.getPosterPath()));
-        dto.setBackdropUrl(fullImageUrl(tv.getBackdropPath()));
+        dto.setPosterUrl(imageUrlBuilder.build(tv.getPosterPath()));
+        dto.setBackdropUrl(imageUrlBuilder.build(tv.getBackdropPath()));
         dto.setRating(tv.getVoteAverage());
         dto.setDate(blankToNull(tv.getFirstAirDate()));
         dto.setGenres(mapGenres(tv.getGenres()));
@@ -151,7 +153,7 @@ public class MediaDetailsService {
                         c.getId(),
                         c.getName(),
                         c.getCharacter(),
-                        fullImageUrl(c.getProfilePath())
+                        imageUrlBuilder.build(c.getProfilePath())
                 ))
                 .toList();
     }
@@ -164,11 +166,6 @@ public class MediaDetailsService {
     private Integer extractFirstRuntime(List<Integer> runtimes){
         if (runtimes == null || runtimes.isEmpty()) return null;
         return runtimes.getFirst();
-    }
-
-    private String fullImageUrl(String profilePath) {
-        if (profilePath == null || profilePath.isBlank()) return null;
-        return imageBaseUrl + profilePath;
     }
 
     private List<VideoDto> mapVideos(TmdbVideoResponseDto response) {
@@ -296,12 +293,12 @@ public class MediaDetailsService {
                             id.apply(t),
                             mediaType,
                             title.apply(t),
-                            fullImageUrl(posterPath.apply(t)),
+                            imageUrlBuilder.build(posterPath.apply(t)),
                             rating.apply(t),
                             date.apply(t)))
                     .forEach(merged::add);
         }
 
-        return merged.stream().limit(8).toList();
+        return merged.stream().limit(RECOMMENDATIONS_LIMIT).toList();
     }
 }

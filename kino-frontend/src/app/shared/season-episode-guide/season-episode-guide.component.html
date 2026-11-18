@@ -1,0 +1,81 @@
+<section class="season-guide" aria-labelledby="season-guide-title">
+  <h2 id="season-guide-title">Seasons &amp; Episodes</h2>
+
+  @if (loadingSeasons) {
+    <div class="state">Loading seasons…</div>
+  } @else if (error && seasons.length === 0) {
+    <div class="state error">
+      <p>{{ error }}</p>
+      <button class="retry-btn" (click)="retry()">Retry</button>
+    </div>
+  } @else if (seasons.length === 0) {
+    <div class="state">No seasons available.</div>
+  } @else {
+    <div class="season-toolbar">
+      <label for="season-select">Season</label>
+      <select
+        id="season-select"
+        [value]="selectedSeasonNumber ?? ''"
+        (change)="onSeasonChange($event)"
+      >
+        @for (season of seasons; track season.seasonNumber) {
+          <option [value]="season.seasonNumber">{{ seasonLabel(season) }}</option>
+        }
+      </select>
+    </div>
+
+    @if (loadingSeason) {
+      <div class="state">Loading episodes…</div>
+    } @else if (error) {
+      <div class="state error">
+        <p>{{ error }}</p>
+        <button class="retry-btn" (click)="retry()">Retry</button>
+      </div>
+    } @else if (season) {
+      @if (season.overview) {
+        <p class="season-overview">{{ season.overview }}</p>
+      }
+
+      @if (season.episodes.length > 0) {
+        <ol class="episode-list">
+          @for (episode of season.episodes; track episode.episodeNumber) {
+            <li class="episode">
+              <div class="still">
+                @if (episode.stillUrl) {
+                  <img [src]="episode.stillUrl" [alt]="episode.name || 'Episode still'" loading="lazy" />
+                } @else {
+                  <div class="no-still">No image</div>
+                }
+              </div>
+
+              <div class="episode-body">
+                <div class="episode-head">
+                  <span class="episode-code">{{ episodeCode(episode) }}</span>
+                  <h3>{{ episode.name || 'Untitled episode' }}</h3>
+                  @if (episode.rating != null) {
+                    <span class="episode-rating">⭐ {{ episodeRating(episode.rating) }}</span>
+                  }
+                </div>
+
+                <div class="episode-meta">
+                  @if (episode.airDate) {
+                    <span>{{ episode.airDate }}</span>
+                  }
+                  @if (episode.runtimeMinutes) {
+                    <span>· {{ episode.runtimeMinutes }} min</span>
+                  }
+                </div>
+
+                @if (episode.overview) {
+                  <p class="episode-overview">{{ episode.overview }}</p>
+                }
+              </div>
+            </li>
+          }
+        </ol>
+      } @else {
+        <div class="state">No episodes available for this season.</div>
+      }
+    }
+  }
+</section>

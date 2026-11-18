@@ -7,9 +7,12 @@ import mk.ukim.finki.wp.kino.dto.tmdb.TmdbTvDto;
 import mk.ukim.finki.wp.kino.dto.api.MediaDetailsDto;
 import mk.ukim.finki.wp.kino.dto.api.MediaType;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbMovieDetailsDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbSeasonDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbTvDetailsDto;
 import mk.ukim.finki.wp.kino.dto.api.VideoDto;
 import mk.ukim.finki.wp.kino.dto.api.KeywordDto;
+import mk.ukim.finki.wp.kino.dto.api.SeasonDto;
+import mk.ukim.finki.wp.kino.dto.api.EpisodeDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.*;
 
 import java.util.List;
@@ -139,6 +142,13 @@ public final class TestDataFactory {
         details.setOriginalLanguage("en");
         details.setGenres(List.of(createGenre(18L, "Drama")));
         details.setCreatedBy(List.of(createCreator("Test Creator")));
+        details.setNumberOfSeasons(2);
+        details.setNumberOfEpisodes(3);
+        details.setSeasons(List.of(
+                createSeason(0, "Specials", 0),
+                createSeason(1, "Season 1", 2),
+                createSeason(2, "Season 2", 1)
+        ));
         return details;
     }
 
@@ -272,5 +282,71 @@ public final class TestDataFactory {
         dto.setId(id);
         dto.setName(name);
         return dto;
+    }
+
+    public static TmdbSeasonDto createSeason(Integer seasonNumber, String name, Integer episodeCount) {
+        TmdbSeasonDto season = new TmdbSeasonDto();
+        season.setId(1000L + seasonNumber);
+        season.setSeasonNumber(seasonNumber);
+        season.setName(name);
+        season.setOverview(name + " overview");
+        season.setPosterPath("/season-" + seasonNumber + ".jpg");
+        season.setAirDate("2024-0" + Math.min(9, seasonNumber + 1) + "-01");
+        season.setEpisodeCount(episodeCount);
+        return season;
+    }
+
+    public static TmdbSeasonDetailsDto createSeasonDetails(Integer seasonNumber, List<TmdbEpisodeDto> episodes) {
+        TmdbSeasonDetailsDto season = new TmdbSeasonDetailsDto();
+        season.setId(1000L + seasonNumber);
+        season.setSeasonNumber(seasonNumber);
+        season.setName("Season " + seasonNumber);
+        season.setOverview("Season " + seasonNumber + " overview");
+        season.setPosterPath("/season-" + seasonNumber + ".jpg");
+        season.setAirDate("2024-01-01");
+        season.setEpisodes(episodes);
+        return season;
+    }
+
+    public static TmdbEpisodeDto createEpisode(Integer seasonNumber, Integer episodeNumber, String name, String stillPath) {
+        TmdbEpisodeDto episode = new TmdbEpisodeDto();
+        episode.setId(2000L + seasonNumber * 100L + episodeNumber);
+        episode.setSeasonNumber(seasonNumber);
+        episode.setEpisodeNumber(episodeNumber);
+        episode.setName(name);
+        episode.setOverview(name + " overview");
+        episode.setStillPath(stillPath);
+        episode.setAirDate("2024-01-0" + Math.min(9, episodeNumber) + "");
+        episode.setRuntime(45);
+        episode.setVoteAverage(8.0);
+        episode.setVoteCount(120);
+        return episode;
+    }
+
+    public static SeasonDto createSeasonDto(Integer seasonNumber, String name, Integer episodeCount) {
+        return new SeasonDto(
+                1000L + seasonNumber,
+                seasonNumber,
+                name,
+                name + " overview",
+                "https://image.tmdb.org/t/p/w500/season-" + seasonNumber + ".jpg",
+                "2024-01-01",
+                episodeCount
+        );
+    }
+
+    public static EpisodeDto createEpisodeDto(Integer seasonNumber, Integer episodeNumber, String name) {
+        return new EpisodeDto(
+                2000L + seasonNumber * 100L + episodeNumber,
+                seasonNumber,
+                episodeNumber,
+                name,
+                name + " overview",
+                "https://image.tmdb.org/t/p/w500/still-" + episodeNumber + ".jpg",
+                "2024-01-01",
+                45,
+                8.0,
+                120
+        );
     }
 }

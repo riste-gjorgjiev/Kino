@@ -1,0 +1,171 @@
+.season-guide {
+  max-width: 1200px;
+  margin: 3rem auto;
+  padding: 0 2rem;
+}
+
+.season-guide h2 {
+  margin-bottom: 1rem;
+}
+
+.season-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.season-toolbar label {
+  font-weight: 600;
+}
+
+.season-toolbar select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+  min-width: 220px;
+}
+
+.season-overview {
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.episode-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.episode {
+  display: flex;
+  gap: 1rem;
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.75rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.still {
+  flex: 0 0 180px;
+}
+
+.still img,
+.no-still {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #e5e5e5;
+}
+
+.no-still {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.episode-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.episode-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.episode-head h3 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.episode-code {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #007bff;
+  letter-spacing: 0.03em;
+}
+
+.episode-rating {
+  font-size: 0.8rem;
+  color: #555;
+  margin-left: auto;
+}
+
+.episode-meta {
+  font-size: 0.8rem;
+  color: #777;
+  margin: 0.25rem 0 0.5rem;
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.episode-overview {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #444;
+}
+
+.state {
+  margin: 1rem 0;
+  color: #666;
+}
+
+.state.error {
+  color: #d32f2f;
+}
+
+.retry-btn {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.retry-btn:hover {
+  background: #0056b3;
+}
+
+@media (max-width: 768px) {
+  .season-guide {
+    padding: 0 1rem;
+    margin: 2rem auto;
+  }
+
+  .still {
+    flex-basis: 140px;
+  }
+
+  .season-toolbar select {
+    min-width: 0;
+    flex: 1;
+  }
+}
+
+@media (max-width: 520px) {
+  .episode {
+    flex-direction: column;
+  }
+
+  .still {
+    flex-basis: auto;
+  }
+
+  .episode-rating {
+    margin-left: 0;
+  }
+}

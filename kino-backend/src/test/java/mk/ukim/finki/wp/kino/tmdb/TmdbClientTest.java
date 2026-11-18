@@ -806,4 +806,29 @@ class TmdbClientTest {
         tmdbClient.getTvSimilar(1399, -5);
         mockServer.verify();
     }
+
+    // ===== TV Season Details =====
+
+    @Test
+    void getTvSeasonDetails_callsCorrectUrlAndDeserializesEpisodes() throws Exception {
+        TmdbSeasonDetailsDto expected = TestDataFactory.createSeasonDetails(
+                2,
+                List.of(TestDataFactory.createEpisode(2, 1, "Pilot", "/pilot.jpg"))
+        );
+        String json = objectMapper.writeValueAsString(expected);
+
+        mockServer.expect(requestToPath("/3/tv/1399/season/2"))
+            .andExpect(queryParam("api_key", "test-api-key"))
+            .andExpect(queryParam("language", "en-US"))
+            .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+
+        TmdbSeasonDetailsDto result = tmdbClient.getTvSeasonDetails(1399, 2);
+
+        assertNotNull(result);
+        assertEquals(2, result.getSeasonNumber());
+        assertEquals(1, result.getEpisodes().size());
+        assertEquals("Pilot", result.getEpisodes().get(0).getName());
+        assertEquals(1, result.getEpisodes().get(0).getEpisodeNumber());
+        mockServer.verify();
+    }
 }

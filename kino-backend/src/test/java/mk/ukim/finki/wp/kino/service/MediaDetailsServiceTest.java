@@ -10,6 +10,7 @@ import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbCreditsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbVideoDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbVideoResponseDto;
 import mk.ukim.finki.wp.kino.tmdb.TmdbClient;
+import mk.ukim.finki.wp.kino.util.ImageUrlBuilder;
 import mk.ukim.finki.wp.kino.util.TestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ class MediaDetailsServiceTest {
 
     @BeforeEach
     void setUp() {
-        mediaDetailsService = new MediaDetailsService(tmdbClient, "https://image.tmdb.org/t/p/w500");
+        mediaDetailsService = new MediaDetailsService(tmdbClient, new ImageUrlBuilder("https://image.tmdb.org/t/p/w500"));
     }
 
     @Test
@@ -230,18 +231,18 @@ class MediaDetailsServiceTest {
     }
 
     @Test
-    void getMovieDetails_combinesRecommendationsAndSimilarAndCapsAt8() {
+    void getMovieDetails_combinesRecommendationsAndSimilarAndCapsAt12() {
         when(tmdbClient.getMovieDetails(anyLong())).thenReturn(TestDataFactory.createMovieDetails());
         when(tmdbClient.getMovieCredits(anyLong())).thenReturn(TestDataFactory.createCredits());
         when(tmdbClient.getMovieVideos(anyLong())).thenReturn(null);
         when(tmdbClient.getMovieKeywords(anyLong())).thenReturn(null);
 
         List<TmdbMovieDto> recs = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             recs.add(TestDataFactory.createMovie(100L + i, "Rec " + i, "/p" + i + ".jpg"));
         }
         List<TmdbMovieDto> sims = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             sims.add(TestDataFactory.createMovie(200L + i, "Sim " + i, "/s" + i + ".jpg"));
         }
 
@@ -254,7 +255,7 @@ class MediaDetailsServiceTest {
 
         MediaDetailsDto result = mediaDetailsService.getMovieDetails(1L);
 
-        assertEquals(8, result.getRecommendations().size());
+        assertEquals(12, result.getRecommendations().size());
         assertTrue(result.getRecommendations().stream()
                 .allMatch(r -> r.getMediaType() == MediaType.MOVIE));
     }

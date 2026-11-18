@@ -5,6 +5,7 @@ import mk.ukim.finki.wp.kino.dto.tmdb.TmdbMultiSearchDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbPagedResponse;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbTvDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbMovieDetailsDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbSeasonDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbTvDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbCreditsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbKeywordsDto;
@@ -327,5 +328,16 @@ public class TmdbClient {
                         .build(id))
                 .retrieve()
                 .body(TV_PAGE_TYPE);
+    }
+
+    public TmdbSeasonDetailsDto getTvSeasonDetails(long tvId, int seasonNumber){
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/tv/{id}/season/{seasonNumber}")
+                        .queryParam("api_key", apiKey)
+                        .queryParam("language", language)
+                        .build(tvId, seasonNumber))
+                .retrieve()
+                .body(TmdbSeasonDetailsDto.class);
     }
 }

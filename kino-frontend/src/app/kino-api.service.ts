@@ -4,6 +4,9 @@ import { Observable } from 'rxjs';
 import {PagedResponseDto} from './core/models/paged-response.dto';
 import {MediaCardDto} from './core/models/media-card.dto';
 import {MediaDetailsDto} from './core/models/media-details-dto';
+import {SeasonDto} from './core/models/season-dto';
+import {SeasonDetailsDto} from './core/models/season-details-dto';
+import {EpisodeDto} from './core/models/episode-dto';
 import {FilterState} from './core/models/filter-state.model';
 import { environment } from '../environments/environment';
 
@@ -78,6 +81,18 @@ export class KinoApiService {
 
   detailsTv(id: number) {
     return this.http.get<MediaDetailsDto>(`${this.baseUrl}/tv/${id}`);
+  }
+
+  tvSeasons(id: number) {
+    return this.http.get<SeasonDto[]>(`${this.baseUrl}/tv/${id}/seasons`);
+  }
+
+  tvSeasonDetails(id: number, seasonNumber: number) {
+    return this.http.get<SeasonDetailsDto>(`${this.baseUrl}/tv/${id}/seasons/${seasonNumber}`);
+  }
+
+  tvSeasonEpisodes(id: number, seasonNumber: number) {
+    return this.http.get<EpisodeDto[]>(`${this.baseUrl}/tv/${id}/seasons/${seasonNumber}/episodes`);
   }
 
   searchMovies(query: string, page = 1, filter?: FilterState) {

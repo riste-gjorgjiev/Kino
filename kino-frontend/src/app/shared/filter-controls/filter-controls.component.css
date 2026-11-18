@@ -43,3 +43,9 @@
 .clear-btn:hover {
   background: #c73e54;
 }
+
+.filter-note {
+  margin: -0.5rem 0 1rem;
+  font-size: 0.8rem;
+  color: #666;
+}

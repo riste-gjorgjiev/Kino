@@ -5,7 +5,11 @@ import mk.ukim.finki.wp.kino.dto.api.MediaFilterDto;
 import mk.ukim.finki.wp.kino.dto.api.MediaType;
 import mk.ukim.finki.wp.kino.dto.api.PagedResponseDto;
 import mk.ukim.finki.wp.kino.dto.api.MediaDetailsDto;
+import mk.ukim.finki.wp.kino.dto.api.EpisodeDto;
+import mk.ukim.finki.wp.kino.dto.api.SeasonDetailsDto;
+import mk.ukim.finki.wp.kino.dto.api.SeasonDto;
 import mk.ukim.finki.wp.kino.service.MediaDetailsService;
+import mk.ukim.finki.wp.kino.service.TvSeasonService;
 import mk.ukim.finki.wp.kino.service.TvService;
 import mk.ukim.finki.wp.kino.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
@@ -33,6 +37,9 @@ class TvControllerTest {
 
     @MockitoBean
     private MediaDetailsService mediaDetailsService;
+
+    @MockitoBean
+    private TvSeasonService tvSeasonService;
 
     @MockitoBean
     private CacheManager cacheManager;
@@ -159,5 +166,72 @@ class TvControllerTest {
             .andExpect(jsonPath("$.mediaType").value("TV"));
 
         verify(mediaDetailsService).getTvDetails(1399L);
+    }
+
+    @Test
+    void seasons_returnsSeasonList() throws Exception {
+        List<SeasonDto> seasons = List.of(
+                TestDataFactory.createSeasonDto(1, "Season 1", 2),
+                TestDataFactory.createSeasonDto(2, "Season 2", 3)
+        );
+        when(tvSeasonService.getSeasons(1399L)).thenReturn(seasons);
+
+        mockMvc.perform(get("/api/tv/1399/seasons"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].seasonNumber").value(1))
+            .andExpect(jsonPath("$[1].name").value("Season 2"))
+            .andExpect(jsonPath("$[1].episodeCount").value(3));
+
+        verify(tvSeasonService).getSeasons(1399L);
+    }
+
+    @Test
+    void seasonDetails_returnsSeasonWithEpisodes() throws Exception {
+        SeasonDetailsDto details = new SeasonDetailsDto(
+                1001L,
+                1,
+                "Season 1",
+                "Season 1 overview",
+                "https://image.tmdb.org/t/p/w500/season-1.jpg",
+                "2024-01-01",
+                1,
+                List.of(TestDataFactory.createEpisodeDto(1, 1, "Pilot"))
+        );
+        when(tvSeasonService.getSeasonDetails(1399L, 1)).thenReturn(details);
+
+        mockMvc.perform(get("/api/tv/1399/seasons/1"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.seasonNumber").value(1))
+            .andExpect(jsonPath("$.episodes[0].name").value("Pilot"));
+
+        verify(tvSeasonService).getSeasonDetails(1399L, 1);
+    }
+
+    @Test
+    void episodes_returnsEpisodeList() throws Exception {
+        List<EpisodeDto> episodes = List.of(
+                TestDataFactory.createEpisodeDto(1, 1, "Pilot"),
+                TestDataFactory.createEpisodeDto(1, 2, "Second")
+        );
+        when(tvSeasonService.getEpisodes(1399L, 1)).thenReturn(episodes);
+
+        mockMvc.perform(get("/api/tv/1399/seasons/1/episodes"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].episodeNumber").value(1))
+            .andExpect(jsonPath("$[1].name").value("Second"));
+
+        verify(tvSeasonService).getEpisodes(1399L, 1);
+    }
+
+    @Test
+    void seasonDetails_withNegativeSeasonNumber_returnsBadRequest() throws Exception {
+        mockMvc.perform(get("/api/tv/1399/seasons/-1"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void seasons_withNonPositiveTvId_returnsBadRequest() throws Exception {
+        mockMvc.perform(get("/api/tv/0/seasons"))
+            .andExpect(status().isBadRequest());
     }
 }

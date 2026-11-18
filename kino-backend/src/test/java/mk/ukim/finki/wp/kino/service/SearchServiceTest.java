@@ -9,6 +9,7 @@ import mk.ukim.finki.wp.kino.dto.tmdb.TmdbMultiSearchDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbPagedResponse;
 import mk.ukim.finki.wp.kino.dto.tmdb.TmdbTvDto;
 import mk.ukim.finki.wp.kino.tmdb.TmdbClient;
+import mk.ukim.finki.wp.kino.util.ImageUrlBuilder;
 import mk.ukim.finki.wp.kino.util.TestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,10 +32,11 @@ class SearchServiceTest {
 
     private SearchService searchService;
     private final String imageBaseUrl = "https://image.tmdb.org/t/p/w500";
+    private final MediaCardMapper mediaCardMapper = new MediaCardMapper(new ImageUrlBuilder(imageBaseUrl));
 
     @BeforeEach
     void setUp() {
-        searchService = new SearchService(tmdbClient, imageBaseUrl, mediaFilterService);
+        searchService = new SearchService(tmdbClient, mediaCardMapper, mediaFilterService);
     }
 
     // ===== Search Movies =====

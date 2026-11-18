@@ -13,7 +13,7 @@ export interface MediaDetailsDto{
   posterUrl: string | null;
   backdropUrl: string | null;
 
-  rating: string | null;
+  rating: number | null;
   date: string | null;
   genres: string[];
   runtimeMinutes: number | null;

@@ -15,8 +15,8 @@ public class CacheConfig {
         CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager(
                 "trendingMovies", "popularMovies", "topRatedMovies", "upcomingMovies",
                 "trendingTv", "popularTv", "topRatedTv", "airingTvShows",
-                "searchMovies", "searchTv"
-
+                "searchMovies", "searchTv",
+                "tvSeasons", "tvSeasonDetails", "tvSeasonEpisodes"
         );
 
         caffeineCacheManager.setCaffeine(

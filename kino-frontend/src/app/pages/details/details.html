@@ -88,6 +88,10 @@
     </app-video-section>
   }
 
+  @if (data.mediaType === 'TV') {
+    <app-season-episode-guide [tvId]="data.id"></app-season-episode-guide>
+  }
+
   @if (data.keywords.length) {
     <app-keyword-section [keywords]="data.keywords"></app-keyword-section>
   }

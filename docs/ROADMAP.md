@@ -10,7 +10,7 @@
 
 ## 1. Executive Summary
 
-**Kino** is a full-stack movie and TV discovery application built with **Spring Boot (Java 21)** and **Angular 21**. It currently provides a clean, TMDB-powered browsing experience with trending, popular, top-rated, and upcoming content, plus search and detail pages.
+**Kino** is a full-stack movie and TV discovery application built with **Spring Boot (Java 21)** and **Angular 21**. It currently provides a clean, TMDB-powered browsing experience with trending, popular, top-rated, and upcoming content, plus search, detail pages, and TV season/episode guides.
 
 This plan outlines a pragmatic, incremental roadmap to evolve Kino from a functional MVP into a feature-rich, production-ready platform. The roadmap is divided into **short-term**, **mid-term**, and **long-term** phases, with realistic deadlines assuming a **small part-time team (1–2 developers)** working roughly 10–15 hours per week.
 
@@ -27,9 +27,9 @@ This plan outlines a pragmatic, incremental roadmap to evolve Kino from a functi
 - Good code organization and consistent naming.
 
 ### 2.2 Weaknesses & Technical Debt
-- ~~**No automated tests** beyond basic context/component creation tests.~~ ✅ Resolved — backend (JUnit 5 + Mockito) and frontend (Vitest) suites exist.
+- ~~**No automated tests** beyond basic context/component creation tests.~~ ✅ Resolved — backend (JUnit 5 + Mockito), frontend (Vitest) and Playwright E2E suites exist.
 - ~~**No input validation** on REST endpoints.~~ ✅ Resolved — Bean Validation on controllers.
-- ~~**Hardcoded CORS** origin.~~ ✅ Resolved — origins externalised to `kino.cors.allowed-origins`.
+- ~~**Hardcoded CORS** origin.~~ ✅ Resolved — origins externalised to `KINO_CORS_ALLOWED_ORIGINS` (`kino.cors.allowed-origins`).
 - ~~**No structured logging** or application monitoring.~~ ✅ Resolved — `LoggingFilter` + SLF4J.
 - **No retry/circuit-breaker logic** for TMDB API failures. ⬜ (Phase 5)
 - **No rate limiting** or quota protection for TMDB calls. ⬜ (Phase 5)
@@ -81,17 +81,15 @@ Phase 1 is complete. See [weekly/week3-sorting-filtering.md](weekly/week3-sortin
 |------|-------|--------------|
 | **W5** ✅ | Trailers & Videos | Integrate TMDB `/videos` endpoint; expose video list in `MediaDetailsDto`; add YouTube embed modal on details page. |
 | **W6** ✅ | Keywords & Recommendations | Add keywords, similar titles, and TMDB recommendations to details page. |
-| **W7–W8** ⬜ | TV Seasons & Episodes | New endpoints: season list, season details, episode list; frontend season selector and episode guide. **← next feature** |
-| **W9** ⬜ | Person Details | Add person/actor detail pages with filmography. |
+| **W7–W8** ✅ | TV Seasons & Episodes | Season list, season details and episode list endpoints; frontend season selector and episode guide. |
+| **W9** ⬜ | Person Details | Add person/actor detail pages with filmography. **← next feature** |
 | **W10** 🚧 | Responsive & Animation Polish | CSS transitions, carousel touch support, mobile navigation overhaul. (partial: responsive layout done in Week 4) |
 
 **Milestone:** Kino becomes a credible TMDB-style discovery experience.
 
 **Deadline:** End of Week 10 (approximately **2.5 months** from start).
 
-W5 and W6 are complete — see [weekly/week5-trailers.md](weekly/week5-trailers.md) and [weekly/week6-keywords-recommendations.md](weekly/week6-keywords-recommendations.md). The next planned feature is **TV seasons & episodes (W7–W8)**.
-
-> Note: the recommendations + similar list is currently capped at **8** items in code, while the Week 6 plan says 12. Align before the next pass (tracked in [backlog](plans/backlog.md)).
+W5–W8 are complete — see [weekly/week5-trailers.md](weekly/week5-trailers.md), [weekly/week6-keywords-recommendations.md](weekly/week6-keywords-recommendations.md) and [weekly/week7-8-tv-seasons-episodes.md](weekly/week7-8-tv-seasons-episodes.md). The next planned feature is **person details (W9)**.
 
 ---
 
@@ -197,11 +195,10 @@ W5 and W6 are complete — see [weekly/week5-trailers.md](weekly/week5-trailers.
 
 ## 8. Immediate Next Steps
 
-1. **Implement TV seasons & episodes (W7–W8)** — the next planned feature.
+1. **Implement person details (W9)** — the next planned feature.
 2. Re-apply the deferred DevOps branch (Dockerfile hardening, CI/CD, Kubernetes) and standardise the namespace — see [backlog](plans/backlog.md).
-3. Align the recommendations cap (8 in code vs 12 in the plan).
-4. Add API documentation (OpenAPI/Swagger).
-5. Add frontend tests for `media-carousel` and `media-card`.
+3. Add API documentation (OpenAPI/Swagger).
+4. Continue the responsive/animation polish planned for W10.
 
 ---
 

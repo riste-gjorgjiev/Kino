@@ -7,11 +7,12 @@ import {VideoSectionComponent} from '../../shared/video-section/video-section.co
 import {TrailerModalComponent} from '../../shared/trailer-modal/trailer-modal.component';
 import {MediaCarouselComponent} from '../../shared/media-carousel/media-carousel.component';
 import {KeywordSectionComponent} from '../../shared/keyword-section/keyword-section.component';
+import {SeasonEpisodeGuideComponent} from '../../shared/season-episode-guide/season-episode-guide.component';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [VideoSectionComponent, TrailerModalComponent, MediaCarouselComponent, KeywordSectionComponent],
+  imports: [VideoSectionComponent, TrailerModalComponent, MediaCarouselComponent, KeywordSectionComponent, SeasonEpisodeGuideComponent],
   templateUrl: './details.html',
   styleUrl: './details.css',
 })

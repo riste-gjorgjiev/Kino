@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbCreatorDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbGenreDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbSeasonDto;
 
 import java.util.List;
 
@@ -31,4 +32,9 @@ public class TmdbTvDetailsDto {
     private List<TmdbGenreDto> genres;
     @JsonProperty("created_by")
     private List<TmdbCreatorDto> createdBy;
+    @JsonProperty("number_of_seasons")
+    private Integer numberOfSeasons;
+    @JsonProperty("number_of_episodes")
+    private Integer numberOfEpisodes;
+    private List<TmdbSeasonDto> seasons;
 }
