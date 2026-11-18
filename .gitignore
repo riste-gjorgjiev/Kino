@@ -3,11 +3,20 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-kino-backend/.env
 kino-backend/target/
-kino-frontend/node_modules
+kino-frontend/node_modules/
 kino-frontend/dist/
-docs/
+kino-frontend/.angular/
+
+# Local scratch / large binaries that must never be committed
+minikube-linux-amd64
+untitled/
+
+# Secrets and local env files (keep .env.example tracked)
+.env
+*.env
+!.env.example
+!.env.*.example
 
 ### STS ###
 .apt_generated
@@ -17,11 +26,9 @@ docs/
 .settings
 .springBeans
 .sts4-cache
-.env
-.opencode
 
 ### IntelliJ IDEA ###
-kino-backend/.idea
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -43,4 +50,3 @@ build/
 ### OpenCode ###
 opencode.json
 .opencode/
-.idea/
