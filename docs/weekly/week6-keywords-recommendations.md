@@ -838,3 +838,20 @@ describe('Details', () => {
 ---
 
 *End of Week 6 plan.*
+
+---
+
+## Completion note
+
+Week 6 shipped in commit `c035472` ("Added keywords, similar titles and TMDB recommendations to details page").
+
+What landed:
+- ✅ Backend `getMovieKeywords`/`getTvKeywords`, `get{Movie,Tv}Recommendations`, `get{Movie,Tv}Similar` in `TmdbClient`.
+- ✅ `TmdbKeywordsDto` handling both the movie (`keywords`) and TV (`results`) JSON shapes.
+- ✅ `MediaDetailsDto` extended with `keywords` and `recommendations`; `MediaDetailsService` merges recommendations + similar, de-duplicated, with non-critical failures tolerated.
+- ✅ Frontend `KeywordSectionComponent` and a "More Like This" carousel on the details page.
+- ✅ Backend and frontend tests.
+
+Deviation from the plan:
+- The merged recommendations + similar list is capped at **8** items in code, not 12 (see [backlog](../plans/backlog.md)).
+- The optional `@Cacheable` annotations for the new TMDB calls were not added.

@@ -6,140 +6,130 @@ It uses **Spring Boot (Java)** for the backend and **Angular** for the frontend,
 ## 🌐 Live Demo
 
 **Frontend:** https://kino-one-eta.vercel.app/
-
 **Backend:** https://kino-wt69.onrender.com
 
-> ⚠️ **Note:** The backend is hosted on Render's free tier, which goes to sleep after inactivity. The first request may take around a minute to load as the service wakes up. Please be patient if the initial load seems slow.
+> ⚠️ **Note:** The backend is hosted on Render's free tier, which sleeps after inactivity. The first request may take around a minute to wake up.
 
 ## 🛠 Tech Stack
-Backend
 
-- **Java 21**
-- **Spring Boot 4.0.2**
-- **Spring Web (RestClient)**
-- **Jackson 3.x (JSON mapping)**
-- **Caffeine (caching)**
-- **TMDB API**
-- **JUnit 5 + Mockito (testing)**
-
-Frontend
-- **Angular 21 (standalone components)**
-- **Angular Router**
-- **HttpClient**
-- **RxJS**
-- **Vitest (testing)**
-
----
-
-## ✅ Implemented Features
 **Backend**
-
-- TMDB API client abstraction (TmdbClient)
-- Unified API DTOs (clean API, no TMDB leakage)
-- Movie & TV endpoints:
-  - Trending movies & TV
-  - Popular movies & TV
-  - Upcoming movies
-  - On-the-air TV shows
-  - Top-rated movies & TV
-
-- Search:
-  - Movies search
-  - TV search
-  - Multi (All) search
-
-- Media details endpoints:
-  - Movie details (overview, genres, runtime, directors, cast, etc.)
-  - TV show details (overview, genres, creators, cast, etc.)
-- Environment-based configuration (.env, application.properties)
-- Image URL resolution handled server-side
+- Java 21
+- Spring Boot 4.0.2
+- Spring Web (RestClient)
+- Jackson (JSON mapping)
+- Caffeine (caching)
+- Bean Validation
+- TMDB API
+- JUnit 5 + Mockito
 
 **Frontend**
-- Home page with trending movies & TV
-- Media list pages (Movies / TV):
-  - Popular
-  - Top Rated
-  - Upcoming (movies)
-  - On TV (tv shows)
-- Search page:
-  - All / Movies / TV tabs
-  - Pagination per tab
-- Media details page:
-  - Backdrop hero section
-  - Poster, title, tagline, overview
-  - Genres, rating, runtime/status
-  - Directors (movies)
-  - Creators (TV)
-  - Horizontally scrollable cast list
-- SPA navigation with Angular Router
-- Shared API service (KinoApiService)
-- Strong typing with frontend DTOs matching backend responses
+- Angular 21 (standalone components)
+- Angular Router
+- HttpClient + RxJS
+- Vitest
+
+## ✅ Implemented Features
+
+**Backend**
+- TMDB API client abstraction (`TmdbClient`)
+- Unified API DTOs — no TMDB leakage to the frontend
+- Movie & TV endpoints: trending, popular, top-rated, upcoming (movies), on-the-air (TV)
+- Search: movies, TV, and multi (all)
+- Media details: overview, genres, runtime/status, directors (movies), creators (TV), cast, trailers/videos, keywords, and merged recommendations + similar titles
+- Filtering by year range and sorting by rating/date/title, with pagination
+- Server-side image URL resolution
+- Caffeine caching and a global exception handler
+- Environment-based configuration (`.env`, `application.properties`)
+
+**Frontend**
+- Home page with trending movies & TV carousels
+- Media list pages (Movies / TV): popular, top-rated, upcoming, on-the-air
+- Filter & sort controls with URL synchronisation
+- Search page with All / Movies / TV tabs and per-tab pagination
+- Details page: backdrop hero, poster, tagline, overview, genres, rating, runtime/status, cast, video gallery with trailer modal, keyword chips, and a "More Like This" carousel
+- Loading / empty / error states on every page
+- Responsive layout
+
+## 📂 Project Structure
 
 ```
-📂 Project Structure
 Kino/
-├── kino-backend/
-│   ├── controller/
-│   ├── service/
-│   ├── tmdb/
-│   ├── dto/
-│   │   ├── api/
-│   │   └── tmdb/
-│   └── KinoApplication.java
+├── kino-backend/                 # Spring Boot API
+│   └── src/main/java/mk/ukim/finki/wp/kino/
+│       ├── controller/           # REST endpoints
+│       ├── service/              # mapping, filtering, enrichment, caching
+│       ├── tmdb/TmdbClient.java  # TMDB HTTP client
+│       ├── dto/api/              # public API models
+│       ├── dto/tmdb/             # internal TMDB models
+│       ├── config/               # CORS, cache, RestClient, logging
+│       └── exception/            # global error handling
 │
-├── kino-frontend/
-│   ├── src/app/
-│   │   ├── pages/
-│   │   │   ├── home/
-│   │   │   ├── media-list-page/
-│   │   │   ├── details/
-│   │   │   └── search/
-│   │   ├── core/models/
-│   │   ├── kino-api.service.ts
-│   │   └── app.routes.ts
-│   └── angular.json
+├── kino-frontend/                # Angular SPA
+│   └── src/app/
+│       ├── pages/                # home, media-list-page, search, details
+│       ├── shared/               # media-card, media-carousel, filter-controls,
+│       │                         # video-*, keyword-section, trailer-modal
+│       ├── core/models/          # DTOs mirroring the backend API
+│       ├── kino-api.service.ts   # HttpClient wrapper
+│       └── app.routes.ts
+│
+├── docs/                         # roadmap, architecture, weekly history, devops
+└── docker-compose.yml
 ```
+
 ## 🔐 Environment Variables
-Create a .env file (backend):
+
+Copy the template and add your TMDB key:
+
+```bash
+cp .env.example .env
+```
+
 ```
 TMDB_API_KEY=your_tmdb_api_key
 ```
 
-Example application.properties:
-```
-tmdb.base-url=https://api.themoviedb.org/3
-tmdb.image-base-url=https://image.tmdb.org/t/p/w500
-```
+Get a key from https://www.themoviedb.org/settings/api. `.env` is gitignored — never commit real keys.
 
 ## ▶️ Running the Project
-**Backend**
-```
-cd kino-backend
-./mvnw spring-boot:run
-```
-Runs on: http://localhost:8080
 
-**Frontend**
+See **[docs/RUNNING.md](docs/RUNNING.md)** for full instructions (local dev, tests, and Docker Compose).
+
+Quick version:
+
+```bash
+# Backend
+cd kino-backend && ./mvnw spring-boot:run     # http://localhost:8080
+
+# Frontend
+cd kino-frontend && npm install && npm start  # http://localhost:4200
+
+# Or everything with Docker
+docker compose up -d --build
 ```
-cd kino-frontend
-npm install
-ng serve
-```
-Runs on: http://localhost:4200
 
 ## 🧪 Running Tests
-**Backend**
-```
-cd kino-backend
-./mvnw test
+
+```bash
+cd kino-backend && ./mvnw test    # backend
+cd kino-frontend && npm test      # frontend
 ```
 
-**Frontend**
-```
-cd kino-frontend
-npm test
-```
+Backend tests are hermetic and do not require a TMDB key.
+
+## 📚 Documentation
+
+- [docs/README.md](docs/README.md) — documentation index
+- [docs/ROADMAP.md](docs/ROADMAP.md) — progression plan and current status
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — how the code is organised
+- [docs/RUNNING.md](docs/RUNNING.md) — run & test guide
+- [docs/plans/backlog.md](docs/plans/backlog.md) — known issues & deferred work
 
 ## 📌 Notes
-- The project intentionally separates TMDB DTOs from API DTOs to keep the frontend independent from TMDB’s data format.
+
+- The project intentionally separates TMDB DTOs from API DTOs to keep the frontend independent of TMDB's data format.
 - No authentication is implemented yet — the focus is on clean architecture and API design first.
+
+## 📄 License
+
+[MIT](LICENSE)
