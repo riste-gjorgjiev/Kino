@@ -7,6 +7,7 @@ import {MediaDetailsDto} from './core/models/media-details-dto';
 import {SeasonDto} from './core/models/season-dto';
 import {SeasonDetailsDto} from './core/models/season-details-dto';
 import {EpisodeDto} from './core/models/episode-dto';
+import {PersonDetailsDto} from './core/models/person-details-dto';
 import {FilterState} from './core/models/filter-state.model';
 import { environment } from '../environments/environment';
 
@@ -93,6 +94,10 @@ export class KinoApiService {
 
   tvSeasonEpisodes(id: number, seasonNumber: number) {
     return this.http.get<EpisodeDto[]>(`${this.baseUrl}/tv/${id}/seasons/${seasonNumber}/episodes`);
+  }
+
+  personDetails(id: number) {
+    return this.http.get<PersonDetailsDto>(`${this.baseUrl}/person/${id}`);
   }
 
   searchMovies(query: string, page = 1, filter?: FilterState) {

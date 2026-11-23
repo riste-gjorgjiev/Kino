@@ -74,7 +74,7 @@ All future work should align with these pillars:
 Phase 1 is complete. See [weekly/week3-sorting-filtering.md](weekly/week3-sorting-filtering.md) and [weekly/week4-summary.md](weekly/week4-summary.md).
 ---
 
-### Phase 2 — Richer Media Experience (Weeks 5–10) 🚧 In progress
+### Phase 2 — Richer Media Experience (Weeks 5–10) ✅ Done
 **Goal:** Deepen content discovery with trailers, additional metadata, and TV season support.
 
 | Week | Focus | Deliverables |
@@ -82,14 +82,14 @@ Phase 1 is complete. See [weekly/week3-sorting-filtering.md](weekly/week3-sortin
 | **W5** ✅ | Trailers & Videos | Integrate TMDB `/videos` endpoint; expose video list in `MediaDetailsDto`; add YouTube embed modal on details page. |
 | **W6** ✅ | Keywords & Recommendations | Add keywords, similar titles, and TMDB recommendations to details page. |
 | **W7–W8** ✅ | TV Seasons & Episodes | Season list, season details and episode list endpoints; frontend season selector and episode guide. |
-| **W9** ⬜ | Person Details | Add person/actor detail pages with filmography. **← next feature** |
-| **W10** 🚧 | Responsive & Animation Polish | CSS transitions, carousel touch support, mobile navigation overhaul. (partial: responsive layout done in Week 4) |
+| **W9** ✅ | Person Details | Add person/actor detail pages with filmography. |
+| **W10** ✅ | Responsive & Animation Polish | CSS transitions, carousel touch support, mobile navigation overhaul (bottom tab bar), lazy-loaded routes. |
 
 **Milestone:** Kino becomes a credible TMDB-style discovery experience.
 
 **Deadline:** End of Week 10 (approximately **2.5 months** from start).
 
-W5–W8 are complete — see [weekly/week5-trailers.md](weekly/week5-trailers.md), [weekly/week6-keywords-recommendations.md](weekly/week6-keywords-recommendations.md) and [weekly/week7-8-tv-seasons-episodes.md](weekly/week7-8-tv-seasons-episodes.md). The next planned feature is **person details (W9)**.
+W5–W10 are complete — see [weekly/week5-trailers.md](weekly/week5-trailers.md), [weekly/week6-keywords-recommendations.md](weekly/week6-keywords-recommendations.md), [weekly/week7-8-tv-seasons-episodes.md](weekly/week7-8-tv-seasons-episodes.md), [weekly/week9-person-details.md](weekly/week9-person-details.md), and [weekly/week10-responsive-animation.md](weekly/week10-responsive-animation.md). Phase 2 is complete; the next phase is **Phase 3 — User Accounts & Personalization (W11–W20)**.
 
 ---
 
@@ -195,10 +195,10 @@ W5–W8 are complete — see [weekly/week5-trailers.md](weekly/week5-trailers.md
 
 ## 8. Immediate Next Steps
 
-1. **Implement person details (W9)** — the next planned feature.
+1. **Begin Phase 3 (W11–W12):** add PostgreSQL + Spring Data JPA and JWT auth infrastructure.
 2. Re-apply the deferred DevOps branch (Dockerfile hardening, CI/CD, Kubernetes) and standardise the namespace — see [backlog](plans/backlog.md).
 3. Add API documentation (OpenAPI/Swagger).
-4. Continue the responsive/animation polish planned for W10.
+4. Run a manual Lighthouse audit to confirm the Phase 2 mobile score target (≥80).
 
 ---
 

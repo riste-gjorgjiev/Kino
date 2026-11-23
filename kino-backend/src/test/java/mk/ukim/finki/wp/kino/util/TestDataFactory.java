@@ -14,6 +14,7 @@ import mk.ukim.finki.wp.kino.dto.api.KeywordDto;
 import mk.ukim.finki.wp.kino.dto.api.SeasonDto;
 import mk.ukim.finki.wp.kino.dto.api.EpisodeDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.*;
+import mk.ukim.finki.wp.kino.dto.tmdb.person.*;
 
 import java.util.List;
 
@@ -348,5 +349,52 @@ public final class TestDataFactory {
                 8.0,
                 120
         );
+    }
+
+    public static TmdbPersonDetailsDto createPersonDetails() {
+        TmdbPersonDetailsDto person = new TmdbPersonDetailsDto();
+        person.setId(1000L);
+        person.setName("Test Actor");
+        person.setBiography("A test actor biography");
+        person.setProfilePath("/actor.jpg");
+        person.setBirthday("1980-05-15");
+        person.setPlaceOfBirth("Los Angeles, California, USA");
+        person.setKnownForDepartment("Acting");
+        person.setAlsoKnownAs(List.of("Test Actor Jr.", "Another Name"));
+        return person;
+    }
+
+    public static TmdbPersonMovieCastDto createPersonMovieCast(Long id, String title, String releaseDate, Double rating, String character) {
+        TmdbPersonMovieCastDto cast = new TmdbPersonMovieCastDto();
+        cast.setId(id);
+        cast.setTitle(title);
+        cast.setPosterPath("/movie-" + id + ".jpg");
+        cast.setReleaseDate(releaseDate);
+        cast.setVoteAverage(rating);
+        cast.setCharacter(character);
+        return cast;
+    }
+
+    public static TmdbPersonTvCastDto createPersonTvCast(Long id, String name, String firstAirDate, Double rating, String character) {
+        TmdbPersonTvCastDto cast = new TmdbPersonTvCastDto();
+        cast.setId(id);
+        cast.setName(name);
+        cast.setPosterPath("/tv-" + id + ".jpg");
+        cast.setFirstAirDate(firstAirDate);
+        cast.setVoteAverage(rating);
+        cast.setCharacter(character);
+        return cast;
+    }
+
+    public static TmdbPersonMovieCreditDto createPersonMovieCredits(List<TmdbPersonMovieCastDto> cast) {
+        TmdbPersonMovieCreditDto credits = new TmdbPersonMovieCreditDto();
+        credits.setCast(cast);
+        return credits;
+    }
+
+    public static TmdbPersonTvCreditDto createPersonTvCredits(List<TmdbPersonTvCastDto> cast) {
+        TmdbPersonTvCreditDto credits = new TmdbPersonTvCreditDto();
+        credits.setCast(cast);
+        return credits;
     }
 }

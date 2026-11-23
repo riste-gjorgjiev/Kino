@@ -67,6 +67,7 @@ controller  →  service  →  tmdb/TmdbClient  →  TMDB REST API
 | GET | `/api/search/movie` | `query` |
 | GET | `/api/search/tv` | `query` |
 | GET | `/api/search/all` | `query`, multi-search (people filtered out) |
+| GET | `/api/person/{id}` | Person details (bio, filmography) |
 
 All list endpoints accept `page`, `yearFrom`, `yearTo`, `sortBy`, `sortOrder`.
 
@@ -78,7 +79,7 @@ Actuator: `GET /actuator/health`, `GET /actuator/mappings`.
 src/app/
 ├── core/models/          # hand-written DTO interfaces mirroring dto/api
 ├── kino-api.service.ts   # single HttpClient wrapper for the backend
-├── pages/                # routed pages: home, media-list-page, search, details
+├── pages/                # routed pages: home, media-list-page, search, details, person
 ├── shared/               # reusable components: media-card, media-carousel,
 │                         # filter-controls, video-*, keyword-section,
 │                         # trailer-modal, season-episode-guide
@@ -87,7 +88,9 @@ src/app/
 
 - Standalone components only; no `NgModule`.
 - Templates use the built-in `@if`/`@for` control flow (not `*ngIf`/`*ngFor`).
-- Route conventions: `/movies/:category`, `/tv/:category`, `/movies/details/:id`, `/tv/details/:id`, `/search`.
+- Routes are **lazy-loaded** via `loadComponent` in `app.routes.ts`.
+- Route conventions: `/movies/:category`, `/tv/:category`, `/movies/details/:id`, `/tv/details/:id`, `/person/:id`, `/search`.
+- Navigation: a top bar with Movies/TV dropdowns on desktop (≥769px); a fixed **bottom tab bar** (Home, Movies, TV, Search) on mobile (≤768px).
 - The API base URL comes from `environment.apiUrl`:
   - dev (`environment.ts`): `http://localhost:8080/api`
   - prod (`environment.prod.ts`): `/api` (relative — resolved by nginx in Docker and by `vercel.json` on Vercel)

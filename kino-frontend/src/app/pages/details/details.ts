@@ -1,4 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {RouterLink} from '@angular/router';
 import {MediaDetailsDto} from '../../core/models/media-details-dto';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {KinoApiService} from '../../kino-api.service';
@@ -12,7 +13,7 @@ import {SeasonEpisodeGuideComponent} from '../../shared/season-episode-guide/sea
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [VideoSectionComponent, TrailerModalComponent, MediaCarouselComponent, KeywordSectionComponent, SeasonEpisodeGuideComponent],
+  imports: [RouterLink, VideoSectionComponent, TrailerModalComponent, MediaCarouselComponent, KeywordSectionComponent, SeasonEpisodeGuideComponent],
   templateUrl: './details.html',
   styleUrl: './details.css',
 })

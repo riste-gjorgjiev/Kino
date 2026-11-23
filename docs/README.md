@@ -32,6 +32,8 @@ Used throughout the docs:
 | 5 | [Trailers & videos](weekly/week5-trailers.md) | (checklist completed in the plan) |
 | 6 | [Keywords & recommendations](weekly/week6-keywords-recommendations.md) | (completion note at end of the plan) |
 | 7–8 | [TV seasons & episodes](weekly/week7-8-tv-seasons-episodes.md) | (summary in the same document) |
+| 9 | [Person details](weekly/week9-person-details.md) | (summary in the same document) |
+| 10 | [Responsive & animation polish](weekly/week10-responsive-animation.md) | (summary in the same document) |
 
 > Note: `docs/` is tracked in git. It is **not** ignored, and the DevOps guide/report are part of the public repository.
 

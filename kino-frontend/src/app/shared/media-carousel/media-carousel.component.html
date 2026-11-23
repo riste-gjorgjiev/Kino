@@ -8,7 +8,16 @@
       ‹
     </button>
 
-    <div class="carousel-container" #carouselContainer>
+    <div
+      class="carousel-container"
+      #carouselContainer
+      tabindex="0"
+      role="region"
+      [attr.aria-label]="title + ' carousel'"
+      (touchstart)="onTouchStart($event)"
+      (touchmove)="onTouchMove($event)"
+      (touchend)="onTouchEnd()"
+    >
       @for (item of items; track item.id) {
         <app-media-card [item]="item" />
       }

@@ -97,9 +97,18 @@
 .cast-card {
   min-width: 140px;
   background: #111;
+  color: #fff;
   border-radius: 10px;
   padding: 0.5rem;
   text-align: center;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: block;
+}
+
+.cast-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
 .cast-card img {
@@ -163,7 +172,7 @@
   align-items: center;
   justify-content: center;
   font-size: 0.75rem;
-  color: #666;
+  color: #999;
 }
 
 /* ---------- RESPONSIVE ---------- */

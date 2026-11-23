@@ -10,6 +10,9 @@ import mk.ukim.finki.wp.kino.dto.tmdb.details.TmdbTvDetailsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbCreditsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbKeywordsDto;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.TmdbVideoResponseDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.person.TmdbPersonDetailsDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.person.TmdbPersonMovieCreditDto;
+import mk.ukim.finki.wp.kino.dto.tmdb.person.TmdbPersonTvCreditDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -339,5 +342,38 @@ public class TmdbClient {
                         .build(tvId, seasonNumber))
                 .retrieve()
                 .body(TmdbSeasonDetailsDto.class);
+    }
+
+    public TmdbPersonDetailsDto getPersonDetails(long id){
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/person/{id}")
+                        .queryParam("api_key", apiKey)
+                        .queryParam("language", language)
+                        .build(id))
+                .retrieve()
+                .body(TmdbPersonDetailsDto.class);
+    }
+
+    public TmdbPersonMovieCreditDto getPersonMovieCredits(long id){
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/person/{id}/movie_credits")
+                        .queryParam("api_key", apiKey)
+                        .queryParam("language", language)
+                        .build(id))
+                .retrieve()
+                .body(TmdbPersonMovieCreditDto.class);
+    }
+
+    public TmdbPersonTvCreditDto getPersonTvCredits(long id){
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/person/{id}/tv_credits")
+                        .queryParam("api_key", apiKey)
+                        .queryParam("language", language)
+                        .build(id))
+                .retrieve()
+                .body(TmdbPersonTvCreditDto.class);
     }
 }

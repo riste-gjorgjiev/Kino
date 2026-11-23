@@ -24,6 +24,13 @@
   padding: 0.35rem 0.8rem;
   font-size: 0.85rem;
   border: solid black 1px;
+  transition: background 0.2s, transform 0.2s;
+  cursor: default;
+}
+
+.keyword-chip:hover {
+  background: rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {

@@ -4,6 +4,7 @@ import tools.jackson.databind.ObjectMapper;
 import mk.ukim.finki.wp.kino.dto.tmdb.*;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.*;
 import mk.ukim.finki.wp.kino.dto.tmdb.details.misc.*;
+import mk.ukim.finki.wp.kino.dto.tmdb.person.*;
 import mk.ukim.finki.wp.kino.util.TestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -829,6 +830,74 @@ class TmdbClientTest {
         assertEquals(1, result.getEpisodes().size());
         assertEquals("Pilot", result.getEpisodes().get(0).getName());
         assertEquals(1, result.getEpisodes().get(0).getEpisodeNumber());
+        mockServer.verify();
+    }
+
+    // ===== Person Details =====
+
+    @Test
+    void getPersonDetails_callsCorrectUrl() throws Exception {
+        TmdbPersonDetailsDto expected = TestDataFactory.createPersonDetails();
+        String json = objectMapper.writeValueAsString(expected);
+
+        mockServer.expect(requestToPath("/3/person/1000"))
+            .andExpect(queryParam("api_key", "test-api-key"))
+            .andExpect(queryParam("language", "en-US"))
+            .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+
+        TmdbPersonDetailsDto result = tmdbClient.getPersonDetails(1000);
+
+        assertNotNull(result);
+        assertEquals(1000L, result.getId());
+        assertEquals("Test Actor", result.getName());
+        assertEquals("A test actor biography", result.getBiography());
+        assertEquals("1980-05-15", result.getBirthday());
+        mockServer.verify();
+    }
+
+    // ===== Person Movie Credits =====
+
+    @Test
+    void getPersonMovieCredits_callsCorrectUrl() throws Exception {
+        TmdbPersonMovieCreditDto expected = TestDataFactory.createPersonMovieCredits(
+            List.of(TestDataFactory.createPersonMovieCast(100L, "Movie One", "2024-01-15", 7.5, "Character A"))
+        );
+        String json = objectMapper.writeValueAsString(expected);
+
+        mockServer.expect(requestToPath("/3/person/1000/movie_credits"))
+            .andExpect(queryParam("api_key", "test-api-key"))
+            .andExpect(queryParam("language", "en-US"))
+            .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+
+        TmdbPersonMovieCreditDto result = tmdbClient.getPersonMovieCredits(1000);
+
+        assertNotNull(result);
+        assertEquals(1, result.getCast().size());
+        assertEquals("Movie One", result.getCast().get(0).getTitle());
+        assertEquals("Character A", result.getCast().get(0).getCharacter());
+        mockServer.verify();
+    }
+
+    // ===== Person TV Credits =====
+
+    @Test
+    void getPersonTvCredits_callsCorrectUrl() throws Exception {
+        TmdbPersonTvCreditDto expected = TestDataFactory.createPersonTvCredits(
+            List.of(TestDataFactory.createPersonTvCast(200L, "TV Show One", "2024-04-10", 8.5, "Character C"))
+        );
+        String json = objectMapper.writeValueAsString(expected);
+
+        mockServer.expect(requestToPath("/3/person/1000/tv_credits"))
+            .andExpect(queryParam("api_key", "test-api-key"))
+            .andExpect(queryParam("language", "en-US"))
+            .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+
+        TmdbPersonTvCreditDto result = tmdbClient.getPersonTvCredits(1000);
+
+        assertNotNull(result);
+        assertEquals(1, result.getCast().size());
+        assertEquals("TV Show One", result.getCast().get(0).getName());
+        assertEquals("Character C", result.getCast().get(0).getCharacter());
         mockServer.verify();
     }
 }

@@ -11,7 +11,8 @@ Known issues, deferred work and follow-ups. Not a commitment — just so nothing
 
 ## Known limitations
 
-- **Filtering scope.** `MediaFilterService` filters and sorts only the current TMDB page (20 items); it does not fetch additional pages to fill a filtered result set. `totalPages`/`totalResults` are passed through from TMDB, so paging metadata stays correct. The UI states this explicitly: “Filters and sorting apply to the current page of results.” Fetching multiple pages per request remains a possible future improvement.
+- **Filtering scope.** `MediaFilterService` filters and sorts only the current TMDB page (20 items); it does not fetch additional pages to fill a filtered result set. `totalPages`/`totalResults` are passed through from TMDB, so paging metadata stays correct. The UI states this explicitly: "Filters and sorting apply to the current page of results." Fetching multiple pages per request remains a possible future improvement.
+- **Person search.** Multi-search (`/api/search/all`) filters out people. People are discoverable through cast clicks on details pages. Adding a person search tab is a possible future improvement.
 
 ## Tooling / repo
 
@@ -19,4 +20,4 @@ Known issues, deferred work and follow-ups. Not a commitment — just so nothing
 
 ## Docs
 
-- None open. [ROADMAP.md](../ROADMAP.md) status markers are current; Week 6’s completion note reflects the shipped cap of 12; Week 7–8 is documented in [weekly/week7-8-tv-seasons-episodes.md](../weekly/week7-8-tv-seasons-episodes.md).
+- None open. [ROADMAP.md](../ROADMAP.md) status markers are current; Phase 2 (W5–W10) is documented in the weekly notes, including [week9-person-details.md](../weekly/week9-person-details.md) and [week10-responsive-animation.md](../weekly/week10-responsive-animation.md).

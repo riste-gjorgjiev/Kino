@@ -2,6 +2,7 @@
   <img
     [src]="item.posterUrl || 'assets/no-poster.png'"
     [alt]="getDisplayTitle()"
+    loading="lazy"
   />
   <div class="meta">
     <div class="title">{{ getDisplayTitle() }}</div>

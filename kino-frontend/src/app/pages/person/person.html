@@ -1,0 +1,97 @@
+@if (loading) {
+  <div class="loading">Loading…</div>
+}
+
+@if (error) {
+  <div class="error">
+    <p>{{ error }}</p>
+    <button class="retry-btn" (click)="load()">Retry</button>
+  </div>
+}
+
+@if (data) {
+  <section class="person-hero">
+    <div class="profile-container">
+      @if (data.profileUrl) {
+        <img class="profile" [src]="data.profileUrl" [alt]="data.name" />
+      } @else {
+        <div class="no-profile">No Image</div>
+      }
+    </div>
+
+    <div class="info">
+      <h1>{{ data.name }}</h1>
+
+      @if (data.knownForDepartment) {
+        <p class="department">Known for: <strong>{{ data.knownForDepartment }}</strong></p>
+      }
+
+      <div class="meta">
+        @if (data.birthday) {
+          <p>
+            <strong>Born:</strong> {{ formatDate(data.birthday) }}
+            @if (data.placeOfBirth) {
+              <span class="place">in {{ data.placeOfBirth }}</span>
+            }
+          </p>
+        }
+
+        @if (data.deathday) {
+          <p><strong>Died:</strong> {{ formatDate(data.deathday) }}</p>
+        }
+
+        @if (calculateAge() !== null) {
+          <p class="age"><strong>{{ getAgeLabel() }}:</strong> {{ calculateAge() }}</p>
+        }
+      </div>
+
+      @if (data.biography) {
+        <div class="biography">
+          <h3>Biography</h3>
+          <p>{{ data.biography }}</p>
+        </div>
+      }
+
+      @if (data.alsoKnownAs.length) {
+        <div class="also-known-as">
+          <h3>Also Known As</h3>
+          <p>{{ data.alsoKnownAs.join(', ') }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  @if (data.credits.length) {
+    <section class="filmography">
+      <h2>Filmography</h2>
+      <p class="credit-count">{{ data.credits.length }} titles</p>
+
+      <div class="credits-grid">
+        @for (credit of data.credits; track credit.id + credit.mediaType) {
+          <a [routerLink]="getCreditLink(credit)" class="credit-card">
+            <div class="poster-container">
+              @if (credit.posterUrl) {
+                <img [src]="credit.posterUrl" [alt]="credit.title || 'Poster'" loading="lazy" />
+              } @else {
+                <div class="no-poster">No Image</div>
+              }
+            </div>
+            <div class="credit-info">
+              <div class="credit-title">{{ credit.title || 'Unknown Title' }}</div>
+              @if (credit.character) {
+                <div class="credit-character">as {{ credit.character }}</div>
+              }
+              @if (getCreditYear(credit.date)) {
+                <div class="credit-year">{{ getCreditYear(credit.date) }}</div>
+              }
+              @if (credit.rating) {
+                <div class="credit-rating">⭐ {{ credit.rating | number:'1.1-1' }}</div>
+              }
+              <div class="credit-type">{{ credit.mediaType === 'MOVIE' ? 'Movie' : 'TV Show' }}</div>
+            </div>
+          </a>
+        }
+      </div>
+    </section>
+  }
+}

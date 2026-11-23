@@ -15,7 +15,7 @@
            [class.no-backdrop]="!data.backdropUrl">
 
     <div class="overlay">
-      <img class="poster" [src]="data.posterUrl || 'assets/no-poster.png'" [alt]="data.title" />
+      <img class="poster" [src]="data.posterUrl || 'assets/no-poster.png'" [alt]="data.title" loading="lazy" />
 
       <div class="info">
         <h1>{{ data.title }}</h1>
@@ -67,15 +67,15 @@
 
       <div class="cast-row">
         @for (c of data.cast; track c.id) {
-          <div class="cast-card">
+          <a [routerLink]="['/person', c.id]" class="cast-card">
             @if (c.profileUrl) {
-              <img [src]="c.profileUrl" [alt]="c.name" />
+              <img [src]="c.profileUrl" [alt]="c.name" loading="lazy" />
             } @else {
               <div class="no-profile">No Image</div>
             }
             <div>{{ c.name }}</div>
             <small>{{ c.character }}</small>
-          </div>
+          </a>
         }
       </div>
     </section>

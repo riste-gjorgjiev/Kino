@@ -36,6 +36,14 @@
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   flex: 1;
+  -webkit-overflow-scrolling: touch;
+  outline: none;
+}
+
+.carousel-container:focus-visible {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 @media (max-width: 768px) {
