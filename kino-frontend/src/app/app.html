@@ -67,7 +67,7 @@
 
   <a
     routerLink="/movies/popular"
-    routerLinkActive="active"
+    [class.active]="inMovies()"
     class="bottom-nav-item"
   >
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -85,7 +85,7 @@
 
   <a
     routerLink="/tv/popular"
-    routerLinkActive="active"
+    [class.active]="inTv()"
     class="bottom-nav-item"
   >
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

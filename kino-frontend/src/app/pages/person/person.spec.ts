@@ -117,12 +117,12 @@ describe('Person', () => {
   });
 
   it('should get correct link for movie credit', () => {
-    const credit = { mediaType: 'MOVIE', id: 100 };
+    const credit = mockPerson.credits[0];
     expect(component.getCreditLink(credit)).toEqual(['/movies/details', 100]);
   });
 
   it('should get correct link for TV credit', () => {
-    const credit = { mediaType: 'TV', id: 200 };
+    const credit = { ...mockPerson.credits[0], mediaType: 'TV' as const, id: 200 };
     expect(component.getCreditLink(credit)).toEqual(['/tv/details', 200]);
   });
 });

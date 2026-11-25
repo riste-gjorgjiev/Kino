@@ -1,3 +1,14 @@
+<nav class="category-tabs" [attr.aria-label]="(media === 'movies' ? 'Movie' : 'TV') + ' categories'">
+  @for (category of categories; track category.slug) {
+    <a
+      class="category-tab"
+      [routerLink]="['/', media, category.slug]"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >{{ category.label }}</a>
+  }
+</nav>
+
 <h1>{{ title }}</h1>
 
 <app-filter-controls [filter]="filter" (filterChanged)="onFilterChanged($event)"></app-filter-controls>

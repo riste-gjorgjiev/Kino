@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {MediaCardDto} from '../../core/models/media-card.dto';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {KinoApiService} from '../../kino-api.service';
 import {combineLatest} from 'rxjs';
 import {DEFAULT_FILTER, FilterState} from '../../core/models/filter-state.model';
@@ -10,9 +10,26 @@ import {MediaCardComponent} from '../../shared/media-card/media-card.component';
 type MoviesCategory = 'popular' | 'upcoming' | 'top-rated';
 type TvCategory = 'popular' | 'on-the-air' | 'top-rated';
 
+interface CategoryLink {
+  slug: MoviesCategory | TvCategory;
+  label: string;
+}
+
+const MOVIE_CATEGORIES: CategoryLink[] = [
+  { slug: 'popular', label: 'Popular' },
+  { slug: 'upcoming', label: 'Upcoming' },
+  { slug: 'top-rated', label: 'Top Rated' },
+];
+
+const TV_CATEGORIES: CategoryLink[] = [
+  { slug: 'popular', label: 'Popular' },
+  { slug: 'on-the-air', label: 'On TV' },
+  { slug: 'top-rated', label: 'Top Rated' },
+];
+
 @Component({
   selector: 'app-media-list-page',
-  imports: [FilterControlsComponent, MediaCardComponent],
+  imports: [FilterControlsComponent, MediaCardComponent, RouterLink, RouterLinkActive],
   templateUrl: './media-list-page.html',
   styleUrl: './media-list-page.css',
 })
@@ -25,6 +42,9 @@ export class MediaListPage {
 
   title = '';
   filter: FilterState = { ...DEFAULT_FILTER }
+
+  media: 'movies' | 'tv' = 'movies';
+  categories: CategoryLink[] = MOVIE_CATEGORIES;
 
   constructor(
     private route: ActivatedRoute,
@@ -78,6 +98,9 @@ export class MediaListPage {
   load(){
     const media = this.route.snapshot.url[0]?.path;
     const category = this.route.snapshot.paramMap.get('category') || '';
+
+    this.media = media === 'tv' ? 'tv' : 'movies';
+    this.categories = this.media === 'movies' ? MOVIE_CATEGORIES : TV_CATEGORIES;
 
     this.title = this.makeTitle(media, category);
 

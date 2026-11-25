@@ -72,10 +72,19 @@ Polish the UI with CSS transitions, carousel touch support, a mobile navigation 
 
 ## Notes / possible follow-ups
 
-- Bottom tab bar could later highlight the specific Movies/TV sub-category.
+- ~~Bottom tab bar could later highlight the specific Movies/TV sub-category.~~ ✅ Done in the follow-up below.
 - Consider a scroll-position indicator (dots) for carousels on very small screens.
 - Lighthouse should be re-run manually in Chrome DevTools against a running build to confirm the ≥80 target; automated CI Lighthouse was not added (DevOps still deferred).
 - Server-side rendering / prerendering remains a Phase 5 (W39–W40) item.
+
+## Follow-up: mobile category navigation
+
+The bottom tab bar could only reach `movies/popular` and `tv/popular`; the other categories (Upcoming, Top Rated, On TV) were only reachable through the desktop dropdowns, which are hidden at ≤768px.
+
+- Added a horizontally scrollable pill tab row at the top of the media list page with the categories for the current media type (`Popular` / `Upcoming` / `Top Rated` for movies, `Popular` / `On TV` / `Top Rated` for TV).
+- Tabs are real router links, so a category is shareable/bookmarkable and the active tab is highlighted via `routerLinkActive`.
+- On mobile the tabs have 44px tap targets and never wrap or cause horizontal page scroll.
+- The bottom bar's Movies/TV tabs now stay highlighted on any sub-category (and on details pages), not just `popular`.
 
 ---
 
